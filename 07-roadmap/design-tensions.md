@@ -1,0 +1,9 @@
+# Design tensions to watch
+
+These are tensions that won't resolve cleanly. Decisions on them shape Memoria's character.
+
+- **Autonomy vs. control.** More automation makes the system faster but harder to trust. The default leans heavily toward control (review gate, no auto-promotion). The temptation will be to relax this; resist for the first six months.
+- **Schema strictness vs. flexibility.** Strict schemas catch errors but slow capture. Loose schemas are fast but accumulate inconsistency. The compromise is *strict at the gate, flexible inside the lane*: triage promotes draft fields to canonical, but the draft fields themselves can be loose.
+- **Specialization vs. simplicity.** Seven profiles is more setup than one agent. The payoff is reliability, but the cost is configuration overhead. If you can't keep seven profiles' permissions straight, fall back to the four-profile minimal configuration (see [02-profiles.md](../02-profiles.md)) and accept the safety loss.
+- **Vault stability vs. graph richness.** A rich knowledge graph is the goal, but every link is also a maintenance burden. The linking patterns in [05-notes-folders.md](../05-notes-folders.md) bias toward fewer, stronger links.
+- **Single-user vs. team.** Memoria is designed for one operator. If multiple operators share the vault, the `review_owner` field becomes load-bearing in ways the current design doesn't fully address.

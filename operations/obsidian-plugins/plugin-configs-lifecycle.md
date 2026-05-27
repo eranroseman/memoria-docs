@@ -1,0 +1,109 @@
+# Plugin config lifecycle
+
+How Memoria's Obsidian plugin `data.json` files are shipped, kept in sync with the design, and audited for drift. The actual config files live in the starter vault at `.obsidian/plugins/<plugin>/` — this is a governance doc, not a folder of configs. The per-plugin reference for what each setting means lives alongside this file (e.g., [obsidian-linter.md](obsidian-linter.md), [agent-client.md](agent-client.md), [obsidian-citation-plugin.md](obsidian-citation-plugin.md)).
+
+## Where configs live
+
+Under direct profile management, the plugin configs ship **inside the starter vault**:
+
+```text
+memoria-vault/
+└── .obsidian/
+    └── plugins/
+        ├── obsidian-linter/data.json
+        ├── obsidian-citation-plugin/data.json
+        ├── agent-client/data.json.example
+        ├── obsidian-local-rest-api/data.json.example
+        └── callout-manager/data.json.TODO
+```
+
+When the operator clones the starter vault and opens it in Obsidian, the plugins read these files directly. There is no "template directory" the operator copies from — the file at `data.json` *is* the canonical config. The exceptions are `.example` and `.TODO` files, described below.
+
+## The three suffix conventions
+
+The filename suffix is the contract. Each one signals a different relationship to the operator's working file.
+
+| Suffix | Shipped state | Operator action | M6 detection |
+|---|---|---|---|
+| `data.json` | Canonical; ready to use as-is | None — Obsidian reads it directly | Strict: working tree vs git HEAD must match (operator-state extras allowed) |
+| `data.json.example` | Template; contains placeholders (`{{HOME}}`, `REPLACE_ON_FIRST_LAUNCH`) or generated secrets | Copy to `data.json` (gitignored), fill in machine-specific values, restart Obsidian | Partial: non-placeholder keys in working `data.json` must match the `.example` |
+| `data.json.TODO` | Not yet authored; schema unverified | None — wait for the schema to be settled and the file renamed | Skipped entirely |
+
+## What ships and why
+
+| Plugin | Ships | Why this suffix |
+|---|---|---|
+| `obsidian-linter` | `data.json` | All settings are Memoria-canonical — the `foldersToIgnore` list, the four on-save rules, and the `yaml-key-sort` keyOrder match the frontmatter schema. No per-operator variance. |
+| `obsidian-citation-plugin` | `data.json` | The `literatureNoteContentTemplate` embeds Memoria's source-note frontmatter, `_draft_classification`, and `_enrichment` blocks. Changes here are schema migrations. |
+| `agent-client` | `data.json.example` | Configures four ACP profiles in the picker, all with `autoAllowPermissions: false`. The `command` paths inside each agent entry use `{{HOME}}` placeholders the operator must replace with their absolute paths. |
+| `obsidian-local-rest-api` | `data.json.example` | The real `data.json` contains generated secrets — `apiKey`, TLS certificate, RSA private key. The real file must be gitignored; the plugin regenerates secrets on first launch. The `.example` documents the non-secret shape. |
+| `callout-manager` | `data.json.TODO` | Plugin's `data.json` schema hasn't been verified against an installed version yet. The `.TODO` documents intent (three callout types: `[!brief]`, `[!suggestions]`, `[!verification]`) but doesn't commit to a schema. |
+
+## What doesn't ship and why
+
+| Plugin | Why no config ships |
+|---|---|
+| `dataview` | Only three load-bearing settings (`enableJs`, `refreshEnabled`, `refreshInterval`). Prose suffices; configure via the UI. |
+| `templater-obsidian` | Three top-level settings. Prose suffices for the core toggle set; user scripts under `00-meta/01-templates/scripts/` *do* matter to Memoria (the linter's safe-and-unambiguous Templater script lives there — see [the Linter design summary](../../profiles/linter.md)) but those are vault content, not plugin config. |
+| `obsidian-git` | Settings vary by [deployment option](../../07-roadmap/deployment-options.md). Shipping one config would force the operator to remember which one matches their setup. |
+| `obsidian-kanban` | No Memoria-specific configuration; default settings work. |
+| `smart-connections` | Treated as a parallel peer to Memoria, not a wired component. [Cartographer](../../profiles/cartographer.md) does rule-based, reviewable corpus work; Smart Connections does statistical, opaque similarity. Complementary but Memoria's design depends on neither. |
+| `omnisearch` | Indexing depth and excluded folders are workflow-personal, not design-canonical. [Researcher](../../profiles/researcher.md) doesn't depend on it (search calls go through Hermes tools, not the Obsidian plugin). |
+| `pdf-plus` | Settings are operator-preference (highlight colors, link format). |
+| `supercharged-links` | Style snippet ships at `.obsidian/snippets/memoria-link-colors.css`; the plugin's own `data.json` just points at the snippet. |
+| `commander` | Pure operator preference (which commands to surface). |
+
+## When to update a shipped config
+
+A shipped config (in `memoria-vault/.obsidian/plugins/<plugin>/`) needs to be updated when **either**:
+
+1. **A Memoria design change shifts the canonical settings.** Examples: the frontmatter schema gains a field → `obsidian-linter.json`'s `keyOrder` must include it; the `_enrichment` block schema changes → `obsidian-citation-plugin.json`'s `literatureNoteContentTemplate` must change.
+2. **The underlying plugin's `data.json` schema migrates.** A settings key gets renamed, removed, or replaced. When a plugin upgrade is accepted, diff a freshly-saved `data.json` from a clean install against the committed version and reconcile differences explicitly.
+
+Update path: edit the file in `memoria-vault/.obsidian/plugins/<plugin>/`, commit. The next `git pull` propagates the change to anyone using the starter vault.
+
+## M6 enforcement mechanism
+
+The [Linter's M6 detector](../../profiles/linter.md) (full procedure in the Linter's `M-detectors.md` runtime reference) audits drift between the operator's **working tree** version of `.obsidian/plugins/<plugin>/data.json` and the version at **git HEAD**. Under direct profile management there is no separate "template" location to compare against — the committed file *is* the template.
+
+Procedure:
+
+1. For each `.obsidian/plugins/<plugin>/data.json` (or `.example` / `.TODO` variant), read the working-tree contents.
+2. Read the same file as committed at git HEAD (`git show HEAD:.obsidian/plugins/<plugin>/data.json`).
+3. Compare per the suffix's enforcement level (see table above).
+4. Ignore operator-extra keys that are present in working but not in HEAD (`savedSessions`, `lastUsedModels`, plugin-generated runtime state).
+5. Report each remaining drift with the plugin, the key, and the expected vs actual value.
+
+### Missing-working-file cases
+
+Two cases where the working file is absent rather than drifted; M6 must surface them distinctly so they don't get conflated with real drift:
+
+- **`data.json` committed at HEAD, no working file in the operator's tree.** Reported as `missing working config` — the operator deleted the file (or never extracted it from the clone). Severity MEDIUM, same as drift.
+- **`data.json.example` committed at HEAD, no working `data.json` in the operator's tree.** Reported as `first-time setup pending` — the operator cloned the vault but hasn't yet copied the example to `data.json` and filled in placeholders. Severity **LOW** (it's a setup gap, not drift). Surfaced once per plugin, not repeatedly. The dashboard query for active M6 findings de-prioritizes these so they don't crowd the operator's attention on a fresh install.
+
+The full per-case procedural detail (Case A canonical, Case B templated, Case C first-time setup, Case D unverified `.TODO`) lives in the Linter's `M-detectors.md` runtime reference.
+
+Enforcement per shipped file:
+
+| File | Enforcement specifics |
+|---|---|
+| `obsidian-linter/data.json` | Strict. `lintOnSave`, `foldersToIgnore`, full rule set, `yaml-key-sort` `keyOrder` all checked. |
+| `obsidian-citation-plugin/data.json` | Strict. Full `literatureNoteContentTemplate` checked — drift means the literature-note schema has shifted. |
+| `obsidian-local-rest-api/data.json.example` | Partial. `enableInsecureServer`, `port`, `insecurePort` enforced. `apiKey`, `crypto.*` excluded as placeholders. |
+| `agent-client/data.json.example` | Partial. `defaultAgentId`, `autoAllowPermissions`, `autoMentionActiveNote`, `chatViewLocation` enforced. `command` paths excluded (contain `{{HOME}}`). `savedSessions`, `lastUsedModels` excluded as runtime state. |
+| `callout-manager/data.json.TODO` | Skipped until the schema is verified and the file is renamed (drop the `.TODO`). |
+
+## Severity and the `autoAllowPermissions` escalation
+
+M6 is **MEDIUM** severity by default — drift here doesn't break the system, but means the operator's Obsidian behavior may differ from the design's expectation. A M6 finding alone produces a `REVIEW` verdict band, not `FAIL`.
+
+The one documented escalation: if M6 finds that `agent-client.autoAllowPermissions` has drifted from `false` to `true`, the severity is **HIGH**. That setting bypasses the per-tool-call approval gate ACP relies on, which composes with the policy MCP to keep operator-in-the-loop. Silently turning it off undermines a security invariant; the linter treats it as a verdict-band-failing finding.
+
+## Remediation
+
+The detector never auto-fixes. Two paths the operator chooses between:
+
+- **The drift is unintentional.** Revert the working file to git HEAD: `git restore .obsidian/plugins/<plugin>/data.json`. Restart Obsidian. The plugin loads the canonical config.
+- **The drift is deliberate.** Stage and commit: `git add .obsidian/plugins/<plugin>/data.json && git commit -m "update <plugin> config: <reason>"`. HEAD now reflects the new canonical setting; the next lint pass is clean.
+
+The detector's contract: it surfaces the *fact* of drift, not which side is right. That decision is the operator's. The `.example` variant has the same remediation paths applied to the working `data.json` derived from the example — either copy the example again (revert) or update the `.example` to reflect the new canonical shape (commit).

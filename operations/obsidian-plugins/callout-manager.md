@@ -1,0 +1,11 @@
+# callout-manager
+
+Defines the three Memoria-specific callout types used by the [inline agent surfaces](../../06-surfaces/inline.md):
+
+- `[!brief]` — Cartographer's comparative read on a new literature note.
+- `[!suggestions]` — Researcher's link candidates pending human approval.
+- `[!verification]` — Verifier's claim trace on a draft.
+
+Load-bearing settings: ship the callout definitions in `vault/.obsidian/plugins/callout-manager/data.json`. The definitions encode the icon, color, and default-collapsed state for each type. Without Callout Manager (or equivalent CSS snippets), these render as plain blockquotes — readable, but the visual affordance that says "this is agent output, not the human's writing" is gone.
+
+**Template status:** the shipped placeholder is `.obsidian/plugins/callout-manager/data.json.TODO` in the starter vault — a placeholder, not a working file. The plugin's `data.json` schema hasn't been verified against an installed version yet. The TODO file documents what the three callouts should encode (icon, color suggestion, default-collapsed flag) and the next step: install Callout Manager into the Memoria vault, configure the three callouts through its UI, and rename the resulting `data.json` next to the TODO placeholder.
