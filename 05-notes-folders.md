@@ -281,27 +281,13 @@ Linking is the cross-cutting discipline that turns the vault into a graph rather
 
 ## Templates
 
-Each note type's template lives in its own file under [`templates/`](templates/). The vault implementation places these in `00-meta/01-templates/` for Obsidian's Templater plugin.
+The 15 note templates ship at `00-meta/01-templates/` in the [memoria-vault starter vault](https://github.com/eranroseman/memoria-vault/tree/main/00-meta/01-templates) — one markdown file per note type, read by Obsidian's Templater plugin. They contain the frontmatter shape, body skeleton, and per-type field notes (e.g., the `pub_status` / `full_text_reviewed` semantics for `source-note`, the maturity progression for `claim-note`, Jupyter handling for `code-note`).
 
-| Type | Template file |
-| --- | --- |
-| `fleeting-note` | [templates/fleeting-note.md](templates/fleeting-note.md) |
-| `synthesis-note` | [templates/synthesis-note.md](templates/synthesis-note.md) |
-| `source-note` | [templates/source-note.md](templates/source-note.md) |
-| `item-note` | [templates/item-note.md](templates/item-note.md) |
-| `person-note` | [templates/person-note.md](templates/person-note.md) |
-| `org-note` | [templates/org-note.md](templates/org-note.md) |
-| `venue-note` | [templates/venue-note.md](templates/venue-note.md) |
-| `claim-note` | [templates/claim-note.md](templates/claim-note.md) |
-| `moc` | [templates/moc.md](templates/moc.md) |
-| `reference-note` | [templates/reference-note.md](templates/reference-note.md) |
-| `project-note` | [templates/project-note.md](templates/project-note.md) |
-| `code-note` | [templates/code-note.md](templates/code-note.md) |
-| `canvas` | [templates/canvas.md](templates/canvas.md) |
-| `draft` | [templates/draft.md](templates/draft.md) |
-| `deliverable` | [templates/deliverable.md](templates/deliverable.md) |
+The 15 templates (one per canonical note type):
 
-Each template file contains the frontmatter, body skeleton, and any per-type field notes (e.g., the `pub_status` / `full_text_reviewed` semantics for `source-note`, the maturity progression for `claim-note`, Jupyter handling for `code-note`).
+`fleeting-note.md` · `synthesis-note.md` · `source-note.md` · `item-note.md` · `person-note.md` · `org-note.md` · `venue-note.md` · `claim-note.md` · `moc.md` · `reference-note.md` · `project-note.md` · `code-note.md` · `canvas.md` · `draft.md` · `deliverable.md`
+
+Templates are content shapes, not architectural concepts — they don't have separate design summaries here in memoria-docs. The runtime files in the vault repo are the authoritative spec. The frontmatter rules they encode are governed by [reference/schema.md](reference/schema.md); the linter's M4 dashboard-field-drift detector ([Linter design summary](profiles/linter.md)) catches Dataview queries that reference fields no template emits.
 
 ### Config templates (not note types)
 

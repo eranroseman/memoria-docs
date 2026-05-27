@@ -33,5 +33,5 @@ Adding typed relationships to claim-note frontmatter — e.g. `supports: [[x]]`,
 ## Related
 
 - **Workflows affected:** [#5 Synthesize](../../04-workflows.md), [#6 Promote to wiki](../../04-workflows.md)
-- **Files affected:** [05-notes-folders.md](../../05-notes-folders.md), [claim-note template](../../templates/claim-note.md)
+- **Files affected:** [05-notes-folders.md](../../05-notes-folders.md), `00-meta/01-templates/claim-note.md` (in the starter vault)
 - **Resolves / supersedes:** ADR-16 ([Contradictions dashboard](16-contradictions-dashboard.md)) depends on this being adopted.

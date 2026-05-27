@@ -33,5 +33,5 @@ Formal scoping reviews and systematic reviews often require inter-rater reliabil
 ## Related
 
 - **Related decisions:** [ADR-12 systematic-review mode](12-systematic-review-mode.md), [ADR-19 pre-ingest screening](19-pre-ingest-screening.md).
-- **Files affected:** [templates/source-note.md](../../templates/source-note.md)
+- **Files affected:** `00-meta/01-templates/source-note.md` (in the starter vault)
 - **Resolves / supersedes:** none

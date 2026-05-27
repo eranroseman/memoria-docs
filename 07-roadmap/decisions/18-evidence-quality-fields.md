@@ -33,5 +33,5 @@ Adding `funding`, `coi` (conflict of interest), `risk_of_bias`, `population`, `i
 ## Related
 
 - **Related decisions:** [ADR-12 systematic-review mode](12-systematic-review-mode.md), [ADR-19 pre-ingest screening](19-pre-ingest-screening.md), [ADR-20 dual-rater workflow](20-dual-rater-workflow.md) — same domain.
-- **Files affected:** [templates/source-note.md](../../templates/source-note.md), [05-notes-folders.md](../../05-notes-folders.md)
+- **Files affected:** `00-meta/01-templates/source-note.md` (in the starter vault), [05-notes-folders.md](../../05-notes-folders.md)
 - **Resolves / supersedes:** none

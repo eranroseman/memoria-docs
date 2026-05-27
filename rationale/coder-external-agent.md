@@ -48,7 +48,7 @@ If the project has `requirements.txt`, `pyproject.toml`, `package.json`, or anot
 
 The `code-note` markdown file lives in the vault at `40-workbench/03-code/<project>.md` regardless of where the actual code lives. When code is in an external repo, the code-note carries a `repo:` frontmatter field pointing at the repo path. This keeps provenance traceable from the vault even when the executable artifact is elsewhere.
 
-See [templates/code-note.md](../templates/code-note.md) for the frontmatter shape.
+See `00-meta/01-templates/code-note.md` (in the starter vault) for the frontmatter shape.
 
 ## The pattern generalizes: external rendering agents
 
@@ -65,7 +65,7 @@ The canonical external rendering agent is **[open-design](https://github.com/nex
 | Vault destination | `40-workbench/03-code/` for code-notes; external repos for real projects | `50-deliverables/<project>/` for finished artifacts |
 | Shared filesystem read | Vault read-only via `external_directory` (existing pattern) | Same — open-design reads the vault for source-notes, claim-notes, design-system.md |
 | Shared filesystem write | `40-workbench/03-code/` only | `50-deliverables/<project>/` only |
-| Handoff artifact | `code-note` markdown with `repo:` frontmatter | `deliverable` note with `export_path:`, `design_system:`, and `render_command:` frontmatter (see [templates/deliverable.md](../templates/deliverable.md)) |
+| Handoff artifact | `code-note` markdown with `repo:` frontmatter | `deliverable` note with `export_path:`, `design_system:`, and `render_command:` frontmatter (see `00-meta/01-templates/deliverable.md` (in the starter vault)) |
 | Design source | (none — code is its own spec) | [`00-meta/06-schema/design-system.md`](../reference/design-system.md) — the portable DESIGN.md that defines palette, typography, spacing, layout, etc. |
 | Review gate | Operator reviews `code-note` updates and commits | Operator reviews the rendered artifact (HTML preview, PDF) and accepts |
 
@@ -104,7 +104,7 @@ The vault is read-only by default; the `50-deliverables/` folder is the explicit
 
 ### The `deliverable` note as handoff artifact
 
-Just as `code-note` is the human-readable handoff between Memoria and the coding agent, the `deliverable` note ([templates/deliverable.md](../templates/deliverable.md)) is the handoff between Memoria and open-design. The note carries:
+Just as `code-note` is the human-readable handoff between Memoria and the coding agent, the `deliverable` note (`00-meta/01-templates/deliverable.md` (in the starter vault)) is the handoff between Memoria and open-design. The note carries:
 
 - `export_path:` — vault-relative path to the rendered artifact (e.g., `50-deliverables/jitai-thesis/chapter-3-deck.pptx`)
 - `related_draft:` — wikilink to the primary source draft

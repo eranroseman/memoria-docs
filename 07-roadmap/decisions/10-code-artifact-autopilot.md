@@ -33,5 +33,5 @@ Allowing `autopilot: true` on a `code-note` would let Hermes run scripted analys
 ## Related
 
 - **Workflows affected:** [#9 Code artifacts](../../04-workflows.md)
-- **Files affected:** [profiles/coder.md](../../profiles/coder.md), [templates/code-note.md](../../templates/code-note.md)
+- **Files affected:** [profiles/coder.md](../../profiles/coder.md), `00-meta/01-templates/code-note.md` (in the starter vault)
 - **Resolves / supersedes:** none

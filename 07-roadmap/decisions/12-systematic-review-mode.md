@@ -33,5 +33,5 @@ Adding a `review_mode: systematic-review` flag plus PRISMA-style fields (inclusi
 ## Related
 
 - **Related decisions:** [ADR-18 evidence quality fields](18-evidence-quality-fields.md), [ADR-19 pre-ingest screening](19-pre-ingest-screening.md), [ADR-20 dual-rater workflow](20-dual-rater-workflow.md) — same domain, similar adopt-on-demand pattern.
-- **Files affected:** [05-notes-folders.md](../../05-notes-folders.md), [templates/source-note.md](../../templates/source-note.md)
+- **Files affected:** [05-notes-folders.md](../../05-notes-folders.md), `00-meta/01-templates/source-note.md` (in the starter vault)
 - **Resolves / supersedes:** none

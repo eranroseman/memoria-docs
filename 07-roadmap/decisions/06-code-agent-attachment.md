@@ -32,5 +32,5 @@ Does the Coder profile delegate substantive coding work to an external coding ag
 ## Related
 
 - **Workflows affected:** [#9 Code artifacts](../../04-workflows.md)
-- **Files affected:** [profiles/coder.md](../../profiles/coder.md), [rationale/coder-external-agent.md](../../rationale/coder-external-agent.md), [templates/code-note.md](../../templates/code-note.md)
+- **Files affected:** [profiles/coder.md](../../profiles/coder.md), [rationale/coder-external-agent.md](../../rationale/coder-external-agent.md), `00-meta/01-templates/code-note.md` (in the starter vault)
 - **Resolves / supersedes:** none

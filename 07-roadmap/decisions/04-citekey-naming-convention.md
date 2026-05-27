@@ -39,5 +39,5 @@ This produces `mamykina2010sense` from a Mamykina 2010 paper titled "Sense and s
 ## Related
 
 - **Workflows affected:** [#1 Zotero capture](../../04-workflows.md), [#2 Ingest](../../04-workflows.md)
-- **Files affected:** [05-notes-folders.md](../../05-notes-folders.md), [source-note template](../../templates/source-note.md)
+- **Files affected:** [05-notes-folders.md](../../05-notes-folders.md), `00-meta/01-templates/source-note.md` (in the starter vault)
 - **Resolves / supersedes:** none
