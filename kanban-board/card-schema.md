@@ -49,7 +49,7 @@ When a worker finishes or blocks, the payload lives on the **run**, not as task 
 | `summary` | `kanban_complete` | Human-readable completion note. Memoria writes the Blocker / Tried / Next prose here. |
 | `metadata` | `kanban_complete` | Free-form JSON: structured evidence (`changed_files`, `decisions`, `tests_run`, …) **and** Memoria's overlay fields below. |
 | `reason` | `kanban_block` | Why the task is blocked, for human input. Replaces the old `blocked_reason`. |
-| `outcome` | run | `completed`, `blocked`, `crashed`, `spawn_failed`, `gave_up`, `active`. |
+| `outcome` | run | Hermes run-execution result — a closed, Hermes-defined enum per the [live Kanban docs](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban): `completed`, `blocked`, `crashed`, `gave_up`, `reclaimed`, `timed_out`, `spawn_failed`, `protocol_violation`. Records what happened on a *run*. **Archival reasons are not outcomes** — see `metadata.archive_reason` below. |
 | `error` | run | Failure detail when applicable. |
 | `worker_context` | run | Prior attempts (previous runs' outcome / summary / error / metadata) plus parent results. |
 
@@ -64,8 +64,9 @@ Because the Hermes schema is fixed, Memoria's review gate and provenance live as
 | `review_owner` | string | Who owes the next review decision. |
 | `review_requested_at` | timestamp | When the worker handed off for review. |
 | `reviewed_at` | timestamp | When the human (or an agent, for its recommendation) acted on the review. |
-| `canonical_target` | path | Where the output should land **if approved** (e.g. `30-synthesis/01-claims/xyz.md`). |
-| `supersedes` | task_id | On a revision card, the original card it replaces (original archived with `outcome: superseded`). |
+| `promote_target` | path | Where the output should land **if approved** (e.g. `30-synthesis/01-claims/xyz.md`). |
+| `supersedes` | task_id | On a revision card, the original card it replaces (the original is archived with `metadata.archive_reason: superseded`). |
+| `archive_reason` | enum | On an archived card, why it was archived: `superseded` (replaced by a successor card) or `discarded` (rejected with no successor). Hermes archiving is a status transition with no native reason field, so Memoria records the reason here rather than in `outcome`. |
 
 `review_status` is deliberately separate from `status`. A card can be `status: running` while `review_status` is still `unreviewed`. This lets dashboards and dispatch logic query review independently. Both are **board-card concerns only** — notes never carry them. A note's lifecycle phase lives in `lifecycle` (with per-type refinements like `maturity`), whose value set is disjoint from the board's. See [frontmatter-schema.md](../vault/frontmatter-schema.md).
 
@@ -83,18 +84,18 @@ Earlier drafts of this doc described a custom card schema. Those field names map
 | `handoff_note` | `summary` (the `kanban_complete` prose note). |
 | `task_packet` | `metadata` (the `kanban_complete` JSON payload). |
 | `last_updated` | No field — derived from the card event stream (`hermes kanban tail`). |
-| `canonical_target` | `metadata.canonical_target`. |
+| `promote_target` | `metadata.promote_target`. |
 | `review_status`, `review_owner`, `review_requested_at`, `reviewed_at` | `metadata.*` keys (see overlay table). |
 
 ## Entity vocabulary
 
-The fields above implicitly track five distinct entities. Naming them is useful because queries, dashboards, and the audit log all touch the same vocabulary — and conflating them produces confusing reports ("how many handoffs happened this week?" is unanswerable if handoffs live inside a free-text field).
+The fields above implicitly track five distinct entities. Naming them is useful because queries, dashboards, and the audit log all touch the same vocabulary — and conflating them produces confusing reports ("how many handoffs happened this week?" is unanswerable if handoffs live inside a free-text field). For overloaded *words* rather than entities — `review`, `verdict`, `promote`, `lane`, `canonical` — see the [glossary](../glossary.md).
 
 | Entity | What it is | Where it lives on the card |
 | --- | --- | --- |
 | **Task** | A unit of work. One card = one task. | The card itself; identified by `task_id`. |
 | **Handoff** | An event where one profile passes work to another. Multiple handoffs per task are normal (Librarian creates source → human classifies → Writer drafts → Verifier traces). | A `kanban_complete` / `kanban_create` event carrying `summary` + `metadata`; comment log records the history. |
-| **Artifact** | An output produced by the task — a paper note, an answer draft, a code module, a deliverable. | `metadata.canonical_target` points to the artifact path; multi-artifact tasks list paths in `metadata.expected_outputs`. |
+| **Artifact** | An output produced by the task — a paper note, an answer draft, a code module, a deliverable. | `metadata.promote_target` points to the artifact path; multi-artifact tasks list paths in `metadata.expected_outputs`. |
 | **Verdict** | A review decision on the task: `approve`, `reject`, or `escalate` (see the [verdict vocabulary](states.md#review-verdict-vocabulary)). Issued by the human (always for canonical acceptance) or recommended by Verifier/Linter. One per review pass. Routing after a `reject` (discard vs supersede) is a separate human action, not part of the verdict. | `metadata.review_status` carries the human decision; `metadata.agent_verdict` carries the agent recommendation; comment log records prior verdicts. |
 | **State transition** | A change in `status` (`ready → running`, `running → done`, etc.). Multiple transitions per task. | The card event stream; `hermes kanban tail` follows it. |
 
@@ -124,7 +125,7 @@ Tried: [what's been attempted; what was learned]
 Next: [the exact action the next worker should take]
 ```
 
-When the human spawns a revision card after a rejection, the new card's `summary` describes what was wrong with the original (the new card carries `metadata.supersedes: <original-id>` for provenance; the original is archived with `outcome: superseded`). When a Librarian hands off to Verifier for a filing-time similarity check, the same summary format applies. When a Writer's draft fires the Verifier hook, the same.
+When the human spawns a revision card after a rejection, the new card's `summary` describes what was wrong with the original (the new card carries `metadata.supersedes: <original-id>` for provenance; the original is archived with `metadata.archive_reason: superseded`). When a Librarian hands off to Verifier for a filing-time similarity check, the same summary format applies. When a Writer's draft fires the Verifier hook, the same.
 
 ### Structured payload
 

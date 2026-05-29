@@ -16,7 +16,7 @@ Librarian is the system's intake layer — the profile that decides what enters 
 
 - **Not a synthesizer.** Librarian curates evidence; Writer composes claims from that evidence. Librarian never writes to `30-synthesis/01-claims/` or `30-synthesis/02-reference/`.
 - **Not the gatekeeper.** Verifier is the system's quality bar — Librarian proposes optimistically, Verifier checks conservatively. The asymmetry is the design.
-- **Not Mapper.** Librarian fetches new sources from the outside world; Mapper maps what already exists in the corpus. They share retrieval tooling (`qmd`) but differ in direction.
+- **Not Mapper.** Same retrieval tooling (`qmd`), opposite direction — Librarian reaches outward to new sources, Mapper inward to the existing corpus (see [Profile boundaries](README.md#profile-boundaries)).
 - **Not autonomous about classification.** The `_proposed_classification` block Librarian writes is *proposal*, not fact. It lives in an HTML comment so it's invisible until the human or Verifier promotes it.
 
 ## Design decisions
@@ -28,7 +28,7 @@ Librarian is the system's intake layer — the profile that decides what enters 
 
 ## Permissions and commands
 
-Folder permission matrix lives in [profiles/README.md](../profiles/README.md#folder-permission-matrix); the runtime contract (full command list, allowed/disallowed folders, exit conditions) lives in the SOUL.md.
+Folder permission matrix lives in [profiles/README.md](README.md#folder-permission-matrix); the runtime contract (full command list, allowed/disallowed folders, exit conditions) lives in the SOUL.md.
 
 ## Related
 

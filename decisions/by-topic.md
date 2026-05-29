@@ -8,7 +8,9 @@ topic: general
 
 The flat numbered list in [README.md](README.md) is the authoritative order (ADRs are append-only and keep their original number). This file is a *secondary view* that groups the same ADRs by the topic folder they most affect, so a reader exploring `vault/` or `workflows/` can find the related decisions quickly.
 
-Status legend: **proposed** (under discussion) · **accepted** (adopted into the design) · **retired** (superseded or no longer relevant — kept for context).
+Status legend: **proposed** (under discussion) · **accepted** (adopted into the design) · **superseded** (replaced by a later ADR) · **retired** (withdrawn without replacement — kept for context).
+
+> Four deferred ADRs — 12, 18, 19, 20 — form the [adopt-on-demand systematic-review cluster](adopt-on-demand-for-reviews.md). Each is listed under its primary topic below, but they share one rationale.
 
 ## Vault & schema
 
@@ -19,6 +21,7 @@ Note types, frontmatter, naming, and the controlled vocabularies that govern the
 - [15-dedicated-review-note-type.md](15-dedicated-review-note-type.md) — Dedicated review-note type · proposed
 - [18-evidence-quality-fields.md](18-evidence-quality-fields.md) — Evidence quality fields layer · proposed
 - [21-shared-candidate-frontmatter.md](21-shared-candidate-frontmatter.md) — Shared candidate frontmatter format · proposed
+- [22-claim-supersession.md](22-claim-supersession.md) — Claim supersession relation · proposed
 
 ## Workflows
 
@@ -47,7 +50,7 @@ Persistent dashboards and how the human sees board / vault state.
 
 ## Retired
 
-Kept for historical context; superseded or no longer in force.
+Kept for historical context; withdrawn without replacement (the problem dissolved).
 
 - [05-moc-depth.md](05-moc-depth.md) — MOC depth · retired
 - [07-session-log-granularity.md](07-session-log-granularity.md) — Session log granularity · retired
@@ -55,7 +58,7 @@ Kept for historical context; superseded or no longer in force.
 
 ## Gaps
 
-ADR numbers 01, 08, and 11 are reserved/withdrawn (the numbering is append-only and skips reflect drafts that were never adopted). New ADRs take the next unused number; see [`_template.md`](_template.md).
+ADR numbers 01, 08, and 11 have no file because they were resolved **index-only** — `accepted`, but small enough to record in the [README index](README.md#numbering-gaps-and-the-graveyard) without a standalone file. Nothing was rejected outright. The numbering is append-only; new ADRs take the next unused number (see [`_template.md`](_template.md)).
 
 <!-- memoria-nav -->
 

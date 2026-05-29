@@ -28,7 +28,7 @@ These apply regardless of which option you pick:
 - **Cheap-task routing is configured in Hermes, not in the deployment.** See [architecture/capability-stack.md](../architecture/capability-stack.md) for the model-routing pattern (synthesis to Claude, embed / classify / quick-summary to cheaper models via OpenRouter or similar).
 - **Per-session log files, not a single `log.md`.** Each agent session writes a new file to `00-meta/02-logs/`. With one append-only file, distributed writes from VPS and desktop produce sync conflicts; one-file-per-session has nothing to conflict on.
 - **Hermes data dir is `~/.hermes/` by default** (or `%USERPROFILE%\.hermes\` on Windows). Override with `HERMES_HOME=/path/to/dir` when you need isolation — most commonly on the local-mesh and always-on options, where any secondary device's Hermes should keep its own profiles, sessions, and audit log isolated from the primary's `~/.hermes/`.
-- **One Hermes dispatcher per vault.** Under the local-mesh and always-on options, multiple machines have the vault but only *one* should run Hermes as a dispatcher (cron + `hermes gateway` + card claiming). The task registry lives in `~/.hermes/` per machine; two active dispatchers against the same synced vault race on card writes and produce conflicting audit logs. The convention: the *primary device* (desktop on local-mesh, VPS on always-on) owns dispatch; secondary devices run vault-only or in restricted modes — see [Secondary-device patterns](#secondary-device-patterns-local-mesh-and-always-on) below.
+- **One Hermes dispatcher per vault.** Under the local-mesh and always-on options, multiple machines have the vault but only *one* should run Hermes as a dispatcher (cron + `hermes gateway` + card claiming). The task registry lives in `~/.hermes/` per machine; two active dispatchers against the same synced vault race on card writes and produce conflicting audit logs. The convention: the *[primary device](../glossary.md#system-and-architecture)* (desktop on local-mesh, VPS on always-on) owns dispatch; secondary devices run vault-only or in restricted modes — see [Secondary-device patterns](#secondary-device-patterns-local-mesh-and-always-on) below.
 - **Profile aliases are first-class.** The `install.ps1` script invokes `hermes profile install ./.memoria/profiles/memoria-<name> --alias memoria-<name>` for each profile, which gives you `memoria-librarian chat` as a shortcut for `hermes -p memoria-librarian chat`, which is what the workflows in [workflows/README.md](../workflows/README.md) assume.
 - **`.env` is per-machine, never committed.** Each profile ships a `.env.EXAMPLE` listing required and optional env vars with descriptions. The installer copies it to `.env` on first install if `.env` doesn't already exist; the human fills in keys. Hermes hard-excludes `.env` and `auth.json` from `hermes profile install` / `update` so credentials never travel between machines.
 - **Profile memory can ride the vault.** `MEMORY.md` / `USER.md` are per-machine by default, but the [`memories/` junction](sync-and-coordination.md#syncing-profile-memory-across-machines-the-memories-junction) promotes them into the git-synced vault (`.memoria/profile-memory/memoria-<name>/`) so learned notes follow you across machines — the automatic, no-extra-channel way to share profile memory under non-concurrent local-only / local-mesh use. Session history (`state.db`) and secrets (`.env`) deliberately stay per-machine.
@@ -64,14 +64,14 @@ The only pattern that **enables the `agent-client` (ACP) plugin on the secondary
 
 #### Install only the profiles you need (structural over behavioral enforcement)
 
-The naive approach is to mirror the primary's full profile set on every device. That works under the discipline *"don't enable cron, don't run `hermes gateway`, don't claim cards"* — but those are behavioral rules the human has to remember. A stronger guarantee is **structural enforcement**: only compile profiles whose behavior is architecturally safe on this device. `hermes -p memoria-librarian find` returns "profile not found" rather than running a duplicate discovery pass.
+The naive approach is to mirror the primary's full profile set on every device. That works under the convention *"don't enable cron, don't run `hermes gateway`, don't claim cards"* — but those are behavioral rules the human has to remember. A stronger guarantee is **structural enforcement**: only compile profiles whose behavior is architecturally safe on this device. `hermes -p memoria-librarian find` returns "profile not found" rather than running a duplicate discovery pass.
 
 The recommended install tiers:
 
 | Tier | Profiles | When to install |
 | --- | --- | --- |
 | **Always (baseline)** | `memoria-socratic` only | Every secondary device that uses ACP. Naturally safe — `policy.allow.write: []` lane policy and `routing.invocation: interactive_only` mean Socratic *cannot* write to the vault and *cannot* be queue-dispatched, regardless of human behavior. |
-| **Add as needed** | `memoria-mapper`, `memoria-writer`, `memoria-verifier` | Each carries human-discipline obligations; install only when a specific recurring use case on this device justifies the risk. |
+| **Add as needed** | `memoria-mapper`, `memoria-writer`, `memoria-verifier` | Each carries obligations the human must remember; install only when a specific recurring use case on this device justifies the risk. |
 | **Never on a secondary device** | `memoria-librarian`, `memoria-coder`, `memoria-linter` | API costs, queue conflicts, heavy install footprint, or structurally background-only — see per-profile notes below. |
 
 #### Per-profile risk on a secondary device
@@ -79,14 +79,14 @@ The recommended install tiers:
 | Profile | Architectural safety on secondary | Verdict |
 | --- | --- | --- |
 | **Socratic** | Write-denied (`policy.allow.write: []`) and `routing.invocation: interactive_only`. Cannot write to the vault or claim cards by lane policy. The constraints below (no cron, no `serve`, no claim) are *vacuously satisfied* — there's nothing to disable. | **Always install.** |
-| **Mapper** | Read-only across the vault except project-scratch (`40-workbench/01-projects/<project>/map/corpus-map.md`, `*/gap-report.md`). Two Mapper instances writing the same project's scratch can collide. | **Borderline.** Install for read-only scope queries only; never run during active project work the primary is also handling. |
+| **Mapper** | Read-only across the vault except project-scratch (`40-workbench/01-projects/<project>/map/corpus-map.md`, `*/map/gap-report.md`). Two Mapper instances writing the same project's scratch can collide. | **Borderline.** Install for read-only scope queries only; never run during active project work the primary is also handling. |
 | **Verifier** | Read-only except `40-workbench/01-projects/*/verification/`. Can spawn upstream gap cards. Two Verifier instances on the same draft is collision-prone. | **Borderline.** Install for ad-hoc `similarity-check` before filing a new claim; skip if the primary is running full `cite-check` against the same drafts. |
 | **Writer** | Writes drafts to `10-inbox/02-answers/` and `40-workbench/01-projects/*/drafts/`. Creates synthesis cards. Two-machine drafting on the same chapter is the most likely real-world collision. | **Borderline.** Install for `hermes -p memoria-writer chat` (interactive drafting Q&A); never use `run draft` on the secondary. |
 | **Librarian** | Network-active — external APIs cost real money. Writes to `10-inbox/` and `20-sources/`. The primary's overnight discovery loop already covers this lane. A secondary Librarian run duplicates work, creates conflicting candidate cards, and double-charges the API budget. | **Don't install.** Use the primary via Telegram or API client when you need Librarian work from the laptop. |
 | **Coder** | Writes to `40-workbench/01-projects/*/code/`; spawns external coding agents (Claude Code, Codex, Aider, etc.) with their own heavy install footprints. Only relevant if the human codes on the secondary. | **Don't install** unless you actively code on the secondary. |
 | **Linter** | Structurally background-only — designed to run scheduled, not interactively. The primary's Linter does the work; the secondary's would either be idle (no cron) or produce duplicate reports (if cron enabled — which it shouldn't be). | **Don't install.** Nothing to do with it on a secondary device. |
 
-#### The discipline list, narrowed
+#### The constraint list, narrowed
 
 With Socratic-only, the constraint list becomes much shorter because most of it is structurally enforced:
 
@@ -100,7 +100,7 @@ If you add Mapper / Writer / Verifier to the install set, the original constrain
 - **Do NOT run `hermes gateway`** on the secondary.
 - **Use only interactive commands** (`chat`, `similarity-check` for Verifier). Never `run draft`, never full `cite-check` passes, never `scope-project` runs that touch project-scratch the primary also writes to.
 
-Each added profile is a discipline obligation the human is choosing to take on. Socratic-only requires no discipline at all.
+Each added profile is an obligation the human is choosing to take on. Socratic-only requires none.
 
 #### Recommended secondary-device workflow
 

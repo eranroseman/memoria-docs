@@ -6,9 +6,7 @@ topic: roadmap
 
 # Timeline and phases
 
-The week-by-week ramp from the [minimum viable system](README.md#minimum-viable-system) to production, plus the six implementation phases that structure the work.
-
-The roadmap is ordered so each phase produces a working, useful slice — you should not need to complete phase 4 before phase 1 is paying off.
+The week-by-week ramp from the [minimum viable system](README.md#minimum-viable-system) to production, plus the six implementation phases that structure the work. As in the [roadmap overview](README.md), the phases are ordered so each produces a working, useful slice.
 
 ## Implementation timeline
 
@@ -28,7 +26,7 @@ Exit: a new note from ingest lands in the right folder with the right frontmatte
 ### Weeks 3–4 — Seed the corpus
 
 - Ingest your **30–50 most important papers**.
-- Classify them all — this builds your corpus profile and validates the vocabulary.
+- Classify them all — this builds your corpus's classification baseline and validates the vocabulary.
 - Write **5–10 claim notes** from the most synthesis-ready literature.
 - Run the weekly ritual twice (even if minimal) to confirm 30-minute target.
 
@@ -38,14 +36,14 @@ Exit: classification feels routine; claim notes have started to form a graph.
 
 - Complete classification on the full initial corpus.
 - Write claim notes consistently — target **2–3 per week**.
-- Run `hermes run find-duplicates` for the first time — establish the merge discipline.
+- Run `hermes run find-duplicates` for the first time — establish the merge routine.
 - Expand schema beyond MVS where you feel the absence (`pub_status`, `full_text_reviewed`, etc.).
 
 Exit: the claim note layer is dense enough that you start linking across papers.
 
 ### Months 3–4 — Activate advanced features
 
-- Create the **first MOC** when a topic crosses 15 claim notes.
+- Create the **first MOC** when a topic crosses the topic-MOC threshold (≥ 15–20 papers + claim notes combined; see [linking-patterns.md](../vault/linking-patterns.md#moc-creation-thresholds)).
 - Activate lag metrics in the weekly dashboard (once `triage_completed` is populated).
 - Begin Canvas sessions for chapter planning.
 - Start systematic `hermes run find` for whatever scoping work you have active.
@@ -56,9 +54,9 @@ Exit: the vault stops being a place you build and starts being a place you write
 ### Month 5+ — Production use
 
 - Migrate to a multi-device setup if the Chromebook becomes a regular working device or batch ingest needs to run overnight — see the [Deployment options](deployment-options.md) matrix.
-- Build child MOCs as topic clusters become dense (`>20` claim notes on a branch).
+- Build child MOCs as topic clusters become dense (a branch with `>20` claim notes and `>10` paper notes; see [linking-patterns.md](../vault/linking-patterns.md#moc-creation-thresholds)).
 - Begin drafting from the reference layer.
-- Promote from mode-based to four-profile (or six-profile) when the bottleneck appears.
+- Promote from mode-based to four-profile (or the full seven) when the bottleneck appears.
 
 The migration path always points the same direction: **start narrow, expand when the corpus demands it.** Avoid adding structure pre-emptively.
 
@@ -66,7 +64,7 @@ The migration path always points the same direction: **start narrow, expand when
 
 ### Phase 1 — Naming and schema (rename + contract)
 
-**Goal.** Establish Memoria as the official name and lock down the schema contract that Hermes and the board will share.
+**Goal.** Establish Memoria as the official name and lock down the [schema contract](../glossary.md#system-and-architecture) that Hermes and the board will share.
 
 **Steps.**
 
@@ -93,7 +91,7 @@ The migration path always points the same direction: **start narrow, expand when
 
 ### Phase 3 — Hermes profiles (seven contracts)
 
-**Goal.** Configure the seven Hermes profiles with their permissions, commands, skills, and MCPs — on the **primary** machine. The full seven only need to live on the primary dispatcher; secondary devices install a narrower set (see [Per-device install sets](#per-device-install-sets) below).
+**Goal.** Configure the seven Hermes profiles with their permissions, commands, skills, and MCPs — on the **primary** machine. The full seven only need to live on the [primary dispatcher](../glossary.md#system-and-architecture); secondary devices install a narrower set (see [Per-device install sets](#per-device-install-sets) below).
 
 **Steps (primary machine).**
 
@@ -105,15 +103,9 @@ The migration path always points the same direction: **start narrow, expand when
 
 #### Per-device install sets
 
-For multi-device deployments (the local-mesh and always-on options — see [Deployment options](deployment-options.md) and [Secondary-device patterns](deployment-options.md#secondary-device-patterns-local-mesh-and-always-on)), not every machine compiles the full seven profiles. The right install set depends on the device's role:
+For multi-device deployments (local-mesh and always-on), not every machine compiles all seven profiles; the right install set depends on the device's role. The **primary** (single workstation under local-only; desktop under local-mesh; VPS under always-on) compiles all seven and owns dispatch — all cron, all queue dispatch, all discovery loops run there. A secondary device installs only what its role can safely run: `memoria-socratic` as the baseline (architecturally write-denied, so safe regardless of human behavior), Mapper / Writer / Verifier added only per justified use case, and never Librarian / Coder / Linter. A developer's secondary install is the one exception — all seven, but only with **mandatory** `HERMES_HOME` isolation pointed at a *test vault*, never the production vault.
 
-| Device | Profiles to compile | Why |
-| --- | --- | --- |
-| **Primary** (single workstation under local-only; desktop under local-mesh; VPS under always-on) | All seven | This is the primary's Hermes dispatcher. All cron, all queue dispatch, all discovery loops run here. |
-| **Secondary, reader role** (laptop under local-mesh; PI's laptop under always-on) | `memoria-socratic` only (baseline); add Mapper / Writer / Verifier only if a specific use case justifies the discipline obligations | Structural enforcement: profiles not installed cannot be invoked. Socratic's lane policy (`policy.allow.write: []`, `routing.invocation: interactive_only`) means it's architecturally safe with zero human discipline. |
-| **Secondary, developer role** (dev laptop under always-on) | All seven, with **mandatory** `HERMES_HOME` isolation and pointed at a *test vault* (not the canonical synced vault) | Two Hermes dispatchers can coexist *only* if they target different vaults. Under C this is mandatory because the VPS is reachable on the same Tailscale as the dev's machine — pointing the dev's Hermes at the production vault while the VPS is dispatching against it is the most likely real-world incident class. The dev iterates against fixtures; the production vault is touched by exactly one Hermes (the VPS's). |
-
-The principle: **install only what the device's role can safely run.** This is the "structural enforcement over behavioral enforcement" pattern — `hermes -p memoria-librarian find` returning "profile not found" on a reader laptop is stronger than the human remembering not to invoke it. See [Secondary-device patterns](deployment-options.md#secondary-device-patterns-local-mesh-and-always-on) for the per-profile risk breakdown.
+The principle: **install only what the device's role can safely run** (structural over behavioral enforcement). The canonical per-device install table — install tiers, per-profile risk, and the developer-isolation rule — lives in [Deployment options → Secondary-device patterns](deployment-options.md#secondary-device-patterns-local-mesh-and-always-on); it is not duplicated here.
 
 **Exit criteria.** Each profile can do its job end-to-end on a small example on the primary. Permission violations fail loudly, not silently. Secondary devices have the right per-role install set; running a profile that wasn't installed returns a clean "profile not found" rather than a silent run.
 
@@ -125,11 +117,11 @@ The principle: **install only what the device's role can safely run.** This is t
 
 1. Stand up the **Hermes built-in Kanban** (see [board/README.md](../board/README.md) for the mandated choice and the alternatives that were considered).
 2. Adopt the Hermes Kanban's fixed `status` enum — `triage`, `todo`, `ready`, `running`, `blocked`, `done`, `archived`. These are not configurable; map Memoria's lifecycle onto them (see [board/states.md](../board/states.md) for the crosswalk).
-3. Define the review overlay in card `metadata`: `review_status`, `agent_verdict`, `review_owner`, `review_requested_at`, `reviewed_at`, `canonical_target`, `supersedes`. (The execution fields — `status`, `assignee`, `reason`, `max_retries` — are Hermes built-ins, not Memoria's to define.)
+3. Define the review overlay in card `metadata`: `review_status`, `agent_verdict`, `review_owner`, `review_requested_at`, `reviewed_at`, `promote_target`, `supersedes`. (The execution fields — `status`, `assignee`, `reason`, `max_retries` — are Hermes built-ins, not Memoria's to define.)
 4. Configure dispatch logic so cards in `triage`, `done` (awaiting review), or `blocked` are not claimable by non-review workers.
 5. Configure retry behavior so recoverable failures reuse the same card (returned to `ready`) within `max_retries`.
 6. Configure the Kanban dispatch rules to advance cards (no Orchestrator profile); configure Verifier and Linter to write `agent_verdict` recommendations the human promotes to `review_status: approved`.
-7. **Stand up a mock REST API for board-layer testing.** A small in-memory or fixture-backed server that implements the same HTTP endpoints as the live Obsidian Local REST API (see [architecture/control-plane.md](../architecture/control-plane.md)) but writes to a scratch directory instead of the live vault. The board's dispatch logic, retry rules, and state transitions are exercised end-to-end against the mock without Obsidian running — this is also what CI runs against. The thin-layers discipline (one job per layer, no business logic in the glue) is what makes the mock cheap to build and maintain.
+7. **Stand up a mock REST API for board-layer testing.** A small in-memory or fixture-backed server that implements the same HTTP endpoints as the live Obsidian Local REST API (see [architecture/control-plane.md](../architecture/control-plane.md)) but writes to a scratch directory instead of the live vault. The board's dispatch logic, retry rules, and state transitions are exercised end-to-end against the mock without Obsidian running — this is also what CI runs against. The thin-layers principle (one job per layer, no business logic in the glue) is what makes the mock cheap to build and maintain.
 
 **Exit criteria.** A card can flow from `ready` through review and back to a worker. Retries reuse the same card. The review gate blocks dispatch. The state machine has a regression test suite that runs without live Obsidian.
 

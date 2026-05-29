@@ -10,7 +10,7 @@ topic: roadmap
 
 For [the always-on option](deployment-options.md) (multiple machines, VPS plus desktop), centralized rotation matters. Hermes ships first-class support for [Bitwarden Secrets Manager](https://hermes-agent.nousresearch.com/docs/user-guide/secrets/bitwarden): one bootstrap token (`BWS_ACCESS_TOKEN`) lives in each machine's `.env`, and every other API key (Anthropic, OpenRouter, Scite, etc.) lives in Bitwarden. At Hermes startup, the `bws` CLI fetches the project's secrets into the process environment. Rotating a key is a single change in the Bitwarden web app; every Hermes process on every machine picks it up on next start.
 
-Set up with `hermes secrets bitwarden setup` — it auto-installs the `bws` binary, prompts for the bootstrap token, and tests the fetch. Same project, same secrets, every machine — the discipline that makes the always-on option viable without per-machine credential drift.
+Set up with `hermes secrets bitwarden setup` — it auto-installs the `bws` binary, prompts for the bootstrap token, and tests the fetch. Same project, same secrets, every machine — the convention that makes the always-on option viable without per-machine credential drift.
 
 Other backends (HashiCorp Vault, AWS Secrets Manager, 1Password CLI) are not built in; Hermes has a plugin point in `agent/secret_sources/` for adding them, but until you have one of them already running, Bitwarden Secrets Manager is the path of least resistance.
 

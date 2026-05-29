@@ -8,9 +8,11 @@ topic: operations
 
 Operational reference for failures that block core workflows. Each entry follows a **Detect / Fix / Verify** triplet: the symptom a human notices, the commands to recover, and the check that confirms the recovery actually worked. This is the authoritative companion to `00-meta/04-reference/safe-mode.md` (the vault-resident human note); use safe-mode for the *first response* and this doc for the *full recovery procedure*.
 
-The structure is borrowed from prior-iteration operational practice — symptoms alone are not enough. A failure recovery isn't complete until the verify step passes.
+A recovery isn't complete until the verify step passes — symptoms alone don't confirm the fix held.
 
-## Critical failures — detect, fix, verify
+## Detailed recovery procedures
+
+Full recipes for the failures most likely to block a core workflow. The [complete catalog](#all-failure-modes) — these plus everything else — is the table further down; the entries here just expand the most important rows.
 
 ### 1. Stale `.bib` — ingest can't find the citekey
 
@@ -39,7 +41,7 @@ hermes -p memoria-librarian run llm-wiki ingest --source {citekey} --dry-run   #
 
 ### 2. Missing `_proposed_classification` — classification can't proceed
 
-**Detect.** Note exists in `20-sources/01-papers/` with `lifecycle: proposed` but no `_proposed_classification` comment block in the file body. The classification query in [weekly-review](../dashboards/weekly-review.md) surfaces the note but it has no classification proposal to review.
+**Detect.** Note exists in `20-sources/01-papers/` with `lifecycle: proposed` but no `_proposed_classification` comment block in the file body. The classification query in [weekly-review](../dashboards/weekly-review.md) returns the note, but it has no classification proposal to review.
 
 **Fix.**
 
@@ -75,7 +77,7 @@ In Obsidian: Properties panel shows no error; note appears in a Dataview query (
 
 ```bash
 qmd search "known term" --vault {vault-path}
-# Returns empty or omits notes you know exist
+# Returns empty or omits notes known to exist
 ```
 
 **Fix.**
@@ -95,7 +97,7 @@ hermes -p memoria-writer run draft "known topic"   # returns vault results with 
 
 ### 5. Profile install drift — deployed `SOUL.md` doesn't match vault source
 
-**Detect.** Linter `profile-install-drift` reports a SHA-256 mismatch between `.memoria/profiles/memoria-<name>/<file>` (vault source) and `~/.hermes/profiles/memoria-<name>/<file>` (deployed copy).
+**Detect.** The memoria-linter's `profile-install-drift` detector reports a SHA-256 mismatch between `.memoria/profiles/memoria-<name>/<file>` (vault source) and `~/.hermes/profiles/memoria-<name>/<file>` (deployed copy).
 
 **Fix.** Either (a) the source changed in the vault and `install.ps1` hasn't been re-run — execute `./install.ps1` to redeploy all seven profiles; or (b) someone hand-edited the deployed copy — `diff` the two files, then either copy the change back into `.memoria/profiles/memoria-<name>/` and commit (promoting the edit) or just re-run `install.ps1` (discarding the edit).
 
@@ -106,17 +108,41 @@ hermes -p memoria-linter run health-report --detectors profile-install-drift
 # No drift reported
 ```
 
+### 6. Stuck card — claimed but not progressing
+
+**Detect.** A card sits in the same `status` on [board-state](../dashboards/board-state.md) without advancing — most often `running` long after it was claimed, or `ready` that never gets dispatched. Because WIP is one `running` card per profile, a card wedged in `running` stalls its whole lane: nothing behind it gets claimed.
+
+```bash
+hermes kanban show <card-id>   # full state: status, retry count, blocker reason, handoff summary
+hermes lane status <lane>      # is the lane's queue backing up behind one card?
+```
+
+**Fix.** Depends on where it's wedged:
+
+- **`running` (worker crashed or hung).** The claim is stale — no `done`, no return to `ready`. The dispatcher reclaims stale claims automatically on its next tick and returns the card to `ready` (recorded as `outcome: reclaimed`) — there is no manual `retry` verb. If it re-wedges at once on the re-dispatch, the tool or prompt is broken rather than transient — treat it as the `blocked` case.
+- **`blocked` (a human decision is owed — e.g. escalated past `max_retries`).** It needs a fix, not a re-run. Address the cause (revise the handoff `metadata`, fix the tool, rewrite the prompt), then `kanban_unblock` → `ready`; re-dispatch resets the retry count. If it can't be made to work, `hermes kanban archive` it with `reason: "infeasible"`. See the [retry pattern](../board/README.md#retry-pattern).
+- **`ready` but never dispatched.** Usually an unresolved `assignee` — the dispatcher emits `skipped_nonspawnable` and leaves the card in `ready`. Check the `assignee` names a real lane (see [worker lanes](../board/states.md#worker-lanes)).
+
+**Verify.**
+
+```bash
+hermes kanban show <card-id>   # status has advanced, or the card is archived with an explicit reason
+```
+
+No card silently sitting: it has either moved off the stuck state or been archived with a `reason`.
+
 ## All failure modes
 
-Sorted by severity (most urgent first), then by topic. The **Severity** column uses the same scale as the Linter's [verdict band](../profiles/linter.md#severity-scale): **CRITICAL** (vault integrity or security at risk) → **HIGH** (silent-failure mode; the system appears to work but doesn't) → **MEDIUM** (maintenance debt; works now, will bite later) → **LOW** (recoverable in one command; usually expected after a routine change).
+Sorted by severity (most urgent first), then by topic. The **Severity** column uses the four bands from the [memoria-linter severity scale](../profiles/linter.md#severity-scale), read as operational urgency: **CRITICAL** (vault integrity or security at risk) → **HIGH** (silent or active breakage — the system may look healthy while losing or degrading data) → **MEDIUM** (real drift; works now, will bite later) → **LOW** (cosmetic, or recoverable in one command).
 
 | Symptom | Severity | Cause | Fix |
 | --- | --- | --- | --- |
-| **Obsidian Linter corrupts frontmatter** | CRITICAL | Linter running on agent-maintained folders | Exclude `10-inbox/`, `20-sources/`, `30-synthesis/02-reference/` in Linter `foldersToIgnore` — see [obsidian-plugins/README.md](../plugins/README.md). |
-| **`_proposed_classification` or `_enrichment` deleted** | CRITICAL | A Linter rule or plugin upgrade introduced an HTML-comment stripper that ran on save | **Never enable any rule that strips HTML comments.** Currently no such rule exists in obsidian-Linter v1.31.2, but the discipline is forward-looking — diff the rule registry before accepting any plugin upgrade. See [obsidian-plugins/README.md](../plugins/README.md). |
+| **Obsidian Linter corrupts frontmatter** | CRITICAL | The Obsidian Linter running on agent-maintained folders | Exclude `10-inbox/`, `20-sources/`, `30-synthesis/02-reference/` in the Obsidian Linter's `foldersToIgnore` — see [plugins/README.md](../plugins/README.md). |
+| **`_proposed_classification` or `_enrichment` deleted** | CRITICAL | An Obsidian Linter rule or plugin upgrade introduced an HTML-comment stripper that ran on save | **Never enable any rule that strips HTML comments.** Currently no such rule exists in Obsidian Linter v1.31.2, but the precaution is forward-looking — diff the rule registry before accepting any plugin upgrade. See [plugins/README.md](../plugins/README.md). |
 | Enrichment block empty after ingest | HIGH | API keys not set in environment (silent — ingest "succeeded" but with degraded data) | `echo $OPENALEX_EMAIL`; check per-profile `.env` |
 | Dataview queries returning nothing | HIGH | `study_design` or `topic` vocabulary inconsistency — query returns empty table that looks like "nothing to do" | Check values in notes match the schema vocabulary exactly (see [frontmatter-schema.md](../vault/frontmatter-schema.md)). |
-| `audit.jsonl` growing without bound | HIGH | Linter log rotation not running (silent until disk fills) | Check [linter.md log rotation section](../profiles/linter.md#log-rotation); the Linter rotates weekly. |
+| `qmd` search index stale — `draft` finds no notes | HIGH | Index not rebuilt after notes changed (silent — search returns nothing, looks like no matches) | See the **Stale `qmd` index** recipe (#4) above. |
+| `audit.jsonl` growing without bound | HIGH | memoria-linter log rotation not running (silent until disk fills) | Check [memoria-linter log rotation](../profiles/linter.md#log-rotation); it rotates weekly. |
 | Obsidian-agent-client can't connect | MEDIUM | ACP server not running or tunnel down | `systemctl --user status hermes-acp` and `hermes-tunnel` |
 | `_proposed_classification` not appearing | MEDIUM | `classify` skill not installed or not in lane's allow list | `hermes skills install classify`; check `.memoria/lane-overrides/library.yaml` |
 | Syncthing + `.bib` race condition | MEDIUM | VPS reads `.bib` while Syncthing is mid-transfer | Use Git pull for `.bib` distribution on the `always-on` option, not Syncthing — see [sync-and-coordination.md](../roadmap/sync-and-coordination.md#bib-watcher-always-on-only). |
@@ -124,18 +150,19 @@ Sorted by severity (most urgent first), then by topic. The **Severity** column u
 | Schema version mismatch in Dataview | MEDIUM | Notes on old schema version | `hermes -p memoria-linter run schema-migrate --dry-run` → review proposed field additions → run without `--dry-run` on a single folder first. |
 | Cron job didn't fire overnight | MEDIUM | Sleep-prone host or stale `.env` | `always-on` option only (VPS); check `journalctl --user -u hermes-overnight` and the [discovery loop section](../roadmap/future-directions.md#the-discovery-loop). |
 | Retry count climbing on same card | MEDIUM | Brittle prompt or broken tool | After `max_retries` (default 3) recoverable failures the card auto-escalates to `blocked` — see [board/README.md retry pattern](../board/README.md#retry-pattern). The human decides whether to revise the payload or archive as infeasible. |
-| Citekey not found at ingest | LOW | `.bib` not updated or not pulled | See failure mode #1 above. |
+| Card not progressing (`running` / `ready` / `blocked`) | MEDIUM | Worker crashed mid-claim, unresolved `assignee`, or a human decision owed on a `blocked` card | See the **Stuck card** recipe (#6) above. |
+| Citekey not found at ingest | LOW | `.bib` not updated or not pulled | See the **Stale `.bib`** recipe (#1) above. |
 | `_enrichment` fields not queryable | LOW | `_enrichment` is a YAML comment block, not real frontmatter (design constraint, not a defect) | Use note modification date (`file.mtime`) as a proxy, or promote specific fields (e.g., `enriched_date`) to main frontmatter. |
 | Pandoc + BBT DOCX corrupt | LOW | Known Pandoc/Better BibTeX issue with some citation styles | Rerun Pandoc; test on a single-citation document first to isolate. |
 | High Scite contrast flag | LOW | Paper is actively disputed (a curation signal, not a system failure) | Open paper in Zotero → check what Scite classifies as contrasting → decide whether to include as primary or supporting evidence only. |
-| Profile install drift after edit | LOW | Vault source changed but `install.ps1` not re-run | See failure mode #5 above. |
-| Bitwarden bootstrap token rejected | LOW | Wrong region or revoked token | Re-run `hermes secrets bitwarden setup` and pick the correct region (US Cloud / EU Cloud / self-hosted) — see [roadmap/README.md secret management](../roadmap/secret-management.md). |
+| Profile install drift after edit | LOW | Vault source changed but `install.ps1` not re-run | See the **Profile install drift** recipe (#5) above. |
+| Bitwarden bootstrap token rejected | LOW | Wrong region or revoked token | Re-run `hermes secrets bitwarden setup` and pick the correct region (US Cloud / EU Cloud / self-hosted) — see [roadmap/secret-management.md](../roadmap/secret-management.md). |
 
 ## When this doc is wrong
 
 If a failure recurs and the Fix here doesn't work, treat that as a design issue. Either the symptom mapping is incomplete (the doc points at the wrong cause) or the fix is brittle (works sometimes but not always). In both cases the right response is to update this doc, not to memorize a workaround — the next human who hits it should find a recipe that actually works.
 
-The discipline: never let a stale fix sit in this doc. If a command changed (e.g., a renamed flag) or a service was replaced (e.g., Bitwarden → 1Password), update or remove the entry the same session you noticed the drift.
+The rule: never let a stale fix sit in this doc. If a command changed (e.g., a renamed flag) or a service was replaced (e.g., Bitwarden → 1Password), update or remove the entry the same session the drift is noticed.
 
 <!-- memoria-nav -->
 

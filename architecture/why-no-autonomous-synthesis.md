@@ -54,7 +54,7 @@ The exemption is narrow by design. It applies only when **all** of the following
 - The success criterion is a verifiable scalar that exists *before* the loop starts. A fixture, a test, a benchmark. Not a metric the agent proposes mid-run; not an LLM-judge score.
 - Outputs land in `40-workbench/01-projects/<project>/code/experiments/<run-id>/` and require human review to promote into the project's working code. **The keep/revert decision is internal to the loop; the promotion decision still routes through the human review state.**
 
-The structural enforcement is unchanged. The policy MCP's canonical-zone deny rule still blocks writes to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, and `50-deliverables/`. The Coder lane's autonomy operates inside zones it has always been permitted to write to; the synthesis gate remains structurally untouched. The exemption is a clarification of where the boundary already was, not a relaxation of where it is.
+The structural enforcement is unchanged. The policy MCP's review-gated-zone deny rule still blocks writes to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, and `50-deliverables/`. The Coder lane's autonomy operates inside zones it has always been permitted to write to; the synthesis gate remains structurally untouched. The exemption is a clarification of where the boundary already was, not a relaxation of where it is.
 
 ## Why not confidence-routed gating
 
@@ -73,13 +73,13 @@ The real insight in the ablation — that gating everything and gating nothing a
 - Scheduled / overnight operations write to `10-inbox/` only. Promotion is always synchronous with human attention.
 - Cost discipline ("$1–3/day API call budget for the nightly loop") matters because there's no scalar payoff to optimize against — discipline has to come from the budget, not from the metric.
 
-The refusal is enforced by infrastructure, not by prompt discipline. The policy MCP's canonical-zone rule degrades every write to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, and `50-deliverables/` to `dry_run` regardless of which profile requests it; the [`socratic-processing`](../profiles/README.md#skills-with-restrictive-policy) skill goes further by denying *any* vault write during the processing-step conversation. Both gates exist at the [policy MCP layer](../architecture/policy-mcp.md) — an agent that "decides" to canonize cannot, because the file-system call returns `deny` before any content reaches disk.
+The refusal is enforced by infrastructure, not by prompt discipline. The policy MCP's review-gated-zone rule degrades every write to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, and `50-deliverables/` to `dry_run` regardless of which profile requests it; the [`socratic-processing`](../profiles/README.md#skills-with-restrictive-policy) skill goes further by denying *any* vault write during the processing-step conversation. Both gates exist at the [policy MCP layer](../architecture/policy-mcp.md) — an agent that "decides" to canonize cannot, because the file-system call returns `deny` before any content reaches disk.
 
 ## Related
 
 - Overnight discovery loop (the autonomy that *is* adopted): [roadmap/future-directions.md](../roadmap/future-directions.md)
 - Review gate mechanics: [board/README.md](../board/README.md)
-- Policy MCP canonical-zone rule: [architecture/policy-mcp.md](../architecture/policy-mcp.md)
+- Policy MCP review-gated-zone rule: [architecture/policy-mcp.md](../architecture/policy-mcp.md)
 - Pattern provenance (the full borrow/adapt/ignore table): [architecture/why-pattern-provenance.md](../architecture/why-pattern-provenance.md)
 
 <!-- memoria-nav -->

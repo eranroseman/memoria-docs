@@ -26,9 +26,9 @@ For each workflow, "owner" means *who has decision authority* — not just who e
 
 ## The two pipelines
 
-Memoria has two distinct pipelines. They share the vault but operate independently — most days you work in one or the other, not both.
+Memoria has two distinct pipelines. They share the vault but operate independently — most days the human works in one or the other, not both.
 
-Both are **conditional paths, not fixed sequences.** A note or project advances only as far as its nature warrants: most sources never become claims, most claims never reach promotion, and stages like `discuss`, `revise`, and `archive` fire only when their precondition holds. The diagrams below show the *canonical* path. A `[bracketed]` stage (currently only `arrange`) is a **skippable intermediate** — one you bypass *mid-path* on an otherwise-complete pipeline, distinct from a stage a note simply never reaches.
+Both are **conditional paths, not fixed sequences.** A note or project advances only as far as its nature warrants: most sources never become claims, most claims never reach promotion, and stages like `discuss`, `revise`, and `archive` fire only when their precondition holds. The diagrams below show the *canonical* path. A `[bracketed]` stage (currently only `arrange`) is a **skippable intermediate** — one bypassed *mid-path* on an otherwise-complete pipeline, distinct from a stage a note simply never reaches.
 
 ### Upstream: source → durable knowledge
 
@@ -52,7 +52,7 @@ find ──► ingest ──► classify ──► discuss ──► distill ─
 
 **Note on stage granularity.** `find`, `ingest`, `classify`, `discuss`, `distill`, `promote`, and `archive` each correspond to a *named workflow* in the [inventory](#workflow-inventory) below (Find → Ingest → Classify → Discuss → Distill → Promote → Archive). `link` and `corroborate` are *maturity transitions* within the life of a claim note — they don't move files between folders, they just change `maturity` from `seedling` to `budding` to `evergreen`. The folder transitions happen at `promote`.
 
-**Why `discuss` is a stage, not just a pattern.** Classified paper notes don't change folders during discussion; they sit in `20-sources/01-papers/` until the human writes a claim from them. Without `discuss` as a stage, the question "which paper notes have I actually thought about?" has no answer the board can surface. With it, `discuss` cards open automatically when classify completes and close when the human writes a claim (or marks the source as not yielding one). If `discuss` cards pile up, discussion discipline is slipping — that signal is the whole point of making it a stage. See [Discuss](upstream/discuss.md) for the human-facing details.
+**Why `discuss` is a stage.** Making discussion board-visible is what answers "which paper notes have I actually thought about?" — a `discuss` card opens when classify completes and closes when the human writes a claim, so a pile-up is the signal that discussion is slipping. Full rationale in [Discuss](upstream/discuss.md#why-the-card-auto-closes-only-on-human-action).
 
 ### Downstream: knowledge → output
 
@@ -75,9 +75,9 @@ assess ──► frame ──► [arrange] ──► outline ──► draft ─
 
 The downstream pipeline is spread across [Write](downstream/write.md) (the umbrella) plus [Assess](downstream/assess.md), [Frame](downstream/frame.md), [Verify](downstream/verify.md), and [Revise](downstream/revise.md) for the new stages.
 
-**Why assess and frame are stages.** Without them, the human goes from "I want to write X" straight to outlining, with no formal step that asks "do I have what I need?" or "what argument am I making?" Both judgments happen anyway — but as private deliberation, not as board-visible work. Promoting them to stages means a project card has to pass through assess (with a corpus map) and frame (with at least one committed framing) before drafting begins. The discipline isn't enforceable architecturally, but the board signal — "this project is sitting in assess for two weeks" — is the same diagnostic the upstream pipeline uses for processing debt.
+**Why assess and frame are stages.** Both judgments — "do I have what I need?" and "what argument am I making?" — happen anyway; making them stages turns them from private deliberation into board-visible work, so a card stalled in `assess` for two weeks is the same processing-debt diagnostic the upstream pipeline uses. Full rationale in [Assess](downstream/assess.md#why-not-skip-straight-to-drafting) and [Frame](downstream/frame.md#why-this-is-a-stage-and-not-a-pattern-inside-write).
 
-**Why verify and revise are stages.** `cite-check` was always part of the export step but invisible — humans ran it (or didn't), and the result was an inline report or a forgotten subroutine. Promoting verify to its own stage gives the gap-loop a board state: failed traces spawn upstream gap cards (closing the loop into discovery), and the human either revises or accepts soft claims through an explicit `revise → re-verify` cycle. Without these stages, "I exported a draft with broken cites" is a real failure mode.
+**Why verify and revise are stages.** Promoting `cite-check` and the gap-loop to stages surfaces broken cites weeks before export instead of the day before — failed traces spawn upstream gap cards, and export is blocked until the `revise → re-verify` loop closes. Full rationale in [Verify](downstream/verify.md#why-verify-is-a-stage-instead-of-part-of-export) and [Revise](downstream/revise.md#why-revise-is-a-stage-instead-of-just-keep-editing).
 
 **Arrange remains optional.** Arranging claims spatially on a Canvas is a useful step for chapter-sized work (8–15 claim notes). It bridges frame (which framing wins) and outline (linearize). For shorter pieces, framing leads directly into outline without it. See the [Canvas → Draft sub-workflow in Write](downstream/write.md#canvas--draft-sub-workflow).
 
@@ -116,11 +116,11 @@ The matrix is split by pipeline. Upstream stages are human-pace and per-source; 
 
 | Role | Find | Ingest | Classify | Discuss | Distill | Promote |
 | --- | --- | --- | --- | --- | --- | --- |
-| **Human** | Sets corpus boundary | Resolves ambiguity | **Primary** | Owns the thinking | Authors the claim | **Primary** |
-| Librarian | **Primary** | **Primary** | Provides metadata | Read-only | Seed inputs only | Carry evidence forward |
+| **Human** | Sets corpus boundary | Resolves ambiguity | **Lead** | Owns the thinking | Authors the claim | **Lead** |
+| Librarian | **Lead** | **Lead** | Provides metadata | Read-only | Seed inputs only | Carry evidence forward |
 | Mapper | Read-only | Read-only | Read-only | Comparative-brief on new sources | Read-only | Read-only |
-| Socratic | No claim | No claim | No claim | **Primary** (human invokes; write-denied) | No claim | No claim |
-| Writer | Reads context | Reads context | Reads context | No claim (human switches profiles) | **Primary** | Revise after review |
+| Socratic | No claim | No claim | No claim | **Lead** (human invokes; write-denied) | No claim | No claim |
+| Writer | Reads context | Reads context | Reads context | No claim (human switches profiles) | **Lead** | Revise after review |
 | Verifier | No claim | No claim | No claim | No claim | Filing-time similarity-check | Read-only |
 | Linter | Structure check | Schema check | Dry-run validation | Surfaces stale discuss queue | Catch broken links | Gate before canon |
 
@@ -128,16 +128,16 @@ The matrix is split by pipeline. Upstream stages are human-pace and per-source; 
 
 | Role | Assess | Frame | Outline | Draft | Verify | Revise | Export |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Human** | Decides readiness | Chooses the framing | Writes the outline | Writes the prose | Reviews findings | **Primary** | Decides to ship |
+| **Human** | Decides readiness | Chooses the framing | Writes the outline | Writes the prose | Reviews findings | **Lead** | Decides to ship |
 | Librarian | Source context | Read-only | Read-only | Read-only | Picks up gap cards | Read-only | Read-only |
-| Mapper | **Primary** (via `scope-project`) | Read-only | Read-only | Read-only | Read-only | Read-only | Read-only |
+| Mapper | **Lead** (via `scope-project`) | Read-only | Read-only | Read-only | Read-only | Read-only | Read-only |
 | Socratic | No claim | Optional (human switches profiles) | No claim | No claim | No claim | No claim | No claim |
-| Writer | Reads corpus map | **Primary** (via `counter-outline`, scratch-only) | **Primary** | **Primary** | Read-only (Verifier executes `cite-check`) | Revises (human-led) | Read-only |
-| Verifier | Read-only | Read-only | Read-only | Read-only | **Primary** (cite-check, claim-trace) | Tracks open findings | Confirms verify-clean |
-| Coder | No claim | No claim | No claim | No claim | No claim | No claim | **Primary** (runs Pandoc) |
+| Writer | Reads corpus map | **Lead** (via `counter-outline`, scratch-only) | **Lead** | **Lead** | Read-only (Verifier executes `cite-check`) | Revises (human-led) | Read-only |
+| Verifier | Read-only | Read-only | Read-only | Read-only | **Lead** (cite-check, claim-trace) | Tracks open findings | Confirms verify-clean |
+| Coder | No claim | No claim | No claim | No claim | No claim | No claim | **Lead** (runs Pandoc) |
 | Linter | Validates corpus-map shape | Validates framing folder | Catch broken links | Catch broken links | Catch lingering findings | Catch unrevised flags | Validates export readiness |
 
-**Reading the matrix.** **Primary** marks the single role that leads each stage — for Discuss, that's **Socratic** in the run-the-questioning sense, though the human owns the thinking itself. The **Human** row is the person running the system: Primary for the stages no agent leads — Classify, Promote, and Revise — and elsewhere it names the judgment they keep while an agent runs the mechanics. The **Coder** appears downstream only (its work — running the Export pipeline — has no upstream counterpart).
+**Reading the matrix.** **Lead** marks the single role that *executes* each stage — for Discuss, that's **Socratic** in the run-the-questioning sense, though the human owns the thinking itself. (This is deliberately distinct from the **Primary owner** column in the pipeline stage tables above, which names *decision authority* — for Discuss, the **Human**. A stage can have an agent Lead and a human owner.) The **Human** row is the person running the system: Lead for the stages no agent executes — Classify, Promote, and Revise — and elsewhere it names the judgment they keep while an agent runs the mechanics. The **Coder** appears downstream only (its work — running the Export pipeline — has no upstream counterpart).
 
 Rule (both pipelines): **finding and filing** are Librarian work; **mapping the corpus** is Mapper work; **questioning without producing** is Socratic work; **durable writing and prose** are Writer work; **verifying claims trace** is Verifier work; **running the export pipeline** is Coder work; **structural safety and audit-trail housekeeping** are Linter work. The human owns the judgments — what counts as ready, which framing wins, whether a gap matters — that none of these profiles is allowed to make.
 
@@ -220,7 +220,7 @@ Most commands are palette-only — `Cmd-P → M → <2–3 letters>` is the prim
 ### What this section is not
 
 - **Not a plugin spec.** The TypeScript implementation and HTTP endpoint schemas live outside the design — there is no custom Memoria HTTP code. Command dispatch goes through Hermes's built-in API (`hermes gateway`), and vault read/write goes through the `obsidian-local-rest-api` community plugin. See [architecture/control-plane.md](../architecture/control-plane.md) for the layer architecture and the Hermes MCP reference for the wire formats.
-- **Not the only trigger surface.** Cron jobs, the discovery loop (see [roadmap/future-directions.md](../roadmap/future-directions.md#the-discovery-loop)), and Hermes-side `delegate_task` all also fire workflow steps. The Command Palette is the *human-facing* surface; the others are scheduled or agent-driven.
+- **Not the only trigger.** Cron jobs, the discovery loop (see [roadmap/future-directions.md](../roadmap/future-directions.md#the-discovery-loop)), and Hermes-side `delegate_task` all also fire workflow steps. The Command Palette is the *human-facing* channel; the others are scheduled or agent-driven.
 
 ## Research directions (steering input)
 
@@ -278,14 +278,30 @@ These rules apply across all workflows:
 
 ## Default operating model
 
-A practical baseline cadence:
+Memoria runs on rhythms layered by frequency. The skeleton cadence: **daily** capture and inbox skim; **twice a week** classify partial paper notes and run discovery; **weekly** the [ritual](maintenance/lint.md#weekly-ritual); **per-project** draft from `30-synthesis/01-claims/`, arrange in Canvas, and export via Pandoc. What that feels like hour-to-hour:
 
-- **Daily.** Ingest new captures from Zotero. Skim `10-inbox` for answer drafts and discovery candidates.
-- **Twice a week.** Classify partial paper notes. Run discovery on a few recent papers.
-- **Weekly.** Run the [weekly ritual](maintenance/lint.md#weekly-ritual). Clear unreviewed synthesis. Promote evergreen claim notes.
-- **Per-project.** Draft from `30-synthesis/01-claims/`, arrange in Canvas, write in `40-workbench/01-projects/*/drafts/`, export via Pandoc.
+**Pre-morning, on phone over coffee (optional).** If overnight cron produced anything worth pushing — a retry threshold hit, a drift alarm, a substantive ingest summary — Telegram pushed a notification before the human opened the vault. Example: *"Overnight: 3 sources ingested, 12 link suggestions ready, 1 retry threshold hit on card-2026-05-26-042 (Librarian timeout fetching DOI for Tanaka 2024)."* The human glances, notes anything blocking, deals with it at the desk. If nothing pushed, nothing demands attention before opening the vault — that's the design.
 
-The board surfaces what's stalled; the dashboards surface what's overdue.
+**Morning glance (5–10 minutes).** Open the vault. The Human workspace appears by default (`Cmd-1`). Glance at [Daily Health](../dashboards/README.md): is any section red? Today's queue, drift signals, lane health, cron status. Most days nothing is red, and Daily Health closes again. If link suggestions accumulated overnight from Librarian's enrichment work, bulk-approve the ones that look right via `Memoria: approve all link suggestions` (see [command-palette.md](../surfaces/command-palette.md#maintenance-3-commands)). For retries flagged in the Telegram push, drop to CLI: `hermes kanban show <card-id>` to inspect, fix the underlying issue, `hermes kanban unblock <card-id>` to release it back to `ready` (re-dispatch resets the retry count). Total time: under ten minutes unless something demands attention.
+
+**Reading session (1–2 hours, when scheduled).** Switch to the Reading & Processing workspace (`Cmd-2`). Open [`discuss-queue.md`](../dashboards/discuss-queue.md): which paper note is ripest for processing? Read the source with the `[!brief]` callout in mind. When ready to process, ask Socratic about the active note (`Cmd-P → Memoria: ask about this note`) — the ACP pane opens on the right with the Socratic profile, which is architecturally write-denied. The conversation runs; the human writes the claim note themselves in `30-synthesis/01-claims/` (in their own words, in the left pane) as the conversation progresses. Save. The git hook fires; Librarian's enrichment runs overnight; the link suggestions appear in tomorrow's morning glance.
+
+**Walking (whenever a thought hits).** Telegram: `/fleeting <thought>` drops the text into `10-inbox/01-fleeting/` with a timestamp. The thought is captured; the human doesn't have to remember it through to the next desk session. It surfaces in tomorrow's [`discuss-queue.md`](../dashboards/discuss-queue.md) (or the weekly fleeting-triage step) for action. Source-URL capture works the same way: paste the link, get a confirmation, the actual ingest happens overnight.
+
+**Writing session (project work).** Switch to the Drafting workspace (`Cmd-3`). Open the draft. The `[!verification]` callout at the top shows Verifier's last claim-trace report. Write. The Writer ACP pane is available on the right if local critique is wanted, but it's optional — most drafting happens in the human's head, with the pane silent. On significant edits, save and `git commit`. Verifier picks up the draft automatically ([Verify](downstream/verify.md)). Gap cards from Verifier appear in tomorrow's morning queue. If the gap loop suggests more reading before the draft can stabilize, switch back to a reading session.
+
+**Friday ritual (90 minutes).** The [weekly ritual](maintenance/lint.md#weekly-ritual). Top to bottom in `weekly-review.md`.
+
+**Evening (passive).** If the Linter's weekly drift sweep ran on schedule, Telegram pushes a short confirmation: *"Drift report for the week is ready."* If verdict is `PASS` (green), the human glances and ignores. If `REVIEW` or `FAIL`, the message is the signal to open [`drift-watch.md`](../dashboards/drift-watch.md) next desk session. The push exists so the human knows the sweep happened — silence would be indistinguishable from a missed cron run.
+
+**What the human does NOT do:**
+
+- Manage agent state by hand. The Kanban dispatches; the human approves or redirects via card transitions.
+- Re-decide policy questions. The lane-overrides and the policy MCP encode them once.
+- Hunt for files. Folders encode lifecycle; search finds the rest.
+- Switch between mental models for "what tool am I using." One vault, one keyboard, one set of Memoria commands.
+
+If after three months of use the human's mouse hand barely moves and they've stopped consciously tracking which workspace they're in, the rhythm is right. The board surfaces what's stalled; the dashboards surface what's overdue.
 
 ## Anti-patterns
 

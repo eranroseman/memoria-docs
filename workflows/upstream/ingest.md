@@ -43,7 +43,7 @@ Before any write, Hermes identifies the input type and routes to the correct pip
 
 | Detected type | Metadata source | Content extraction | Cross-link checks |
 | --- | --- | --- | --- |
-| Article / preprint | OpenAlex + Semantic Scholar + PubMed; PDF via Marker | Marker extracts full text to `90-assets/extracts/<citekey>.md`; summary in paper-note body; PDF stays in Zotero. | Authors → person-notes; cited works → existing literature citekeys |
+| Article / preprint | OpenAlex + Semantic Scholar + PubMed; PDF via Marker | Marker extracts full text to `90-assets/extracts/<citekey>.md`; summary in paper-note body. | Authors → person-notes; cited works → existing literature citekeys |
 | Repository | GitHub API (REST or GraphQL) | `README.md` + `CHANGELOG.md` retrieved directly; summary into `What it is` | Primary maintainer → person-note; org owner → organization-note |
 | Package | PyPI / npm / CRAN API | Package description + project links | Maintainer → person-note; underlying repo → repo item-note |
 | Product | Vendor URL via `rest-passthrough` or MarkItDown fallback | Homepage text → summary | Vendor org → organization-note (if applicable) |

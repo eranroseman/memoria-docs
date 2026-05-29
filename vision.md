@@ -34,7 +34,7 @@ The slip-box method enforces three disciplines that prevent a wiki from becoming
 
 1. **Atomicity** — each note captures one idea, not a topic dump.
 2. **Explicit linking** — notes earn their place by connecting to existing notes.
-3. **Type distinction** — Luhmann distinguished *fleeting notes* (raw capture), *literature notes* (what a source says), and *permanent notes* (your own durable claim). Each serves a different function and has a different lifespan. Memoria preserves this three-way distinction but renames the corresponding types (`paper-note`, `claim-note`) for clarity in a software context — see [vault/README.md](vault/README.md).
+3. **Type distinction** — Luhmann distinguished *fleeting notes* (raw capture), *literature notes* (what a source says), and *permanent notes* (the human's own durable claim). Each serves a different function and has a different lifespan. Memoria preserves this three-way distinction but renames the corresponding types (`paper-note`, `claim-note`) for clarity in a software context — see [vault/README.md](vault/README.md).
 
 Zettelkasten's weakness in modern workflows is that it is entirely human-maintained — the linking discipline breaks down under load. Memoria delegates the linking and filing work to the agent.
 
@@ -44,7 +44,7 @@ Bush's 1945 vision: a personal interconnected knowledge machine where *associati
 
 ### Contemporary AI-research systems
 
-A survey of 37 contemporary agent-driven research systems and benchmarks — end-to-end autonomous research (AI Scientist v1/v2, AI-Researcher, AiScientist long-horizon, Agent Laboratory, CORAL, PARNESS, AI-Supervisor), multi-agent platforms (AI co-scientist, MetaGPT, AutoGen, OpenHands), retrieval and citation benchmarks (LitSearch, CiteME, PaperQA, ResearchArena), hypothesis generation (MOOSE, SciMON, ResearchAgent, POPPER), domain-adapted models (SciLitLLM, Galactica), Deep Research agents (the OpenAI / Gemini / Perplexity DR family), and the surveys that organize the field (Chen 2026, Huang 2025, Xu & Peng 2025, Gridach 2025, Ren 2025). The full borrow / adapt / ignore breakdown lives in [architecture/why-pattern-provenance.md](architecture/why-pattern-provenance.md); this section names the patterns Memoria takes from the corpus.
+A survey of 37 contemporary agent-driven research systems and benchmarks — spanning end-to-end autonomous research, multi-agent platforms, retrieval and citation benchmarks, hypothesis generation, domain-adapted models, Deep Research agents, and the surveys that organize the field (Chen 2026, Huang 2025, Xu & Peng 2025, Gridach 2025, Ren 2025) — grounds the design. The full roster and the borrow / adapt / ignore breakdown live in [architecture/why-pattern-provenance.md](architecture/why-pattern-provenance.md); this section names only the patterns Memoria takes from the corpus.
 
 **Adopted patterns:**
 

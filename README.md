@@ -12,6 +12,8 @@ This folder is the authoritative design document set. It is organized **by topic
 
 [diataxis]: https://diataxis.fr/
 
+**Three complementary ways in:** read **by topic, in order** (below) if you're new; jump **by mode** if you want a particular *kind* of doc; or scan **the map** for where a given topic lives. They're lenses on the same set, not competing tables of contents.
+
 ## Reading by topic — if you're new, read these in order
 
 Each topic folder has a `README.md` with the conceptual overview. The reading order builds the system from the inside out: what it is, then how it's structured, then how it operates.
@@ -49,7 +51,7 @@ The Diátaxis modes ([explanation, reference, how-to, tutorial][diataxis]) descr
 | [dashboards/](dashboards/) | `README.md` (Daily Health) + 10 further per-dashboard design summaries — 11 dashboards total. Runtime Dataview queries live at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault). |
 | [operations/](operations/) | `README.md` + [failure-modes.md](operations/failure-modes.md) (Detect / Fix / Verify recipes). |
 | [plugins/](plugins/) | `README.md` (priority-ordered overview) + per-plugin configuration split by lifecycle into `required/` (8), `recommended/` (5), `optional/` (6, includes deployment-conditional and future-migration), plus top-level `plugin-configs-lifecycle.md` and `ui-discipline.md` (Obsidian UI conventions). |
-| [decisions/](decisions/) | 21 architecture decision records (ADRs) — 18 with their own file, 3 (ADR-1, 8, 11) index-only — + `_template.md` + `by-topic.md` (secondary index grouping ADRs by topic folder). Cross-cuts all topics, so it sits at the top level. |
+| [decisions/](decisions/) | 22 architecture decision records (ADRs) — 19 with their own file, 3 (ADR-1, 8, 11) index-only — + `_template.md` + `by-topic.md` (secondary index grouping ADRs by topic folder) + `adopt-on-demand-for-reviews.md` (shared rationale for the four deferred systematic-review ADRs 12 / 18 / 19 / 20). Cross-cuts all topics, so it sits at the top level. |
 | [roadmap/](roadmap/) | `README.md` (phased plan) + per-section detail (`timeline`, `deployment-options`, `autonomy-progression`, `success-metrics`, `design-tensions`, `future-directions`, `profile-compilation` (deferred), etc.) + `pilots/`. |
 | *(cross-cutting reference is distributed)* | Each cross-cutting reference doc lives next to what it explains: [surfaces/command-palette.md](surfaces/command-palette.md), [architecture/policy-mcp.md](architecture/policy-mcp.md), [architecture/computational-toolbox.md](architecture/computational-toolbox.md), [roadmap/profile-compilation.md](roadmap/profile-compilation.md) (**deferred**), [board/card-schema.md](board/card-schema.md), [vault/frontmatter-schema.md](vault/frontmatter-schema.md), [vault/linking-patterns.md](vault/linking-patterns.md), [profiles/profile-commands.md](profiles/profile-commands.md). |
 | [tutorials/](tutorials/) | Step-by-step walkthroughs. Currently: [`01-set-up-from-zero.md`](tutorials/01-set-up-from-zero.md). |
@@ -75,7 +77,7 @@ Mode is what kind of writing this is. Audience is who it's for. Topic mirrors th
 
 ## Glossary
 
-If you hit an unfamiliar term mid-document — *handoff payload, lane-override file, verdict band, trust score, hybrid pattern, method class, restrictive skill, …* — look it up in [glossary.md](glossary.md). About 40 terms grouped by domain (system, board, policy MCP, deployment, computational methods, pipeline stages, note types, future-direction terms). The most-linked-from terms also have inline glossary references at their first-mention site in the topic READMEs.
+Unfamiliar term mid-document — *handoff payload, verdict band, trust score, method class, …*? It's in [glossary.md](glossary.md), with a [Disambiguations](glossary.md#disambiguations) section for the words used in more than one sense. The most-linked terms also carry inline references at their first-mention site in the topic READMEs.
 
 <!-- memoria-nav -->
 

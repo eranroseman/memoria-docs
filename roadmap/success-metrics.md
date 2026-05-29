@@ -22,4 +22,4 @@ These are not contract metrics; they are diagnostic. If reuse rate is high, the 
 
 [← Previous: Autonomy progression](autonomy-progression.md)
 
-[Next: Profile compilation: memoria-base and per-profile overrides →](profile-compilation.md)
+[Next: Evaluation and benchmark-informed design →](evaluation.md)

@@ -35,7 +35,6 @@ Per-action logs were considered for debugging precision but rejected because the
 ## Related
 
 - **Files affected:** [roadmap/deployment-options.md](../roadmap/deployment-options.md), [architecture/README.md](../architecture/README.md)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

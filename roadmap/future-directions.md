@@ -8,8 +8,8 @@ topic: roadmap
 
 Things to consider once the core system is running and stable. The doc has two tiers:
 
-- **Substantive proposals** (30 sections) — each carries a *when to implement* trigger, explicit prerequisites, pros / cons, and a *what this is not* boundary. Deferral has a clear off-ramp when conditions are met.
-- **Backlog sketches** (6 brief items at the end) — ideas with enough shape to remember but not enough design to ship. See [§"Backlog — sketched ideas"](#backlog--sketched-ideas).
+- **Substantive proposals** (32 sections) — each carries a *when to implement* trigger, explicit prerequisites, pros / cons, and a *what this is not* boundary. Deferral has a clear off-ramp when conditions are met.
+- **Backlog sketches** (5 brief items at the end) — ideas with enough shape to remember but not enough design to ship. See [§"Backlog — sketched ideas"](#backlog--sketched-ideas).
 
 ## What's in this document
 
@@ -49,6 +49,7 @@ These are the candidate displacements from [why-computational-methods.md §"Cand
 
 **Pre-filtering and triage**
 
+- [Semi-autonomous triage](#semi-autonomous-triage) — confidence-split classification queue; batch-approve high-confidence promotions.
 - [Agent-consensus pre-filter](#agent-consensus-pre-filter) — second-profile pass to route consensus vs. disagreement.
 - [Tournament ranking for triage](#tournament-ranking-for-triage) — pairwise comparison for high-volume candidate lists.
 
@@ -147,7 +148,7 @@ The expansion-threshold rule for *skills* — formal lifecycle states (`intake �
 
 **When to implement.** When at least two of these are true: (a) more than ~15 active skills across the seven profiles; (b) ≥ 2 passthrough-to-dedicated graduations per quarter; (c) recurring confusion about which skills are active in which lane, or whether a specific skill is in review vs. active.
 
-**Prerequisites.** None beyond the runtime mechanism that already exists. The full design (state machine, registry format, onboarding checklist, graduation thresholds) is preserved in [skill-governance.md](skill-governance.md); the dashboard design summary lives in [dashboards/skill-lifecycle.md](../dashboards/skill-lifecycle.md). Standing up the discipline is mostly authoring the per-skill notes in `00-meta/07-skills/`, enabling the dashboard, and following the onboarding checklist for new skills from that point forward.
+**Prerequisites.** None beyond the runtime mechanism that already exists. The full design (state machine, registry format, onboarding checklist, graduation thresholds) is preserved in [skill-governance.md](skill-governance.md); the dashboard design summary lives in [dashboards/skill-lifecycle.md](../dashboards/skill-lifecycle.md). Standing it up is mostly authoring the per-skill notes in `00-meta/07-skills/`, enabling the dashboard, and following the onboarding checklist for new skills from that point forward.
 
 **What this is not.** Not a runtime gate — `policy.allow.skills` remains the runtime mechanism whether or not the governance overlay is active. Not a substitute for `SKILL.md` frontmatter — the authoritative per-skill metadata still lives there. The governance overlay is a *bookkeeping* layer on top of the runtime mechanism, valuable only when the runtime mechanism alone stops giving the human enough situational awareness.
 
@@ -171,7 +172,7 @@ A bounded LLM-judge gate would close that gap: at export time only, a `prose-che
 
 **When to implement.** When a deliverable has been re-exported more than twice because of issues a model could have caught on the first read.
 
-**Prerequisites.** A small, stable rubric (drift-prone if open-ended), a Writer-lane skill that returns structured output, and the discipline of reading the report before accepting the export.
+**Prerequisites.** A small, stable rubric (drift-prone if open-ended), a Writer-lane skill that returns structured output, and the habit of reading the report before accepting the export.
 
 **What this is not.** Not editorial control. The model proposes; the human disposes. If the model's report becomes the authority, the gate has failed its design intent.
 
@@ -201,7 +202,7 @@ The pattern, borrowed from [tlehman/litprog-skill](https://github.com/tlehman/li
 
 ## Memoria Inspector Obsidian plugin
 
-The five existing surfaces (Obsidian dashboards, command palette, CLI, Telegram, API server — see [architecture/README.md](../architecture/README.md#human-surfaces)) cover daily workflow well but leave a small gap: a *browse-the-Hermes-state* admin surface. CLI is precise but not discoverable; dashboards aggregate rather than drill down per session. The temptation is to adopt a community web UI (e.g., the `hermes-workspace` hackathon project); the architectural problem is that any peer system competes for the same modes the existing surfaces already cover, ships a chat tab that bypasses the policy MCP, and locks Memoria into someone else's maintenance schedule.
+The five existing channels (Obsidian dashboards, command palette, CLI, Telegram, API server — see [architecture/README.md](../architecture/README.md#human-channels)) cover daily workflow well but leave a small gap: a *browse-the-Hermes-state* admin channel. CLI is precise but not discoverable; dashboards aggregate rather than drill down per session. The temptation is to adopt a community web UI (e.g., the `hermes-workspace` hackathon project); the architectural problem is that any peer system competes for the same modes the existing channels already cover, ships a chat tab that bypasses the policy MCP, and locks Memoria into someone else's maintenance schedule.
 
 The pattern: build a small Obsidian plugin (~500–1500 lines of TypeScript) exposing read-only Hermes admin views as a sidebar pane — Sessions, Audit, Skills, Memory, all tabs. Connects to the API server on `127.0.0.1:8642`. No chat (that surface belongs to ACP); no editing (skills and memory are write-through the compilation pipeline, not the inspector). The plugin extends Obsidian-as-interface rather than introducing a peer.
 
@@ -252,10 +253,10 @@ The pattern: a Hermes cron skill (`hermes run admin-report`) that renders static
 **Deferred — documented but not first-cut work**:
 
 - **`render` card type.** Adding `render` as a first-class card type on the Coder or a new Render lane. Lifecycle: `triage` → `ready` → `running` (open-design generates) → `done` with `review_status: requested` (human inspects) → `approved` → `archived`. The render-agent pattern works without this (the human can invoke open-design directly via the existing Coder pattern); promoting to its own card type makes sense when render volume justifies queue dispatch.
-- **Hermes ↔ open-design MCP composition.** Open-design exposes MCP tools (`search_files`, `get_file`, `get_artifact`). Memoria's Writer could call these tools as remote skills during drafting (e.g., embed a previously-rendered figure). Same composition discipline as the existing policy-MCP + rest-passthrough layering. Defer until there's a recurring "I want to reuse an existing artifact mid-draft" pain point.
+- **Hermes ↔ open-design MCP composition.** Open-design exposes MCP tools (`search_files`, `get_file`, `get_artifact`). Memoria's Writer could call these tools as remote skills during drafting (e.g., embed a previously-rendered figure). Same composition pattern as the existing policy-MCP + rest-passthrough layering. Defer until there's a recurring "I want to reuse an existing artifact mid-draft" pain point.
 - **Canvas → designed artifact pipeline.** A Memoria `canvas` note (Obsidian Canvas, spatial argument mapping) can be exported through open-design as a polished figure — methodology diagram for a paper, conceptual map for a grant proposal, mechanism schematic for a thesis. Useful but niche; revisit when the human has more than ~3 canvases per project and is recreating figures manually.
 
-**Cons.** Adds a daemon (Express + SQLite + Next.js) and another agent stack to maintain. Cost overlay if image-generation models are used. Boundary discipline against Pandoc must be enforced (Pandoc for body-text exports, open-design for visual artifacts — don't double-implement). AI-generated visuals must be gated for research outputs; default disabled in Memoria's profile.
+**Cons.** Adds a daemon (Express + SQLite + Next.js) and another agent stack to maintain. Cost overlay if image-generation models are used. The boundary against Pandoc must be enforced (Pandoc for body-text exports, open-design for visual artifacts — don't double-implement). AI-generated visuals must be gated for research outputs; default disabled in Memoria's profile.
 
 **When to implement.** When the human hits a specific high-effort rendering task — a conference poster, a defense-talk deck, a project landing page — and recognizes they'd be hand-templating it without rendering help. Pre-emptively standing up open-design before that pain point is premature.
 
@@ -267,7 +268,7 @@ The pattern: a Hermes cron skill (`hermes run admin-report`) that renders static
 
 Today's [Verifier profile](../profiles/verifier.md) traces draft claims to claim notes by prompt, with no numeric quality signal. A prompt regression — a model change, a context-length cut, a subtle template edit — degrades attribution accuracy silently until the human notices wrong citations downstream. The Verifier is the gate that protects canonical synthesis from false attribution; running it without a regression harness is the kind of "agent does bookkeeping, but the bookkeeping is unmeasured" risk the design otherwise refuses elsewhere.
 
-The pattern, adapted from Press et al. 2024 (*CiteME: Can Language Models Accurately Cite Scientific Claims?*): construct ~50 (excerpt → target-claim-note) pairs from approved drafts in the human's vault, where each excerpt is a passage from a `40-workbench/01-projects/*/drafts/` note and the target is the specific `30-synthesis/02-claims/` claim note the excerpt is meant to cite. Score the Verifier nightly on the fixture; record accuracy in the [skill-lifecycle dashboard](../dashboards/skill-lifecycle.md). The harness is the Verifier's *acceptance criterion* — a Verifier prompt change ships only when fixture accuracy is at or above the running 90th-percentile baseline.
+The pattern, adapted from Press et al. 2024 (*CiteME: Can Language Models Accurately Cite Scientific Claims?*): construct ~50 (excerpt → target-claim-note) pairs from approved drafts in the human's vault, where each excerpt is a passage from a `40-workbench/01-projects/*/drafts/` note and the target is the specific `30-synthesis/01-claims/` claim note the excerpt is meant to cite. Score the Verifier nightly on the fixture; record accuracy in the [skill-lifecycle dashboard](../dashboards/skill-lifecycle.md). The harness is the Verifier's *acceptance criterion* — a Verifier prompt change ships only when fixture accuracy is at or above the running 90th-percentile baseline.
 
 The CiteME paper itself shows frontier LMs scoring 4–18% on the public benchmark and a tooled CiteAgent reaching 35%. Memoria's task is structurally easier (candidate space is bounded by one vault), so the baseline should land much higher — but the *shape* of the test (excerpt → cited artifact) and the *failure mode it protects against* (confident wrong attribution) transfer directly.
 
@@ -455,7 +456,7 @@ The three fields are **optional**. Existing paper notes are not retrofitted. New
 
 **When to implement.** When the human has felt the absence of structured-aspect retrieval — found themselves wanting to query "papers whose method is X" or "papers whose outcome contradicts Y" and resorted to free-text grep across summaries. Below that signal, the existing `topic:` field plus the free-text summary suffices and three new fields are overhead.
 
-**Prerequisites.** Paper-note template updated with optional `_aspects.key_idea:`, `_aspects.method:`, `_aspects.outcome:` fields. Librarian profile prompt updated to extract these three at ingest with **explicit "leave blank if the paper doesn't fit"** instruction (not "stretch the field" — this is the discipline that prevents `projected_impact`-style noise). A Linter check that flags `_aspects.*` values outside expected shapes (extreme length, prose vs. phrase). At least one dashboard or query that *uses* the fields (e.g., "outcome contradicts another paper in the corpus") — without a consumer, the fields accumulate unused.
+**Prerequisites.** Paper-note template updated with optional `_aspects.key_idea:`, `_aspects.method:`, `_aspects.outcome:` fields. Librarian profile prompt updated to extract these three at ingest with **explicit "leave blank if the paper doesn't fit"** instruction (not "stretch the field" — this is the rule that prevents `projected_impact`-style noise). A Linter check that flags `_aspects.*` values outside expected shapes (extreme length, prose vs. phrase). At least one dashboard or query that *uses* the fields (e.g., "outcome contradicts another paper in the corpus") — without a consumer, the fields accumulate unused.
 
 **What this is not.** Not a replacement for the free-text summary — the body summary stays authoritative; aspects are structured slots, not a substitute. Not the full MASSW taxonomy — Memoria adopts three of five; expansion to `context` and `projected_impact` is a separate decision when usage justifies, and `projected_impact` is the field most likely to never warrant adoption. Not retroactive — existing paper notes stay as-is; only new notes gain the structure. Not agent-inferred for old notes — backfilling aspects from a free-text summary via LLM would re-introduce the kind of agent-judgment-on-canonical surface that Memoria's autonomy boundary refuses.
 
@@ -465,11 +466,11 @@ Memoria's vault keeps *approved* knowledge — the source notes, claim notes, an
 
 The pattern, adapted from ARA's **exploration-graph** layer: capture rejected directions and their *rationale* as a lightweight Mapper output — not raw thrash, but the decision points ("considered X as the organizing frame for this MOC; rejected because it splits the Y literature awkwardly"; "triaged out these 8 candidates because they predate the 2024 method shift"). The artifact is a per-project `exploration-log` note (or a section of the MOC) that records *what was not done and why*, linked from the synthesis it shaped.
 
-**Cons.** The whole value of the vault is curation; preserving every dead end fights that directly — an exploration log that captures raw thrash becomes noise that buries the signal. The discipline is capturing *decisions with rationale*, not *every path*, and that judgment is itself human labor at exactly the moment (rejecting a direction) when the human wants to move on. If the log is not maintained consistently it becomes a misleading partial record — worse than no record. Unlike ARA, Memoria has no machine-execution consumer for the trace, so the only beneficiary is the future human, which makes the cost/benefit entirely dependent on whether re-investigation actually recurs.
+**Cons.** The whole value of the vault is curation; preserving every dead end fights that directly — an exploration log that captures raw thrash becomes noise that buries the signal. The practice is capturing *decisions with rationale*, not *every path*, and that judgment is itself human labor at exactly the moment (rejecting a direction) when the human wants to move on. If the log is not maintained consistently it becomes a misleading partial record — worse than no record. Unlike ARA, Memoria has no machine-execution consumer for the trace, so the only beneficiary is the future human, which makes the cost/benefit entirely dependent on whether re-investigation actually recurs.
 
 **When to implement.** When the human notices themselves re-deriving a *negative* conclusion — re-reading candidates they already rejected, or re-attempting a synthesis frame they already abandoned — and wishing they'd recorded why the first time. Below that felt pain, the curated-vault default (keep what survived, discard the rest) is correct and this is overhead.
 
-**Prerequisites.** A lightweight `exploration-log` convention (per-project note or a dedicated MOC section) with a fixed shape (decision / options considered / rejected because / date). A Mapper prompt that proposes log entries at natural decision points (MOC restructure, large triage pass) rather than continuously. A discipline — enforced by habit, not by the Linter — of recording rationale, not thrash.
+**Prerequisites.** A lightweight `exploration-log` convention (per-project note or a dedicated MOC section) with a fixed shape (decision / options considered / rejected because / date). A Mapper prompt that proposes log entries at natural decision points (MOC restructure, large triage pass) rather than continuously. A convention — kept by habit, not enforced by the Linter — of recording rationale, not thrash.
 
 **What this is not.** Not an audit log — the [audit log](../dashboards/audit-log.md) records *what agents did*; the exploration log records *what the human decided not to pursue and why*. Not the full ARA artifact — Memoria adopts only the exploration-graph idea, not the four-layer machine-executable package (Memoria is single-user and human-curated, not agent fork/diff/merge). Not automatic — the agent proposes entries at decision points; the human decides what is worth preserving, because a rejected direction is a synthesis judgment, not a structural event.
 
@@ -487,7 +488,7 @@ The autonomy is the inner loop. The gate is the human's review of the summary. T
 
 **Prerequisites.** A `code-experiment` card type (variant of `code` with `success_metric:`, `budget_iterations:`, `budget_cost_usd:`). A `Coder-experiment-loop` skill bound to the Coder lane, with the policy MCP permitting writes only to `40-workbench/01-projects/<project>/code/experiments/<run-id>/`. A summary-card template (best variant, diff, metric trajectory, iteration log). A cron entry or on-demand trigger; the loop is not strictly overnight-bound, but overnight is the natural cadence.
 
-**What this is not.** Not synthesis autonomy — [architecture/why-no-autonomous-synthesis.md](../architecture/why-no-autonomous-synthesis.md) remains unchanged for every lane other than Coder. Not auto-promotion — the best variant goes to `done` for review, not into the project's working code; the human's review state is still the gate. Not metric-design autonomy — the human specifies `success_metric:` on the card, the agent does not propose it mid-run. Not exempt from the canonical-zone deny rule — the policy MCP continues to block writes outside the experiment-run directory regardless of how many iterations the loop has executed.
+**What this is not.** Not synthesis autonomy — [architecture/why-no-autonomous-synthesis.md](../architecture/why-no-autonomous-synthesis.md) remains unchanged for every lane other than Coder. Not auto-promotion — the best variant goes to `done` for review, not into the project's working code; the human's review state is still the gate. Not metric-design autonomy — the human specifies `success_metric:` on the card, the agent does not propose it mid-run. Not exempt from the review-gated-zone deny rule — the policy MCP continues to block writes outside the experiment-run directory regardless of how many iterations the loop has executed.
 
 ## Agent-proposed candidate claim notes
 
@@ -495,13 +496,27 @@ The [distill](../workflows/upstream/distill.md) stage is human-authored: after a
 
 The pattern: after a `discuss` card closes, the Writer proposes *candidate* claim notes from the discussed source — drafts that land in `10-inbox/03-candidates/` as `type: claim-candidate`, never in `30-synthesis/01-claims/`. Each candidate carries its provenance (the paper note plus the specific passage it derives from, located via [claim-sentence classification](#claim-sentence-classification)). The human edits, accepts (authoring the canonical claim note), or discards. The agent drafts; the human still decides what counts as a claim and how it is phrased.
 
-**Cons.** This is the most judgment-adjacent automation in the roadmap — *what counts as a claim worth extracting* is synthesis judgment, exactly what the [autonomy boundary](../architecture/why-no-autonomous-synthesis.md) protects. Two specific risks. (1) **Rubber-stamping** — a fluent candidate invites the human to accept it without the close reading that distillation is meant to force, hollowing out the `discuss → distill` discipline. (2) **Framing capture** — the agent's phrasing anchors the human's, narrowing the space of claims they would have written unprompted (the same homogeneity risk as Bisht's hivemind finding). Over-proposing is worse than not proposing: a queue of plausible drafts can substitute for thinking rather than seed it.
+**Cons.** This is the most judgment-adjacent automation in the roadmap — *what counts as a claim worth extracting* is synthesis judgment, exactly what the [autonomy boundary](../architecture/why-no-autonomous-synthesis.md) protects. Two specific risks. (1) **Rubber-stamping** — a fluent candidate invites the human to accept it without the close reading that distillation is meant to force, hollowing out the `discuss → distill` loop. (2) **Framing capture** — the agent's phrasing anchors the human's, narrowing the space of claims they would have written unprompted (the same homogeneity risk as Bisht's hivemind finding). Over-proposing is worse than not proposing: a queue of plausible drafts can substitute for thinking rather than seed it.
 
 **When to implement.** When `discuss` and `distill` are stable workflows *and* the human notices the blank-page cost of transcribing claims — not the reading or thinking — is the actual bottleneck. If comprehension is the bottleneck, this does not help; it accelerates only the writing-down step *after* understanding. Treat it as a *prototype on a handful of sources*, and measure the **accept-unedited rate**: a high rate is a warning (rubber-stamping), not a win.
 
 **Prerequisites.** A stable `discuss` stage — proposing claims from an unread source defeats the purpose, so the candidate fires only after a `discuss` card closes. [Claim-sentence classification](#claim-sentence-classification) to ground each candidate in a specific source passage. A `claim-candidate` card type routing to `10-inbox/03-candidates/`, with the policy MCP denying writes to `30-synthesis/01-claims/`. An accept-unedited-rate metric to detect rubber-stamping.
 
 **What this is not.** Not auto-filing — candidates land in the inbox; the human authors the canonical claim note. Not synthesis autonomy — [why-no-autonomous-synthesis.md](../architecture/why-no-autonomous-synthesis.md) is unchanged; the human still owns *what counts as a claim* and *whether the source yields one*. Not a replacement for `discuss` — the candidate is proposed *after* the human has thought the source through, as a transcription aid, not a thinking substitute. Not promotion — an authored candidate is `maturity: seedling` at most; the path to evergreen/reference remains a separate human gate.
+
+## Semi-autonomous triage
+
+Classification today is one note at a time: the Librarian proposes `_proposed_classification` on each new paper note, and the human promotes the proposed fields to canonical (`topic`, `projects`, etc.) during the morning triage. Most promotions are rubber-stamps — the classifier proposed exactly what the human would have chosen — but the human still opens each note, reads the proposal, and confirms. At low ingest volume that per-note cost is invisible; once the [discovery loop](#the-discovery-loop) is filling `10-inbox/03-candidates/` overnight, confirming each note becomes the dominant triage cost.
+
+The pattern, adapted from LatteReview and ResearchAgent (Baek et al. 2025): attach a confidence score to each `_proposed_classification` and split the triage queue by it. High-confidence proposals (the classifier's own probability above a tuned threshold, corroborated where the field already exists elsewhere in the corpus) surface in a **batch-approval view** — a dashboard listing the proposed promotions with their confidence, which the human approves in one action after a skim. Low-confidence proposals stay in the per-note manual queue. The human's attention shifts from *every* note to *only the uncertain ones*.
+
+**Cons.** A miscalibrated threshold is the dominant failure mode — too high and nothing batches (no saving); too low and wrong classifications slip through a batch-approve the human didn't actually scrutinize. Batch approval invites exactly the rubber-stamping the per-note step guarded against: the human can approve 40 promotions without reading any, and a systematic classifier bias then propagates into canonical `topic` / `projects` fields at scale. The confidence score is only as trustworthy as its calibration against the human's own past overrides, which takes a history to build.
+
+**When to implement.** When two conditions hold together: (1) ingest volume is high enough that per-note classification confirmation is a felt cost — typically once the [discovery loop](#the-discovery-loop) is running and producing tens of candidates per cycle; and (2) the `_proposed_classification` classifier has accumulated enough of the human's accept/override history that its confidence scores are calibrated rather than guessed. Below either, per-note promotion is cheap enough and safer.
+
+**Prerequisites.** A confidence signal on `_proposed_classification` (the classifier's probability, or agreement between the classifier and an existing corpus value). A `triage-approval` dashboard that lists high-confidence promotions for batch action and records the batch decision in the audit log. A tuned threshold with a defined recalibration cadence (reuse the classifier's monthly retraining loop). A per-batch sampling habit — the human spot-reads a few promotions per batch so batch-approve never becomes blind-approve.
+
+**What this is not.** Not auto-promotion — the human still presses approve; the gate is structurally intact, it just moves from per-note to per-batch. Not a replacement for the human's classification judgment — it accelerates *confirmation* of high-confidence proposals, never the decision on the uncertain ones, which stay manual. Not auto-applied to low-confidence proposals — those route to the existing per-note queue. Consistent with the [autonomy boundary](../architecture/why-no-autonomous-synthesis.md): the agent proposes and scores; the human disposes, in bulk where the signal is strong.
 
 ## Tournament ranking for triage
 
@@ -523,7 +538,7 @@ Memoria assumes one vault per human. Within that vault, the human typically runs
 
 The pattern, adapted from Schmidgall & Moor 2025 (AgentRxiv): treat the vault's `40-workbench/01-projects/*/drafts/` collection as the human's personal "preprint pool." When a profile in project A runs a discovery or synthesis step, it also queries draft answer notes in projects B and C with a `cross_project: true` flag, and surfaces relevant prior thinking as inspiration context — clearly tagged as foreign so the worker creates a stub or wikilink rather than mistaking the foreign draft for in-project material. The original draft is never modified; the cross-project read is one-way and audit-logged.
 
-**Cons.** Cross-project reads broaden the context any single agent step takes in — more tokens, slower, more places for noise to enter. Project-scoped privacy assumptions (a Project A draft might cite an embargoed source that should not surface in Project C) need to be encoded as policy, not as habit. Without good tagging discipline, the same idea can spawn parallel drafts in two projects, which the cross-project loop then re-cross-reads.
+**Cons.** Cross-project reads broaden the context any single agent step takes in — more tokens, slower, more places for noise to enter. Project-scoped privacy assumptions (a Project A draft might cite an embargoed source that should not surface in Project C) need to be encoded as policy, not as habit. Without consistent tagging, the same idea can spawn parallel drafts in two projects, which the cross-project loop then re-cross-reads.
 
 **When to implement.** When the human has at least two concurrent projects active for ≥ 8 weeks each *and* notices "I already wrote about this" moments that the agent did not surface. Below that, the absence is not felt — the cost of building the cross-project read pattern outweighs the savings.
 
@@ -535,7 +550,7 @@ The pattern, adapted from Schmidgall & Moor 2025 (AgentRxiv): treat the vault's 
 
 The [`memories/` junction](sync-and-coordination.md#syncing-profile-memory-across-machines-the-memories-junction) carries learned profile notes (`MEMORY.md` / `USER.md`) between machines but deliberately leaves the [session search database](../architecture/memory-tiers.md#the-substrates) (`state.db`) behind — it is a live binary SQLite file that corrupts under raw file-sync and conflicts on merge. So "did we discuss X before?" recall does not follow you across machines. For most non-concurrent use this is fine: the learned conventions are what matter, and the research corpus lives in the vault regardless. This proposal closes the gap for the case where cross-machine chat-history recall is genuinely missed.
 
-The pattern: a `sync-out` / `sync-in` script pair driven by **Windows Task Scheduler** (or `cron` / `launchd`). On leaving a machine, `sync-out` runs `hermes profile export <name>` for each profile — which snapshots that profile's sessions and memory via SQLite's WAL-safe `backup()` API and **excludes credentials** — writes the archive into the git-synced vault (or a dedicated Syncthing channel), and pushes. On arriving at the other machine, `sync-in` pulls and runs `hermes profile import <archive> --name <name>`. Because export is snapshot-based and import overwrites, the discipline is strictly non-concurrent: snapshot on leave, restore on arrive.
+The pattern: a `sync-out` / `sync-in` script pair driven by **Windows Task Scheduler** (or `cron` / `launchd`). On leaving a machine, `sync-out` runs `hermes profile export <name>` for each profile — which snapshots that profile's sessions and memory via SQLite's WAL-safe `backup()` API and **excludes credentials** — writes the archive into the git-synced vault (or a dedicated Syncthing channel), and pushes. On arriving at the other machine, `sync-in` pulls and runs `hermes profile import <archive> --name <name>`. Because export is snapshot-based and import overwrites, the rule is strictly non-concurrent: snapshot on leave, restore on arrive.
 
 **Cons.** `hermes profile import` overwrites the *whole* profile, including author-owned files (`SOUL.md`, `config.yaml`, `skills/`) that [`install.ps1` owns](../architecture/on-disk-layout.md#how-the-installer-works) — so on a machine driven by `install.ps1`, import and install fight over the profile definition unless ordered deliberately (import first, then re-run `install.ps1` to reassert vault-source definitions). Binary `.tar.gz` snapshots bloat git history if committed to the vault repo — a dedicated Syncthing folder, or a `binary` mark in `.gitattributes`, mitigates. Snapshot granularity means a missed `sync-out` leaves the other machine importing stale history. Task Scheduler logoff / shutdown triggers are unreliable for long pushes, so a periodic timer is needed as a safety net.
 
@@ -547,7 +562,7 @@ The pattern: a `sync-out` / `sync-in` script pair driven by **Windows Task Sched
 
 ## Hermes memory server (shared memory provider)
 
-Both the [`memories/` junction](sync-and-coordination.md#syncing-profile-memory-across-machines-the-memories-junction) and [scripted session-history sync](#scripted-session-history-sync) are file-sync patterns: they move bytes between machines and depend on non-concurrent discipline to avoid conflicts. Hermes also supports a fundamentally different model — **external memory providers** — where the agent's learned memory lives in a backend both machines query in real time, making cross-machine memory machine-independent by construction rather than by sync.
+Both the [`memories/` junction](sync-and-coordination.md#syncing-profile-memory-across-machines-the-memories-junction) and [scripted session-history sync](#scripted-session-history-sync) are file-sync patterns: they move bytes between machines and depend on non-concurrent use to avoid conflicts. Hermes also supports a fundamentally different model — **external memory providers** — where the agent's learned memory lives in a backend both machines query in real time, making cross-machine memory machine-independent by construction rather than by sync.
 
 The pattern: configure each machine's profile with the same [Hermes memory provider](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers) and the same memory space (e.g. Hindsight's `bank_id`, Supermemory's `container_tag`). The provider prefetches relevant memories before each turn and syncs conversation turns after each response — **additively** to the native `MEMORY.md` / `state.db`, which keep working unchanged. Cloud providers (Hindsight cloud, Mem0, Honcho, Supermemory, RetainDB) are reachable from any machine with no infrastructure of your own. Self-hostable providers (Hindsight in remote mode, OpenViking) give the same automation but require an always-reachable server — which in practice means [the always-on deployment option](deployment-options.md) (a VPS, or a home server on Tailscale). This is the only option that supports *concurrent* agents on different machines contributing to one shared memory space — e.g. a VPS discovery loop and an interactive desktop session both writing to the same bank.
 
@@ -563,38 +578,32 @@ The pattern: configure each machine's profile with the same [Hermes memory provi
 
 Ideas with enough shape to remember but not enough design to ship as full proposals. Each is a candidate to graduate into the substantive list above when usage pressure reveals the design constraints. Listed compactly here; expand in place if any of them earns a full design pass.
 
-## Event-driven and scheduled operations
+### Event-driven and scheduled operations
 
 - Nightly enrichment refresh for paper notes more than 30 days old.
 - Weekly orphan-detection scan with a dashboard surface.
 - Monthly merge-candidate report.
 - On-add hook: when a new citekey appears in `.memoria/library.bib`, auto-trigger ingest.
 
-## Semi-autonomous triage
-
-- Hermes proposes triage promotions for notes where proposed fields have high confidence.
-- The human approves in batch via a triage-approval view.
-- Lower-confidence triages remain manual.
-
-## Autonomous synthesis (cautious)
+### Autonomous synthesis (cautious)
 
 - Hermes drafts answer notes from research questions on a schedule.
 - All drafts land in `10-inbox/` as `answer-note`, awaiting review.
 - Never auto-promoted.
 
-## Gap-seeking planner
+### Gap-seeking planner
 
 - A "gap" agent identifies under-cited claims, contradictory claims, or topics with sparse coverage.
 - Proposes discovery queries to fill gaps.
 - Surfaces results to the human as a research-planning aid.
 
-## Self-evaluation and benchmarks
+### Self-evaluation and benchmarks
 
 - Periodic retrieval-quality checks against held-out questions.
 - Note-completeness audits.
 - Link-density and orphan-rate trends over time.
 
-## More agent roles and internal reviewers
+### More agent roles and internal reviewers
 
 - A dedicated *claim checker* that verifies every claim note traces to at least one source.
 - A *consistency checker* that flags contradictions between claim notes. (Graduated into a full proposal — see [§"NLI-based contradiction detection"](#nli-based-contradiction-detection).)

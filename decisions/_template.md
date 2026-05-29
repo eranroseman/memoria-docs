@@ -1,6 +1,6 @@
 ---
-mode: reference
-audience: contributor
+mode: explanation
+audience: system-designer
 topic: decisions
 id: NN
 title: <short imperative phrase, e.g. "Shared candidate frontmatter format">
@@ -26,7 +26,7 @@ superseded_by: []
 > - `superseded` — replaced by a later ADR (set `superseded_by`).
 > - `retired` — withdrawn without replacement (e.g. the problem dissolved).
 >
-> Delete this how-to-use block when you copy the template.
+> Delete this how-to-use block when copying the template.
 
 ## Context
 
@@ -54,15 +54,18 @@ consider alternatives," delete this section — don't fabricate a list.
 
 ## Related
 
-- **Workflows affected:** \<list with links, or "none">
-- **Files affected:** \<list with links, or "none">
-- **Resolves / supersedes:** \<ADR-NN refs, or "none">
-- **Source discussion:** \<link to issue, conversation, or commit, or "none">
+Include only the bullets that apply — omit any that would read "none."
+
+- **Workflows affected:** \<specific workflow files, linked>
+- **Files affected:** \<list with links>
+- **Related decisions / Depends on:** \<ADR-NN refs>
+- **Resolves / supersedes:** \<ADR-NN refs>
+- **Source discussion:** \<link to issue, conversation, or commit>
 
 <!-- memoria-nav -->
 
 ---
 
-[← Previous: ADR-21: Shared candidate frontmatter format](21-shared-candidate-frontmatter.md)
+[← Previous: ADR-22: Claim supersession relation](22-claim-supersession.md)
 
 [Next: ADRs grouped by topic →](by-topic.md)

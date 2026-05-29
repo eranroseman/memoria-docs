@@ -6,7 +6,7 @@ topic: surfaces
 
 # `design-system` template
 
-The authoritative visual-style source for the vault. Copies into `00-meta/04-reference/design-system.md`. Read by Memoria's CSS snippet generator, by exports (Pandoc, open-design), and by anything else that needs to render Memoria content with a consistent look.
+Unlike the rest of this folder, the design system is not a surface — it's the authoritative visual-style source the surfaces render *against*. It lives here because it governs how every surface looks. Copies into `00-meta/04-reference/design-system.md`. Read by Memoria's CSS snippet generator, by exports (Pandoc, open-design), and by anything else that needs to render Memoria content with a consistent look.
 
 Format follows [open-design](https://github.com/nexu-io/open-design)'s 9-section DESIGN.md schema so the same file can drive open-design's render pipeline directly. Humans who already use open-design can import any of its 150 built-in design systems by replacing this file.
 
@@ -198,6 +198,6 @@ The Linter's structural detectors do not currently check design-system conforman
 
 ---
 
-[← Previous: Ambient surfaces: status bar](ambient.md)
+[← Previous: Command palette — Memoria's keyboard surface](command-palette.md)
 
-[Next: Command palette — Memoria's keyboard surface →](command-palette.md)
+[Next: Daily Health — design summary →](../dashboards/README.md)

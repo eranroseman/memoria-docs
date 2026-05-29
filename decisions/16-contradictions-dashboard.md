@@ -35,7 +35,6 @@ Surfacing contradictions in the claim graph would be high-value for argument con
 
 - **Depends on:** [ADR-9 typed relations](09-typed-relations-frontmatter.md)
 - **Files affected:** [`dashboards/`](../dashboards/) (would add a new dashboard)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

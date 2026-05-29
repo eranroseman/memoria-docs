@@ -6,7 +6,7 @@ topic: workflows
 
 # Assess
 
-**Group.** Downstream (stage workflow, added 2026-05)
+**Group.** Downstream (stage workflow)
 **Goal.** Map the corpus for a project: identify what's ready, what's thin, what's missing. Produce a corpus map the human can use to decide whether to write now or read more first.
 
 ## Pipeline position
@@ -27,7 +27,7 @@ Mapper executes the `scope-project` retrieval (read-only across the vault, write
 
 ## Card lifecycle
 
-`ready` if watcher-created (file-system watcher on new `brief.md`) OR `triage` if human-created via `Memoria: new project` (human transitions to `ready` after reviewing the auto-populated brief fields) → `running` (Mapper claims) → `done` with `review_status: requested` and `corpus-map.md` written → human reads, decides: `approved` (advances to [Frame](frame.md)) or `rejected` (human typically spawns new cards in [Find](../upstream/find.md) to read more first; the original is archived with `outcome: superseded` when the revision card opens, or `outcome: discarded` if the assessment is abandoned).
+`ready` if watcher-created (file-system watcher on new `brief.md`) OR `triage` if human-created via `Memoria: new project` (human transitions to `ready` after reviewing the auto-populated brief fields) → `running` (Mapper claims) → `done` with `review_status: requested` and `corpus-map.md` written → human reads, decides: `approved` (advances to [Frame](frame.md)) or `rejected` (human typically spawns new cards in [Find](../upstream/find.md) to read more first; the original is archived with `metadata.archive_reason: superseded` when the revision card opens, or `metadata.archive_reason: discarded` if the assessment is abandoned).
 
 ## Command
 

@@ -4,9 +4,9 @@ audience: operator
 topic: surfaces
 ---
 
-# Ambient surfaces: status bar
+# Ambient surfaces: the status line
 
-The Obsidian status bar carries two ambient producers — they share the line, separated by a `·`:
+Memoria's ambient surface is a single glanceable **status line** — two producers sharing one line, separated by a `·`. It is rendered as a **Dataview widget pinned in a note** (e.g., `00-meta/index.md`), *not* the Obsidian/OS status bar, which Dataview cannot write to; the effect is the same peripheral, always-in-view indicator (a true status-bar item would require a small custom plugin — deliberately avoided, see **Why no custom plugin** below):
 
 ## 1. Linter findings (lightweight)
 
@@ -49,7 +49,7 @@ When something spikes, only the spike draws the eye — the rest stays minimal.
 
 ## Design rules for ambient surfaces
 
-- **Show state, never decisions to make.** A red dot meaning "issue here, click to investigate" is ambient. A list of 12 issues to triage is persistent — it doesn't belong in the status bar. Crossing the line floods the ambient channel and trains the human to ignore it.
+- **Show state, never decisions to make.** A red dot meaning "issue here, click to investigate" is ambient. A list of 12 issues to triage is persistent — it doesn't belong in the status line. Crossing the line floods the ambient channel and trains the human to ignore it.
 - **Glance-readable in under one second.** If the human has to parse the indicator to understand it, it's the wrong shape. Use icons + counts, not prose.
 - **No interruptive transitions.** Status indicators may change as state changes, but they don't animate, blink, or pop up modals. Ambient = peripheral; interruption is the persistent surface's job.
 - **Two producers is the working set.** Linter + Kanban counts. A third ambient producer is one too many — the line stops being glanceable when there are more than four to six tokens to parse. New "I want this always visible" requests get evaluated against the existing two, not added alongside.
@@ -62,4 +62,4 @@ The ambient surface is the smallest of the four by design. Anything that needs m
 
 [← Previous: Inline surfaces: callouts in notes](inline.md)
 
-[Next: design-system template →](design-system.md)
+[Next: Command palette — Memoria's keyboard surface →](command-palette.md)

@@ -124,7 +124,7 @@ adoption_ratio = (useful_as_is + minor_edits) / total_briefs
 
 **Roll back** otherwise — keep generic-LLM as the back-end and document why Open Notebook didn't help (in the rollback log under the same path, with a per-brief rationale where the rating was `useless` or `rewrote_significantly`).
 
-**Why human-judged quality rather than behavioral or citation-based signals.** Edit-rate is a proxy that misses "useful but rewrote in my own voice" (which is success, not failure). Citation-resolution rate is countable but a brief with perfectly-resolving citations can still be a poor read. The actual goal is research-quality judgment from the human; measuring it directly is honest about what success means. The cost is per-brief logging discipline, which is acceptable at the pilot's scale (~50 briefs).
+**Why human-judged quality rather than behavioral or citation-based signals.** Edit-rate is a proxy that misses "useful but rewrote in my own voice" (which is success, not failure). Citation-resolution rate is countable but a brief with perfectly-resolving citations can still be a poor read. The actual goal is research-quality judgment from the human; measuring it directly is honest about what success means. The cost is the per-brief logging effort, which is acceptable at the pilot's scale (~50 briefs).
 
 ## Rollback criteria
 

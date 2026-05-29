@@ -4,11 +4,11 @@ audience: operator
 topic: plugins
 ---
 
-# obsidian-Linter — the footgun
+# obsidian-linter — the footgun
 
-The Obsidian Linter is a frontend formatting tool (not the Memoria/Hermes Linter — those are different things; the Hermes Linter does structural validation, the Obsidian Linter does inline markdown formatting).
+The Obsidian Linter is a frontend formatting tool (not the **Memoria Linter** — a different thing: the Memoria Linter does structural validation; the Obsidian Linter does inline Markdown formatting).
 
-**Authoritative template:** shipped at `.obsidian/plugins/obsidian-Linter/data.json` in the starter vault — installed as the human's working file directly, no template-copy step. The shipped file encodes the `foldersToIgnore` list, the four on-save rules, and the `yaml-key-sort` key order that aligns with Memoria's frontmatter schema.
+**Authoritative config:** shipped at `.obsidian/plugins/obsidian-linter/data.json` in the starter vault — a ready-to-use `data.json` (see [the suffix conventions](../plugin-configs-lifecycle.md#the-three-suffix-conventions)). It encodes the `foldersToIgnore` list, the four on-save rules, and the `yaml-key-sort` key order that aligns with Memoria's frontmatter schema.
 
 **Load-bearing settings:**
 
@@ -30,15 +30,15 @@ The Obsidian Linter is a frontend formatting tool (not the Memoria/Hermes Linter
   The Obsidian Linter runs **only on draft/canvas content the human directly writes** — and even that is conservative. The Linter does not support per-folder rules; whole-folder exclusion is the only knob.
 
 - `ruleConfigs."yaml-key-sort".enabled: true` — enforces frontmatter key order on the folders that aren't excluded.
-- `ruleConfigs."yaml-timestamp".enabled: false` — **must stay disabled.** Hermes writes notes frequently; if yaml-timestamp is on, every Hermes write resets the timestamp to "now," which destroys the human-vs-agent edit signal the Linter and dashboards rely on.
+- `ruleConfigs."yaml-timestamp".enabled: false` — **must stay disabled.** Hermes writes notes frequently; if yaml-timestamp is on, every Hermes write resets the timestamp to "now," which destroys the human-vs-agent edit signal the Memoria Linter and dashboards rely on.
 
 ## Rule set: on-save vs manual invocation
 
-The obsidian-Linter ships with 60+ rules. Enabling too many on save creates surprise — the Linter touches prose every time the human saves, and rules that change content (capitalize-headings, auto-correct-common-misspellings, smart-quote substitution) can corrupt domain-specific terms before the human notices. The discipline: a **small set on save**, a **broader set on manual invocation only**.
+The Obsidian Linter ships with 60+ rules. Enabling too many on save creates surprise — it touches prose every time the human saves, and rules that change content (capitalize-headings, auto-correct-common-misspellings, smart-quote substitution) can corrupt domain-specific terms before the human notices. The split: a **small set on save**, a **broader set on manual invocation only**.
 
 **On save** (`lintOnSave: true`, these rules enabled):
 
-- `yaml-key-sort` — frontmatter key ordering. The most load-bearing rule; out-of-order keys break Dataview indexing and the Linter's structural checks.
+- `yaml-key-sort` — frontmatter key ordering. The rule that matters most; out-of-order keys break Dataview indexing and the Memoria Linter's structural checks.
 - `yaml-trailing-newline` — ensures the closing `---` has a newline after it (some YAML parsers stumble without it).
 - `trailing-spaces` — strips trailing whitespace per line.
 - `remove-multiple-spaces` — collapses runs of spaces in prose.
@@ -64,7 +64,7 @@ Why this stratification: the on-save set is small enough that the human can keep
 
 **Never enable any rule that strips HTML comments.** Memoria's `_proposed_classification` and `_enrichment` blocks (see [vault/README.md](../../vault/README.md) and the [obsidian-citation-plugin](../required/obsidian-citation-plugin.md) template) live as `<!-- ... -->` blocks inside paper notes. A Linter rule that removes HTML comments will silently delete every one of them on the next lint pass — and there is no undo. The agent has to re-enrich and re-classify every affected note.
 
-**Version note.** As of obsidian-Linter `v1.31.2` (the version research-wiki runs against), no `remove-html-comments` rule exists in the bundled rule registry — a search of the plugin's `main.js` finds neither the rule name nor any equivalent transform. The warning here is forward-looking discipline rather than a current-version footgun: if a future version adds such a rule (or a community fork ships one), it must stay disabled. Before accepting any obsidian-Linter upgrade, diff the rule registry against the previous version and check for new rules whose name or description mentions "html", "comment", or "strip".
+**Version note.** As of Obsidian Linter `v1.31.2` (the version research-wiki runs against), no `remove-html-comments` rule exists in the bundled rule registry — a search of the plugin's `main.js` finds neither the rule name nor any equivalent transform. The warning here is forward-looking discipline rather than a current-version footgun: if a future version adds such a rule (or a community fork ships one), it must stay disabled. Before accepting any Obsidian Linter upgrade, diff the rule registry against the previous version and check for new rules whose name or description mentions "html", "comment", or "strip".
 
 <!-- memoria-nav -->
 

@@ -6,7 +6,7 @@ topic: roadmap
 
 # Sync and write coordination
 
-Under multi-machine [deployment options](deployment-options.md), agent writes and human writes need coordination. This file covers the three discipline mechanisms: the sync window mental model, the `.agent-lock` file, and the bib watcher (the always-on option only). It also covers syncing profile memory across machines via the [`memories/` junction](#syncing-profile-memory-across-machines-the-memories-junction).
+Under multi-machine [deployment options](deployment-options.md), agent writes and human writes need coordination. This file covers the three coordination mechanisms: the sync window mental model, the `.agent-lock` file, and the bib watcher (the always-on option only). It also covers syncing profile memory across machines via the [`memories/` junction](#syncing-profile-memory-across-machines-the-memories-junction).
 
 ## Sync window: the 5–15 second mental model
 
@@ -45,7 +45,7 @@ The mechanism: a `00-meta/.agent-lock` file. Hermes creates it before starting a
 └── .agent-lock          # presence means "agent is mid-batch; defer your writes"
 ```
 
-The discipline tightens with deployment option:
+The required care tightens with deployment option:
 
 | Pattern | When to check `.agent-lock` | Why |
 | --- | --- | --- |

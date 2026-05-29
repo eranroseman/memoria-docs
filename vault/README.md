@@ -6,7 +6,7 @@ topic: vault
 
 # Notes, folders, and linking
 
-The vault is where durable knowledge lives. This document covers the conceptual model: the layered folder structure, what each layer means, the promotion map, and the discipline that keeps the vault navigable.
+The vault is where durable knowledge lives. This document covers the conceptual model: the layered folder structure, what each layer means, the promotion map, and the conventions that keep the vault navigable.
 
 For reference content, see the sibling docs:
 
@@ -16,7 +16,7 @@ For reference content, see the sibling docs:
 
 ## Folder structure
 
-Folders encode **lifecycle stage**, not subject area. The top-level number tells you where in the capture → describe → think → work → ship progression a note sits.
+Folders encode **lifecycle stage**, not subject area. The top-level number indicates where in the capture → describe → think → work → ship progression a note sits.
 
 ```text
 <vault-root>/                  ← starter vault; human picks the folder name
@@ -68,7 +68,7 @@ The vault is a single repo, opened directly by Obsidian. The numbered top-level 
 
 ### Why this layout
 
-The biggest gain over a flat structure is that **source**, **synthesis**, **workbench**, and **deliverable** become visibly different zones. The agent and human both see at a glance what a folder is *for*: things that describe the world (sources), things that express your thinking (synthesis), things being worked on (workbench), and things that have shipped (deliverables).
+The biggest gain over a flat structure is that **source**, **synthesis**, **workbench**, and **deliverable** become visibly different zones. The agent and human both see at a glance what a folder is *for*: things that describe the world (sources), things that express the human's thinking (synthesis), things being worked on (workbench), and things that have shipped (deliverables).
 
 The split inside `30-synthesis/` (`claims/`, `reference/`, `moc/`) is especially important because it makes the three kinds of conceptual knowledge distinct: claims, reference pages, and navigation hubs.
 
@@ -91,7 +91,7 @@ Coarse access summary. The authoritative per-profile permissions live in [profil
 | `20-sources/03-entities/01-people/` | People (authors, advisors, collaborators, developers). | Review | Write. |
 | `20-sources/03-entities/02-organizations/` | Labs, universities, companies, funders. | Review | Write. |
 | `20-sources/03-entities/03-venues/` | Journals, conferences, workshops. | Review | Write. |
-| `30-synthesis/01-claims/` | Durable claims in your own words. | Write | Read; suggest links only. |
+| `30-synthesis/01-claims/` | Durable claims in the human's own words. | Write | Read; suggest links only. |
 | `30-synthesis/02-reference/` | Stable reference pages. | Review / edit | Draft and limited updates. |
 | `30-synthesis/03-moc/` | Maps of Content; navigation hubs. | Write | Read; suggest only. |
 | `40-workbench/01-projects/<project>/` | One folder per project; all working artifacts nest inside. | Write | Read / write. |
@@ -107,7 +107,7 @@ Coarse access summary. The authoritative per-profile permissions live in [profil
 
 ### Lifecycle organizes knowledge; project organizes work
 
-The numbered folders above encode **lifecycle stage, not subject** — a BCI paper lives in `20-sources/01-papers/`, not a `BCI/` folder, and its topics live in frontmatter. `40-workbench/` is the one deliberate exception: its unit is the **project**, not the lifecycle stage. A project folder (`01-projects/<project>/`) holds every working artifact for one effort — `map/`, `framing/`, `canvas/`, `drafts/`, `verification/`, `code/` — so the whole effort is co-located and archives as a unit.
+As established above, the numbered folders encode lifecycle stage rather than subject — a BCI paper lives in `20-sources/01-papers/`, not a `BCI/` folder, and its topics live in frontmatter. `40-workbench/` is the one deliberate exception: its unit is the **project**, not the lifecycle stage. A project folder (`01-projects/<project>/`) holds every working artifact for one effort — `map/`, `framing/`, `canvas/`, `drafts/`, `verification/`, `code/` — so the whole effort is co-located and archives as a unit.
 
 This doesn't violate the principle, because the principle is really an *anti-duplication* rule for many-to-many data: a source has many topics, so it can't live in one topic folder. Workbench artifacts are single-project (a draft belongs to exactly one manuscript), so the duplication problem never arises. A **project is not a topic** — it's a bounded, transient effort that gets archived when it ships. Durable knowledge still lives in the lifecycle layers (`20-sources/`, `30-synthesis/`) and carries its topics in frontmatter.
 
@@ -131,20 +131,20 @@ A freshly-cloned vault ships with a small set of plain-language human notes in `
 | `00-meta/index.md` | Vault landing page. Pinned in sidebar. Links to system status, dashboards, lane views, key files. | Human (rarely changes) |
 | `00-meta/04-reference/getting-started.md` | First-time setup checklist. The 5 steps from clone to first ingest. | Human (rarely changes) |
 | `00-meta/04-reference/system-map.md` | High-level architecture summary in plain language. The vault-resident companion to [architecture/README.md](../architecture/README.md). | Human (sync with design changes) |
-| `00-meta/04-reference/agent-roles.md` | Plain-language one-paragraph summary of each Hermes profile. Companion to the SOUL.md contracts at `.memoria/profiles/memoria-<name>/SOUL.md` in the vault. | Human (sync with profile changes) |
-| `00-meta/04-reference/profile-policies.md` | Plain-language summary of who-can-write-where. Companion to the lane-override YAML files and the [Lane permissions matrix](../profiles/README.md#lane-permissions-matrix). | Human (sync with lane-override changes) |
+| `00-meta/04-reference/agent-roles.md` | Plain-language one-paragraph summary of each Hermes profile. Mirrors the SOUL.md contracts at `.memoria/profiles/memoria-<name>/SOUL.md` in the vault. | Human (sync with profile changes) |
+| `00-meta/04-reference/profile-policies.md` | Plain-language summary of who-can-write-where. Tracks the lane-override YAML files and the [Lane permissions matrix](../profiles/README.md#lane-permissions-matrix). | Human (sync with lane-override changes) |
 | `00-meta/04-reference/schema-reference.md` | Canonical list of every frontmatter field used in the vault, with type and allowed values. The source of truth that templates and the Linter point at. | Human + Linter (Linter flags drift) |
 | `00-meta/04-reference/dataview-cheatsheet.md` | Reference patterns for dashboard authors — TABLE / LIST / TASK / FROM / WHERE / SORT / FLATTEN / LIMIT examples. | Human (rarely changes) |
 | `00-meta/04-reference/performance-checklist.md` | Dashboard performance discipline (see [surfaces/persistent.md](../surfaces/persistent.md#performance-discipline)). | Human (rarely changes) |
 | `00-meta/04-reference/safe-mode.md` | The three core workflows (ingest, review, export) with minimal commands and fallbacks when something is broken. Open this when Hermes, the ACP connection, or the watcher is down. Pairs with [operations/failure-modes.md](../operations/failure-modes.md) for the Detect/Fix/Verify recipes. | Human (rarely changes) |
-| `00-meta/04-reference/obsidian-config.md` | Plain-language summary of which Obsidian community plugins Memoria uses and the load-bearing settings the human should not change. Companion to [plugins/README.md](../plugins/README.md). | Human (sync with plugin changes) |
+| `00-meta/04-reference/obsidian-config.md` | Plain-language summary of which Obsidian community plugins Memoria uses and the load-bearing settings the human should not change. Mirrors [plugins/README.md](../plugins/README.md). | Human (sync with plugin changes) |
 | `00-meta/04-reference/design-system.md` | Canonical visual-style source for the vault — palette, typography, spacing, layout, components, motion, voice, brand, anti-patterns. Format follows [open-design](https://github.com/nexu-io/open-design)'s 9-section DESIGN.md schema so the same file can drive open-design's render pipeline. Read by CSS-snippet generators, by Pandoc export configs, and by open-design when rendering deliverables. Templated by [surfaces/design-system.md](../surfaces/design-system.md). | Human (edits define the brand); design-system schema versioned independently |
 
 The design folder is the *engineering* spec — it describes how to build and reason about the system. The vault skeleton is what a *human* needs in front of them while using the vault day-to-day. The skeleton notes are intentionally short and plain-language; if a section needs architectural detail, it links to the relevant `memoria-docs/` document.
 
 ### Drift discipline
 
-When the design changes — a new profile added, a lane-override rule updated, a schema field introduced — the corresponding skeleton note must be updated. The Linter's structural-drift check (see [profiles/linter.md](../profiles/linter.md)) flags skeleton notes whose `updated_at` is older than the corresponding design file. Treat skeleton drift the same way you'd treat code-doc drift: pay it down promptly.
+When the design changes — a new profile added, a lane-override rule updated, a schema field introduced — the corresponding skeleton note must be updated. The Linter's structural-drift check (see [profiles/linter.md](../profiles/linter.md)) flags skeleton notes whose `updated_at` is older than the corresponding design file. Treat skeleton drift the same way as code-doc drift: pay it down promptly.
 
 ## Common pitfalls
 
@@ -152,14 +152,14 @@ These failure modes recur. Treat them as anti-patterns to actively avoid.
 
 ### Capture and classify
 
-- **Unpinned citekeys.** If you change Zotero metadata before pinning the BBT key, the key regenerates and every wikilink pointing to the old key breaks silently. **Pin all keys immediately after import.**
-- **Promoting `_proposed_classification` without checking the vocabulary.** If the schema says `receptivity-detection` and you promote `topic: [receptivity]`, queries miss the note. Always check vocabulary when classifying.
+- **Unpinned citekeys.** If Zotero metadata changes before the BBT key is pinned, the key regenerates and every wikilink pointing to the old key breaks silently. **Pin all keys immediately after import.**
+- **Promoting `_proposed_classification` without checking the vocabulary.** If the schema says `receptivity-detection` and `topic: [receptivity]` is promoted, queries miss the note. Always check vocabulary when classifying.
 - **Writing claim notes before classifying the paper note.** The `_proposed_classification` often surfaces project connections that should appear in the claim note. Classify first.
 - **Letting `10-inbox/` accumulate without review.** The inbox is a queue, not storage. Notes older than 7 days are either worth promoting or worth discarding. An inbox that grows is a system capturing without synthesizing — the most common failure mode.
 
 ### Synthesis quality
 
-- **Summary notes masquerading as synthesis.** A paper note that lists bullet points is a summary, not synthesis. Synthesis means connecting what the paper says to what you already know — if there are no wikilinks in the Summary section, no synthesis has happened.
+- **Summary notes masquerading as synthesis.** A paper note that lists bullet points is a summary, not synthesis. Synthesis means connecting what the paper says to what the human already knows — if there are no wikilinks in the Summary section, no synthesis has happened.
 - **Too many claims in one claim note.** If the title contains "and" doing real work, split the note. One claim, one note.
 - **Treating agent synthesis as verified content.** An `answer-note` is a proposal. The agent may cite a paper for a claim that paper doesn't actually make. Always verify citekeys before promoting.
 
@@ -172,9 +172,9 @@ These failure modes recur. Treat them as anti-patterns to actively avoid.
 ### Operational hazards
 
 - **Running `schema-migrate` without reviewing the diff.** Running it without `--dry-run` first can silently alter frontmatter across hundreds of notes. **Always dry-run first.**
-- **Auto-promotion of `_proposed_classification`.** The agent should never promote proposed fields without explicit classification. If you find yourself wanting to, write a better dashboard query that surfaces candidates for batch review instead.
+- **Auto-promotion of `_proposed_classification`.** The agent should never promote proposed fields without explicit classification. If the urge arises, write a better dashboard query that surfaces candidates for batch review instead.
 
-## Routing rules
+## Routing and action policy
 
 - Route each note to the folder that matches its **type**, not its **topic**.
 - If the type is ambiguous, ask before creating or moving the note.
@@ -184,6 +184,15 @@ These failure modes recur. Treat them as anti-patterns to actively avoid.
 - Do not use `40-workbench/01-projects/*/drafts/` as a general notes folder.
 - If a note could fit more than one type, choose the **most specific epistemic role**.
 - If a note's purpose changes substantively, create a new note rather than mutating the old one. Link the new note to the old for provenance.
+
+### Delete and move
+
+The note-types table above answers *who creates and edits*. This adds *delete and move*:
+
+- **Delete** is universally human-only and discouraged across the board. Prefer archive for anything with provenance value.
+- **Move into a [review-gated folder](../glossary.md#system-and-architecture)** (the four review-gated zones) is human-only.
+- **Move to `95-archive/`** is human-only. The agent never archives.
+- **Move within working zones** (e.g., `10-inbox/` → `20-sources/` after classification) may be agent-initiated when the type and state warrant it.
 
 ## Promotion map
 
@@ -208,23 +217,14 @@ Rules that constrain the map:
 - `fleeting-note` is reviewed and either promoted or discarded — it does not linger.
 - `answer-note` → `claim-note` only after human review.
 - `claim-note` → `reference-note` only when the claim is `evergreen` and sufficiently cross-linked.
-- `paper-note` never becomes a `claim-note`. A source describes what the paper says; a claim is what you think.
+- `paper-note` never becomes a `claim-note`. A source describes what the paper says; a claim is what the human thinks.
 - Archived notes remain in place for historical traceability; never delete a note with provenance value. Only humans move notes to `95-archive/`.
-
-## Action policy
-
-The note-types table above answers *who creates and edits*. This section adds *delete and move*:
-
-- **Delete** is universally human-only and discouraged across the board. Prefer archive for anything with provenance value.
-- **Move into a canonical folder** (`30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, `50-deliverables/`) is human-only — these are review-gated.
-- **Move to `95-archive/`** is human-only. The agent never archives.
-- **Move within working zones** (e.g., `10-inbox/` → `20-sources/` after classification) may be agent-initiated when the type and state warrant it.
 
 ## Linking patterns
 
 Linking is the cross-cutting discipline that turns the vault into a graph rather than a flat folder hierarchy. Two cardinal rules anchor the practice: **every `claim-note` traces to at least one `paper-note` citekey**, and **provenance direction is preserved** — claims point to evidence, never the reverse.
 
-**Full reference** — five link types (`citekey-link`, `concept-link`, `moc-link`, `entity-link`, `agent-cross-link`), the full rule set (including indirect co-authorship and the orphan-rescue rule), the expected cross-link graph by note type, MOC creation thresholds (topic MOC at ≥15–20 notes, domain MOC at ≥3 topic MOCs, child MOC split at >20 claim notes, etc.), and slug collision resolution patterns — live in [linking-patterns.md](linking-patterns.md).
+**Full reference** — five link types (`citekey-link`, `concept-link`, `moc-link`, `entity-link`, `agent-cross-link`), the full rule set (including indirect co-authorship and the orphan-rescue rule), the expected cross-link graph by note type, the topic/domain/child-MOC creation thresholds, and slug-collision resolution patterns — live in [linking-patterns.md](linking-patterns.md).
 
 <!-- memoria-nav -->
 

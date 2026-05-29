@@ -10,7 +10,7 @@ Recommended. Memoria's controlled-vocabulary discipline (`study_design`, `method
 
 Load-bearing settings: none. The plugin's value is its actions (rename, merge, find), not its persistent config.
 
-Operational note: Tag Wrangler operates on `tags:` frontmatter and inline `#tags`. Memoria's tags are primarily in frontmatter (per the [vault/README.md](../../vault/README.md) schema); inline `#tags` are human-added in note bodies. Both surfaces are visible to Tag Wrangler.
+Operational note: Tag Wrangler operates on `tags:` frontmatter and inline `#tags`. Memoria's tags are primarily in frontmatter (per the [vault/README.md](../../vault/README.md) schema); inline `#tags` are human-added in note bodies. Both are visible to Tag Wrangler.
 
 <!-- memoria-nav -->
 

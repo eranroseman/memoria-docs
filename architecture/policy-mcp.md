@@ -23,7 +23,7 @@ Every vault action goes through `check_permission(profile, action, path, task_id
 | `allow` | Action proceeds. Logged only if the lane's `policy.require` includes `audit_log`. | Path matches the lane's `policy.allow` patterns, no `policy.deny` matches, and the action is routine. |
 | `allow_with_log` | Action proceeds. Audit entry is **mandatory** regardless of lane policy. | The action is allowed but operationally significant — cross-zone moves, reads of canonical content, any action with `flags.explicit_authorization`. |
 | `deny` | Action is blocked; the worker must escalate or pick a different path. Always logged. | Path matches a `policy.deny` rule, or no rule matches at all (default-deny). |
-| `dry_run` | Action is logged and reported but not performed; the worker should escalate to a board comment for human approval. Always logged. | Path is in a canonical zone (`30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, `50-deliverables/`) even if the profile is otherwise allowed. |
+| `dry_run` | Action is logged and reported but not performed; the worker should escalate to a board comment for human approval. Always logged. | Path is in a review-gated zone (`30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, `50-deliverables/`) even if the profile is otherwise allowed. |
 
 `task_id` is **required**, not optional. Hermes delegated children return summaries rather than sharing live state, so every MCP request must carry full identity from the parent handoff packet — the MCP cannot ask the worker "which task are you running?" mid-decision.
 
@@ -33,7 +33,7 @@ The MCP guards eight distinct actions. The distinction matters: a Librarian with
 
 | Action | Meaning | Default disposition |
 | --- | --- | --- |
-| `read` | Read a file's content. | `allow` for paths inside `policy.allow.read`; `allow_with_log` for canonical zones and cross-zone reads. |
+| `read` | Read a file's content. | `allow` for paths inside `policy.allow.read`; `allow_with_log` for review-gated zones and cross-zone reads. |
 | `write` | Create or overwrite a file's content. | The dominant case. Governed by `policy.allow.write`. |
 | `append` | Add to the end of an existing file. | Used for audit logs, session logs. Allowed for the file's own lane. |
 | `move` | Rename or relocate a file. | `allow_with_log` for same-zone; `dry_run` for cross-zone unless `flags.explicit_authorization`. |
@@ -44,8 +44,8 @@ The MCP guards eight distinct actions. The distinction matters: a Librarian with
 
 Two structural rules sit above the lane configuration:
 
-- **Canonical zones are never auto-written.** Even if a worker's lane policy would otherwise allow it, writes to canonical synthesis or deliverables degrade to `dry_run`. The human approves the write; the worker does not perform it directly.
-- **Linter auto-fix is class-gated.** When `profile = "memoria-linter"` and `action = "auto_fix"`, the MCP requires `flags.class ∈ {"safe-and-unambiguous", "authorized-targeted"}`. Schema / content changes and canonical edits are always `deny` regardless of who requests them. This is the runtime enforcement of the auto-fix policy in [linter.md](../profiles/linter.md#auto-fix-policy).
+- **Review-gated zones are never auto-written.** Even if a worker's lane policy would otherwise allow it, writes to a review-gated zone degrade to `dry_run`. The human approves the write; the worker does not perform it directly.
+- **Linter auto-fix is class-gated.** When `profile = "memoria-linter"` and `action = "auto_fix"`, the MCP requires `flags.class ∈ {"safe-and-unambiguous", "authorized-targeted"}`. Schema / content changes and review-gated-zone edits are always `deny` regardless of who requests them. This is the runtime enforcement of the auto-fix policy in [linter.md](../profiles/linter.md#auto-fix-policy).
 
 ## Skill-conditional policy
 
@@ -131,7 +131,7 @@ The MCP is invoked over MCP-standard JSON. Every request carries full identity; 
 - `reason` is short prose for the audit log; useful when the same `policy_rule` fires for many paths.
 - `task_id` is required (see "decision protocol" above for why).
 - `flags.explicit_authorization` upgrades the disposition for `move` and `delete` actions.
-- `flags.proposed_only` permits a soft write to a canonical zone that lives outside the canonical file (e.g., a board comment proposing a change).
+- `flags.proposed_only` permits a soft write to a review-gated zone that lives outside the canonical file (e.g., a board comment proposing a change).
 - `flags.class` is required when `action = "auto_fix"`.
 
 **Response — allow / allow_with_log:**
@@ -159,8 +159,8 @@ The MCP is invoked over MCP-standard JSON. Every request carries full identity; 
 ```json
 {
   "decision": "dry_run",
-  "policy_rule": "canonical.dry_run",
-  "message": "Canonical zone write requires explicit approval — surface as board comment"
+  "policy_rule": "review_gated.dry_run",
+  "message": "Review-gated zone write requires explicit approval — surface as board comment"
 }
 ```
 
@@ -195,7 +195,7 @@ The append-only JSONL format means the trail survives crashes, is grep-friendly,
 
 ## Implementation requirement: SHA-256 hashing
 
-Computing `before_hash` and `after_hash` is the policy MCP's responsibility, not the worker's. The discipline:
+Computing `before_hash` and `after_hash` is the policy MCP's responsibility, not the worker's. The rule:
 
 - **Hash the file, not the request.** The MCP reads the file content at the moment of the check (for `before_hash`) and immediately after the write completes (for `after_hash`). Workers never compute or supply hashes — they would be the wrong source of truth.
 - **Always SHA-256.** No configurable algorithm, no truncation. Stored as `"sha256:<64-hex-chars>"` so the algorithm is self-describing.

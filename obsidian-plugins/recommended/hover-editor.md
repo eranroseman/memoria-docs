@@ -1,0 +1,23 @@
+---
+mode: how-to
+audience: operator
+topic: plugins
+---
+
+# hover-editor
+
+Recommended. In a citation-heavy draft, a paragraph with 8 wikilinks (`[[mamykina2010sense]]`, `[[veinot2018good]]`, `[[chen2021pipeline]]`, etc.) becomes a chore to verify when each link requires opening a new pane. Hover Editor lets the human hover over any wikilink and see the linked note in a popup, dismissed by moving the cursor away. The drafting flow becomes: write a citation, hover-check that the linked claim note really says what's being cited, continue writing.
+
+Load-bearing settings:
+
+- `popoverHoverParent: "workspace-leaf"` — pin the popover to the workspace, not to the cursor. Cursor-anchored popovers move when scrolling, which is disorienting in a long draft.
+- `triggerDelay` — set to ~200ms. Lower than that and accidental hovers create flashing popovers; higher and the verification flow feels slow.
+- The plugin also enables editable popovers — Memoria's discipline is **read-only popovers**: hover to verify, click to open in a real pane to edit. Set `editableInPopover: false` if the version exposes it.
+
+<!-- memoria-nav -->
+
+---
+
+[← Previous: supercharged-links + obsidian-style-settings](supercharged-links.md)
+
+[Next: tag-wrangler →](tag-wrangler.md)

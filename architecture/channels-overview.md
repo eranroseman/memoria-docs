@@ -4,49 +4,49 @@ audience: system-designer
 topic: architecture
 ---
 
-# Human surfaces
+# Human channels
 
-This document covers Memoria's five human-facing channels — Obsidian dashboards + ACP panes, command palette, CLI, Telegram, API server — and the per-channel discipline that keeps the system from feeling like a control panel. The architecture overview that names these surfaces lives in [README.md §"Human surfaces"](README.md#human-surfaces); this doc carries the per-channel detail.
+This document covers Memoria's five human-facing channels — Obsidian dashboards + ACP panes, command palette, CLI, Telegram, API server — and the per-channel discipline that keeps the system from feeling like a control panel. The architecture overview that names these channels lives in [README.md §"Human channels"](README.md#human-channels); this doc carries the per-channel detail.
 
-The three layers ([board](../board/README.md), [workers/profiles](../profiles/README.md), [vault](../vault/README.md)) are *what the system is*. Surfaces are *where the human sees it and acts on it*. Five surfaces cover the human's interaction with Memoria. The defining discipline: **each surface owns one cognitive mode.** Using a surface for the wrong mode (Telegram for desktop work, CLI for daily ops) produces the "every operation feels slightly off" drift that erodes a workflow.
+The three layers ([board](../board/README.md), [workers/profiles](../profiles/README.md), [vault](../vault/README.md)) are *what the system is*. **Channels** are *where the human sees it and acts on it* — five of them, each owning one cognitive mode. (Inside the Obsidian channel, state is rendered further as one of four **surfaces** — persistent, modal, inline, ambient; that's a distinct taxonomy, covered in [surfaces/README.md](../surfaces/README.md). See the [glossary](../glossary.md#surfaces-and-channels) for how the two terms relate.) The defining discipline: **each channel owns one cognitive mode.** Using a channel for the wrong mode (Telegram for desktop work, CLI for daily ops) produces the "every operation feels slightly off" drift that erodes a workflow.
 
-| Surface | Mode | Use it for |
+| Channel | Mode | Use it for |
 | --- | --- | --- |
 | **Obsidian dashboards + ACP panes** | Desktop, focused, deliberate | Daily triage, reading, authoring, agent conversations on the active note. |
 | **Command palette** (Obsidian) | Desktop, instant, frequent | The five-to-ten most-used actions: capture fleeting, ask about this note, lint current note, new project. |
 | **CLI** (`hermes …`) | Desktop, occasional, precise | Forensic queries against the audit log, profile administration, manual dispatch, anything benefiting from precision over discoverability. |
 | **Telegram** | Mobile, async, lightweight | Fleeting capture on the go, source-URL capture, urgent push notifications (retry threshold hit, drift alarm, cron failure). Not for drafting or review. |
-| **API server** (port 8642) | Programmatic, integration | File-system watchers, Zotero hooks, git post-commit, cross-machine dispatch. Never the surface for direct human action. |
+| **API server** (port 8642) | Programmatic, integration | File-system watchers, Zotero hooks, git post-commit, cross-machine dispatch. Never the channel for direct human action. |
 
-Inside Obsidian, the four-type surface taxonomy (persistent dashboards, modal workspaces, inline callouts, ambient status bar) is the human-facing companion to this table. The two views are complementary: this table answers "which channel," and [surfaces/README.md](../surfaces/README.md) answers "what kind of thing appears where, inside Obsidian."
+Inside Obsidian, the four-type surface taxonomy (persistent dashboards, modal workspaces, inline callouts, ambient status line) is the human-facing companion to this table. The two views are complementary: this table answers "which channel," and [surfaces/README.md](../surfaces/README.md) answers "what kind of thing appears where, inside Obsidian."
 
-## Surface failure modes
+## Channel failure modes
 
-The discipline is consciously picking the right surface for each operation. The failure modes happen when one surface gets used for another's job:
+The point is consciously picking the right channel for each operation. The failure modes happen when one channel gets used for another's job:
 
 - **Telegram for things that need the desktop** → ignored notifications. Once Telegram has cried wolf with a message that should have been a dashboard query, the human starts ignoring all Telegram messages — including the urgent ones.
-- **CLI for things you do daily** → eroded habit. If `hermes kanban ...` is the human's path to approving link suggestions, the friction of dropping to a terminal compounds across the day; eventually the suggestions stop getting approved.
+- **CLI for daily operations** → eroded habit. If `hermes kanban ...` is the human's path to approving link suggestions, the friction of dropping to a terminal compounds across the day; eventually the suggestions stop getting approved.
 - **Dashboards for things that need a script** → manual repetition that should be automated. A weekly "check this query, copy these card IDs, run this command" pattern is an API integration the human hasn't written yet.
 - **API directly when a command exists** → reinventing wheels. Curl-ing the API to do what `Memoria: capture fleeting` already does is technical debt disguised as flexibility.
 
-The corrective is one question per operation: "what surface is this *kind* of work?" Most failures are answered by the table above.
+The corrective is one question per operation: "what channel is this *kind* of work?" Most failures are answered by the table above.
 
 Two principles:
 
-- **Notifications must change what you'd do in the next 30 minutes**, or they shouldn't be notifications. Routine approvals wait for the dashboard; only hard blockers and drift alarms page Telegram.
-- **An admin GUI, if ever built, is an Obsidian plugin — not a separate web app.** Extending Obsidian-as-interface composes cleanly with the existing five surfaces; adopting a peer system (e.g., a hackathon-grade Hermes-admin web UI) would create a sixth surface competing for the same modes, and a chat tab that bypasses the policy MCP entirely. The recommended shape — a read-only sidebar pane reaching the API on loopback — lives in [roadmap/future-directions.md](../roadmap/future-directions.md#memoria-inspector-obsidian-plugin).
+- **Notifications must change what the human would do in the next 30 minutes**, or they shouldn't be notifications. Routine approvals wait for the dashboard; only hard blockers and drift alarms page Telegram.
+- **An admin GUI, if ever built, is an Obsidian plugin — not a separate web app.** Extending Obsidian-as-interface composes cleanly with the existing five channels; adopting a peer system (e.g., a hackathon-grade Hermes-admin web UI) would create a sixth channel competing for the same modes, and a chat tab that bypasses the policy MCP entirely. The recommended shape — a read-only sidebar pane reaching the API on loopback — lives in [roadmap/future-directions.md](../roadmap/future-directions.md#memoria-inspector-obsidian-plugin).
 
-## CLI is the forensic surface
+## CLI is the forensic channel
 
-The CLI surface is for **rare, precise operations** — debugging stuck cards, inspecting audit trails, manual dispatch outside the normal workflow. The discipline: CLI is right for forensic work because forensic work is rare and benefits from precision. A UI for rare operations is mostly empty real estate; a CLI for rare operations is invisible until needed and then exactly the right shape.
+The CLI channel is for **rare, precise operations** — debugging stuck cards, inspecting audit trails, manual dispatch outside the normal workflow. The rule: CLI is right for forensic work because forensic work is rare and benefits from precision. A UI for rare operations is mostly empty real estate; a CLI for rare operations is invisible until needed and then exactly the right shape.
 
 Six use case categories cover what the CLI is for:
 
-**1. Card inspection.** When a card has been retried repeatedly over two days, you want to know why. `hermes kanban show card-<id>` returns full state, retry count, blocker reason, and handoff summary in one screen — faster than navigating to the board dashboard and clicking through.
+**1. Card inspection.** When a card has been retried repeatedly over two days, the human wants to know why. `hermes kanban show card-<id>` returns full state, retry count, blocker reason, and handoff summary in one screen — faster than navigating to the board dashboard and clicking through.
 
 **2. Lane health checks.** `hermes lane status library` shows [trust score](../glossary.md#observability-and-verdicts), recent deny rate, last successful task, current queue depth. Run when something feels off but the dashboards haven't flagged anything yet.
 
-**3. Audit forensics.** `hermes audit --card <id>` or `hermes audit --lane mapper --since 24h` walks the audit log filtered to the slice you care about. Faster than opening the audit-log dashboard for narrow queries; the dashboard is for trends, the CLI is for specific traces.
+**3. Audit forensics.** `hermes audit --card <id>` or `hermes audit --lane mapper --since 24h` walks the audit log filtered to the slice the human cares about. Faster than opening the audit-log dashboard for narrow queries; the dashboard is for trends, the CLI is for specific traces.
 
 **4. Manual dispatch.** `hermes dispatch --lane mapper --task scope-project --project jitai-review` creates a card without waiting for a file-system trigger or cron. Useful when the human wants to invoke something on demand outside the normal flow — for example, re-running a scope when new sources have been added mid-project.
 
@@ -82,11 +82,11 @@ These are examples, not an authoritative catalog. The full Hermes CLI surface is
 
 **What CLI is NOT for.** Daily operations (capture, processing, drafting) go through the command palette inside Obsidian — see [`surfaces/command-palette.md`](../surfaces/command-palette.md). Triage of approval queues belongs in the dashboards plus inline callout buttons, not the terminal. Reading content belongs in Obsidian; opening files in a terminal is hostile.
 
-**Mental model.** CLI is the surgical tool. Sharp, precise, occasional. If the human finds themselves using the CLI more than a few times a week, something else (the dashboards, inline UI, or command palette) needs improving — the friction of dropping to a terminal is a signal that a more frequent operation lacks its proper surface.
+**Mental model.** CLI is the surgical tool. Sharp, precise, occasional. If the human finds themselves using the CLI more than a few times a week, something else (the dashboards, inline UI, or command palette) needs improving — the friction of dropping to a terminal is a signal that a more frequent operation lacks its proper channel.
 
 ## Telegram has two distinct uses
 
-Telegram is the asynchronous, mobile-reachable surface. It serves two distinct purposes that are worth keeping separate in the human's mental model — they have different disciplines and different failure modes.
+Telegram is the asynchronous, mobile-reachable channel. It serves two distinct purposes that are worth keeping separate in the human's mental model — they have different disciplines and different failure modes.
 
 ### Use 1: Notifications that can't wait
 
@@ -127,9 +127,9 @@ Telegram is where the human reaches Hermes when they're not at their desk. The i
 
 ### Telegram toolset is narrower than CLI
 
-Hermes profiles can expose the same capability surface (browser, code execution, terminal, delegation, memory, skills, etc.) through any registered surface. Telegram is the **single surface where the toolset should be deliberately narrower** than the host profile. Mobile is for thinking and capture; running code, opening browsers, or shelling out from a phone is a footgun without commensurate value — the small screen makes auditing the action's effects unreliable, and the always-on connectivity makes accidental triggers easier than at the desk.
+Hermes profiles can expose the same capability surface (browser, code execution, terminal, delegation, memory, skills, etc.) through any registered channel. Telegram is the **single channel where the toolset should be deliberately narrower** than the host profile. Mobile is for thinking and capture; running code, opening browsers, or shelling out from a phone is a footgun without commensurate value — the small screen makes auditing the action's effects unreliable, and the always-on connectivity makes accidental triggers easier than at the desk.
 
-Memoria's recommended Telegram toolset per profile (subset of the full surface):
+Memoria's recommended Telegram toolset per profile (subset of the full capability surface):
 
 - `clarify` — ask the human a follow-up question
 - `memory` — read profile / lane / project memory
@@ -140,13 +140,13 @@ Memoria's recommended Telegram toolset per profile (subset of the full surface):
 
 Explicitly **not** on Telegram: `code_execution`, `terminal`, `delegate_task`, `web_search`, `fetch_url`. These are desktop-CLI tools; routing them through Telegram is what produces the "I dispatched a long-running job from my phone and forgot about it" failure mode. The narrowing is enforced per profile in the Hermes runtime config, not just by convention.
 
-### Other messaging surfaces
+### Other messaging channels
 
-Hermes can integrate with Discord, WhatsApp, Slack, Signal, Teams, and others. **Leave them off until there's a concrete need.** Each enabled surface is another channel that competes for the human's attention; each one becomes a place notifications can land, and every channel demands its own discipline about what to wire. Telegram covers the mobile-async case adequately for a single-human vault. If a collaborator joins, or a specific channel is the human's existing primary (e.g., a Slack workspace), enabling that channel becomes worth the attention cost — but never as a parallel to Telegram. One mobile-async channel is the working set.
+Hermes can integrate with Discord, WhatsApp, Slack, Signal, Teams, and others. **Leave them off until there's a concrete need.** Each enabled channel competes for the human's attention; each one becomes a place notifications can land, and every channel demands its own discipline about what to wire. Telegram covers the mobile-async case adequately for a single-human vault. If a collaborator joins, or a specific channel is the human's existing primary (e.g., a Slack workspace), enabling that channel becomes worth the attention cost — but never as a parallel to Telegram. One mobile-async channel is the working set.
 
 ## API server: integration and automation
 
-The API server on port 8642 is where Hermes connects to other systems. It's the least-used surface day-to-day but the most enabling for everything else — most of Memoria's "this just happens automatically overnight" magic relies on the API being reachable to triggers, watchers, and hooks.
+The API server on port 8642 is where Hermes connects to other systems. It's the least-used channel day-to-day but the most enabling for everything else — most of Memoria's "this just happens automatically overnight" magic relies on the API being reachable to triggers, watchers, and hooks.
 
 Seven integration patterns cover what the API is used for:
 

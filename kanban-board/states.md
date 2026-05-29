@@ -11,7 +11,7 @@ The board tracks **two orthogonal lifecycles**:
 1. **Execution** — the Hermes built-in `status` field, a fixed seven-value enum. This is what the dispatcher and workers move.
 2. **Review** — a Memoria overlay stored in `metadata.review_status` (plus `metadata.agent_verdict`). Hermes has no review gate, so Memoria layers one on. It rides on top of `status: done`.
 
-Keeping them separate is what lets `status` hold real Hermes values while Memoria's approval semantics live where Hermes has a slot for them (the free-form `metadata` JSON). For the field definitions see [card-schema.md](card-schema.md); for the conceptual narrative see [README.md](README.md).
+Keeping them separate is what lets `status` hold real Hermes values while Memoria's approval semantics live where Hermes has a slot for them (the free-form `metadata` JSON). For the field definitions see [card-schema.md](card-schema.md); for the conceptual narrative see [README.md](README.md); for term disambiguation see the [glossary](../glossary.md).
 
 ## Execution lifecycle (Hermes `status`)
 
@@ -48,8 +48,8 @@ unreviewed ──► requested ──► in-review ──► approved   (canonic
 | `unreviewed` | No review requested yet. The default while a card is `triage` → `running`. |
 | `requested` | Worker handed off for review (set on `kanban_complete`; `status` is now `done`). |
 | `in-review` | A human (or agent, for its recommendation) is examining the work. |
-| `approved` | The human accepted the work as canonical. This is the old `status: accepted`. |
-| `rejected` | The human declined this pass. The old `status: declined`. |
+| `approved` | The human accepted the work as canonical. |
+| `rejected` | The human declined this pass. |
 
 The review lifecycle only becomes meaningful once `status` reaches `done`. A card can be `status: running` with `review_status: unreviewed` — that is the normal mid-flight state.
 
@@ -75,15 +75,17 @@ The card stays on the board until `status` reaches `archived`.
 
 Lanes are specialist execution paths under the board. A lane **is** an `assignee` value — the dispatcher routes a card to a lane by matching `task.assignee` to a Hermes profile (or a registered external worker). There is no separate `lane` field; tasks with an unresolved `assignee` stay in `ready` with a `skipped_nonspawnable` event.
 
-| Lane (`assignee`) | Primary profile | Input | Exit |
-| --- | --- | --- | --- |
-| Library | Librarian | Candidate paper / item | `done` (`review_status: requested`) |
-| Mapping | Mapper | Project brief | `done` (scope-map ready) |
-| Socratic | Socratic | Human-initiated | N/A (synchronous; no queue) |
-| Writer | Writer | Approved evidence | `done` (draft ready) |
-| Verify | Verifier | Draft commit | `done` with `agent_verdict` ∈ `verify-clean` / `verify-needs-revision` / `verify-needs-attention` |
-| Linter | Linter | Candidate or draft | `done` with `agent_verdict` (pass or fix-needed) |
-| Coder | Coder | Project brief | `done` (code artifact ready) |
+Every lane exits to `status: done` (Socratic excepted — it is synchronous, with no card lifecycle); what differs is what "done" means and which review signal applies. The exit contract is how the board enforces that nobody self-approves — reaching `done` is not the same as `review_status: approved`.
+
+| Lane (`assignee`) | Primary profile | Input | Exit | What "done" means |
+| --- | --- | --- | --- | --- |
+| Library | Librarian | Candidate paper / item | `done` (`review_status: requested`) | Paper notes created, enriched, classified; ready for human classification. |
+| Mapping | Mapper | Project brief | `done` (`review_status: requested`) | Scope-map (or gap-report, cluster-map, comparative-brief) written; ready for human decision. |
+| Socratic | Socratic | Human-initiated | N/A — synchronous; no card lifecycle | Human closes the ACP pane to end. |
+| Writer | Writer | Approved evidence | `done` (`review_status: requested`) | Answer draft ready; commit triggers the Verifier hook for `verify` cards. |
+| Verify | Verifier | Draft commit | `done` (`agent_verdict` triple) | Verification report written; human translates `verify-clean` / `verify-needs-revision` / `verify-needs-attention` to a verdict. |
+| Linter | Linter | Candidate or draft | `done` (`agent_verdict`) | Structural check completed (pass or fix-needed); report attached as comment. |
+| Coder | Coder | Project brief | `done` (`review_status: requested`) | Code artifact ready; needs review of code and provenance. |
 
 Lanes are execution paths, not separate boards. Every card sits in one `status` at a time; the `assignee` determines who can claim it.
 
@@ -93,7 +95,7 @@ There is no Review lane and no Orchestration lane. Approval decisions are human 
 
 Review is first-class state in `metadata`, not a comment. The full rules:
 
-### Rule 0: Agent recommendation and human acceptance are separate
+### Rule 1: Agent recommendation and human acceptance are separate
 
 A card carries two distinct approval signals:
 
@@ -112,7 +114,7 @@ review:                review_status: requested ──► approved (human gate)
 
 The agent gate is necessary but not sufficient. Human acceptance (`review_status: approved`) is the canonical promotion gate; the agent verdict is the recommendation feeding into it.
 
-### Rule 1: Review is a state, not a comment
+### Rule 2: Review is a state, not a comment
 
 A card is canonical only after a human sets `review_status: approved`, not because a worker says it is finished. The required `metadata` keys:
 
@@ -125,21 +127,21 @@ A card is canonical only after a human sets `review_status: approved`, not becau
 
 If a comment says "I reviewed this" but `review_status` is still `unreviewed`, the card is unreviewed. The field is authoritative.
 
-### Rule 2: Review states block dispatch
+### Rule 3: Review states block dispatch
 
-Cards in `done` (awaiting review), `blocked`, or `triage` are not claimable by non-review workers until state changes. Hermes does not dispatch these statuses; Memoria additionally checks `review_status` before promoting. Non-dispatchable means non-dispatchable.
+Cards in `done` (awaiting review), `blocked`, `triage`, or `todo` are not claimable by non-review workers until state changes. Hermes does not dispatch these statuses; Memoria additionally checks `review_status` before promoting. Non-dispatchable means non-dispatchable.
 
-### Rule 3: Review has ownership
+### Rule 4: Review has ownership
 
 The reviewing party (human, Verifier, Linter) is explicitly recorded in `review_owner`, so the board can show who owes the next decision. No silent promotes. Accountability is preserved.
 
-### Rule 4: Review is a gate in the lifecycle
+### Rule 5: Review is a gate in the lifecycle
 
-Writer and Coder can finish their own slices (`status: done`), but the card is not canonical until a human sets `review_status: approved`. If the human rejects, the card is archived with an explicit outcome — `superseded` if a revision card spawns (carrying `metadata.supersedes`), `discarded` if the work is abandoned. The original card never silently reopens; revisions live on a new card with provenance back to the original (see [Post-rejection paths](README.md#post-rejection-paths)).
+Writer and Coder can finish their own slices (`status: done`), but the card is not canonical until a human sets `review_status: approved`. On rejection the original card never silently reopens — it is archived with an explicit outcome, and any rework starts on a fresh card. The supersede-vs-discard decision is a separate human action; see [Post-rejection paths](README.md#post-rejection-paths).
 
 ### Review verdict vocabulary
 
-Every review pass ends with exactly one of three verdicts. The verdict drives the next transition. **The human issues the canonical verdict**; agents (Verifier, Linter) attach recommendation-only verdicts in `agent_verdict` that the human can adopt or override.
+Every review pass ends with exactly one of three verdicts. The verdict drives the next transition. **The human issues the verdict**; agents (Verifier, Linter) attach recommendation-only verdicts in `agent_verdict` that the human can adopt or override.
 
 | Verdict | Meaning | Resulting state |
 | --- | --- | --- |
@@ -154,23 +156,7 @@ Rules:
 - The verdict and reason live on the card (`metadata` + comment log); do not rely on chat or external comments.
 - `escalate` is the right verdict whenever uncertainty would otherwise default to `approve`.
 
-**Verifier-specific verdicts.** Verifier produces a more granular triple in `metadata.agent_verdict` on `verify` cards: `verify-clean`, `verify-needs-revision`, `verify-needs-attention` (see [verifier.md](../profiles/verifier.md#verdict-semantics)). These are recommendations the human translates into one of the three canonical verdicts. A `verify-clean` is typically promoted to `approve`; `verify-needs-revision` to `reject` (the human then chooses to spawn a revision card or discard, per [Post-rejection paths](README.md#post-rejection-paths)); `verify-needs-attention` to either `reject` or `escalate` depending on the human's read.
-
-## Lane-level rules
-
-Each lane has its own exit contract. All lanes exit to `status: done`; the difference is what "done" means and which review signal applies.
-
-| Lane | Exit | What "exit" means |
-| --- | --- | --- |
-| Library | `done` (`review_status: requested`) | Paper notes created, enriched, classified; ready for human classification. |
-| Mapping | `done` (`review_status: requested`) | Scope-map (or gap-report, cluster-map, comparative-brief) written; ready for human decision. |
-| Socratic | N/A | Synchronous; no card lifecycle. Human closes the ACP pane to end. |
-| Writer | `done` (`review_status: requested`) | Answer draft ready; commit triggers the Verifier hook for `verify` cards. |
-| Verify | `done` (`agent_verdict` triple) | Verification report written; human translates the triple to a canonical verdict. |
-| Linter | `done` (`agent_verdict`) | Structural check completed; report attached as comment. |
-| Coder | `done` (`review_status: requested`) | Code artifact ready; needs review of code and provenance. |
-
-The exit contract is how the board enforces that nobody self-approves: reaching `done` is not the same as `review_status: approved`.
+**Verifier-specific verdicts.** Verifier produces a more granular triple in `metadata.agent_verdict` on `verify` cards: `verify-clean`, `verify-needs-revision`, `verify-needs-attention` (see [verifier.md](../profiles/verifier.md#verdict-semantics)). These are recommendations the human translates into one of the three verdicts. A `verify-clean` is typically promoted to `approve`; `verify-needs-revision` to `reject` (the human then chooses to spawn a revision card or discard, per [Post-rejection paths](README.md#post-rejection-paths)); `verify-needs-attention` to either `reject` or `escalate` depending on the human's read.
 
 ## WIP limits
 
@@ -178,7 +164,7 @@ Recommended work-in-progress limits to prevent overload:
 
 - **Active per profile**: 1. A profile holds one `running` card at a time.
 - **Review queue depth**: bounded (e.g. 5). When the human's queue of `done` cards awaiting review exceeds the limit, the Kanban dispatcher delays new card creation on that lane (or escalates a notification via Telegram, depending on configuration).
-- **Synthesis lane**: bounded (e.g. 3). Too many synthesis cards at once means quality drops because evidence cannot be fully integrated.
+- **Writer lane (synthesis)**: bounded (e.g. 3). Too many drafts in flight at once means quality drops because evidence cannot be fully integrated.
 
 These are operational tuning parameters, not architectural constants.
 

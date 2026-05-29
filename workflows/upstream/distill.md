@@ -11,7 +11,7 @@ topic: workflows
 
 ## Precondition
 
-The source has been **discussed** ([Discuss](discuss.md)). Distill doesn't fire until the human has thought about the source through Socratic conversation. If you're about to write a claim from a source you haven't discussed yet, run [Discuss](discuss.md) first.
+The source has been **discussed** ([Discuss](discuss.md)). Distill doesn't fire until the human has thought about the source through Socratic conversation. Before writing a claim from a source that hasn't been discussed yet, run [Discuss](discuss.md) first.
 
 ## Steps
 
@@ -43,7 +43,7 @@ Claim note titles state the **claim**, not the **topic**. `jitai-timing-accuracy
 
 ## When to create vs. extend
 
-- New claim that changes how you understand an existing concept → extend the existing claim note.
+- New claim that changes how an existing concept is understood → extend the existing claim note.
 - New claim with no existing note → create a new claim note.
 - Claim that contradicts an existing claim → create a new claim note documenting the tension.
 

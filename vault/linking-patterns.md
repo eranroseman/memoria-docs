@@ -43,34 +43,34 @@ The expected link topology — what links to what — by note type:
 
 ```text
 paper-note ({citekey})
-  ↔ person-note               (author)
-  ↔ venue-note                (published in)
-  ↔ organization-note                  (author affiliation)
-  ↔ item-note                 (uses or evaluates)
-  ↔ paper-note (other)       (cites / cited by)
+  ↔ person-note         (author)
+  ↔ venue-note          (published in)
+  ↔ organization-note   (author affiliation)
+  ↔ item-note           (uses or evaluates)
+  ↔ paper-note (other)  (cites / cited by)
 
 claim-note
-  → paper-note               (citekey, supports the claim)
-  ↔ claim-note (other)        (concept link — supports, contradicts, refines)
-  → moc                       (frontmatter moc:)
+  → paper-note          (citekey, supports the claim)
+  ↔ claim-note (other)  (concept link — supports, contradicts, refines)
+  → moc                 (frontmatter moc:)
 
 person-note
-  ↔ paper-note               (authored)
-  ↔ organization-note                  (affiliated with)
+  ↔ paper-note          (authored)
+  ↔ organization-note   (affiliated with)
 
 organization-note
-  ↔ person-note               (members, affiliates)
-  ↔ paper-note               (institutional output)
+  ↔ person-note         (members, affiliates)
+  ↔ paper-note          (institutional output)
 
 item-note
-  ↔ paper-note               (cited in or evaluating)
-  ↔ organization-note                  (maintained by)
-  ↔ code-note                 (used in project)
+  ↔ paper-note          (cited in or evaluating)
+  ↔ organization-note   (maintained by)
+  ↔ code-note           (used in project)
 
 code-note
-  → paper-note               (motivating evidence)
-  → project-note              (project it belongs to)
-  → item-note                 (dependencies)
+  → paper-note          (motivating evidence)
+  → project-note        (project it belongs to)
+  → item-note           (dependencies)
 ```
 
 Single arrows (`→`) point from the paper note carrying the link. Double arrows (`↔`) are bidirectional — both notes carry pointers.
@@ -85,7 +85,7 @@ MOCs require enough mass to be worth navigating. Building them too early creates
 | --- | --- |
 | **Do not create at init** | A new vault should not have MOCs. Dataview queries and search cover navigation until clusters form. |
 | **Topic MOC** | Create when a topic has **≥ 15–20 notes** between `20-sources/01-papers/` and `30-synthesis/01-claims/`. |
-| **Domain MOC** | Create when you have **at least 3 topic MOCs** that share a domain. A domain MOC with one child topic is just a topic MOC with extra steps. |
+| **Domain MOC** | Create when there are **at least 3 topic MOCs** that share a domain. A domain MOC with one child topic is just a topic MOC with extra steps. |
 | **Child MOC** | Split a parent when a branch has **> 20 claim notes and > 10 paper notes**. |
 | **Project MOC** | One per dissertation chapter or formal review. Create on project start; archive on project close. |
 

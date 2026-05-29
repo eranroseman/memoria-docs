@@ -6,15 +6,15 @@ topic: dashboards
 
 # `discuss-queue` — design summary
 
-**Runtime artifact.** This dashboard ships at `00-meta/01-dashboards/discuss-queue.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview. The summary below covers its design role; the runtime queries live in the vault file.
+**Runtime artifact.** Ships at `00-meta/01-dashboards/discuss-queue.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview; the runtime queries live there. This page covers the design role.
 
 ## Mission
 
-Surface every paper note that has been fully classified but hasn't yet had a Socratic processing pass. This is the **upstream-cognitive-discipline dashboard** — if cards pile up here, the human's processing rhythm is slipping. The corollary signal is at the other end: when the list is short, the human's processing is keeping up with their ingest rate. Discuss-queue exists to surface that asymmetry directly, before it becomes a synthesis backlog three months later.
+List every fully-classified (`lifecycle: current`) paper note that hasn't yet had a Socratic processing pass. Open it during a reading session, when deciding which source to think about next. This is the **upstream-cognitive-discipline dashboard** — a long list means the human's processing is falling behind their ingest rate; a short one means it's keeping up. Making that asymmetry visible early is the point, before it hardens into a synthesis backlog three months later.
 
 ## What this dashboard is not
 
-- **Not [`reading-pipeline`](reading-pipeline.md).** Reading-pipeline is broader (any `partial` paper note in flight); discuss-queue is narrower (specifically `full`-classified notes awaiting Socratic processing). Reading-pipeline asks "what's in the middle band?"; discuss-queue asks "what owes me a Socratic conversation?"
+- **Not [`reading-pipeline`](reading-pipeline.md).** Reading-pipeline is broader — papers still in active processing (`lifecycle: proposed`) plus claim-note maturity; discuss-queue is the narrow slice of fully-classified (`lifecycle: current`) notes still awaiting Socratic processing. Reading-pipeline asks "what's in flight?"; discuss-queue asks "what owes me a Socratic conversation?"
 - **Not a generic to-do list.** The implied next action is specifically *Socratic processing* (workflow Discuss) — invoke the Socratic profile, work through the questions, then write a claim note. Surfacing the queue without the implied next action would just be a list.
 - **Not Mapper's territory.** Discuss-queue is per-source upstream work. Mapper's outputs (corpus-map, gap-report, comparative-brief) operate across sources at a different abstraction.
 
@@ -22,14 +22,15 @@ Surface every paper note that has been fully classified but hasn't yet had a Soc
 
 - **Five-or-fewer rows = healthy. Ten or more = schedule a reading session.** These are human-facing health thresholds called out in the dashboard, not enforced by any system. The point is to make the queue's depth read at a glance.
 - **`lifecycle: current` AND no `processed:` tag is the gate.** A paper note is on the queue when classification is complete and Socratic hasn't happened yet. Adding a `processed:` task line removes it from the queue.
-- **Open during a reading session, not as a glance.** Different cadence from [Daily Health](README.md). The human opens discuss-queue when they're sitting down to read — not as a daily health-monitor signal.
-- **The Reading & Processing workspace surfaces this dashboard.** Per [surfaces/modal.md](../surfaces/modal.md), discuss-queue is the left pane of the Cmd-2 workspace alongside [`reading-pipeline`](reading-pipeline.md). The workspace exists specifically to protect this discipline.
+- **A reading-session cadence, not a daily glance.** Unlike [Daily Health](README.md)'s morning health check, discuss-queue is consulted only at reading time — a deliberate cadence choice that keeps it from becoming another daily alarm.
+- **The Reading & Processing workspace includes this dashboard.** Per [surfaces/modal.md](../surfaces/modal.md), discuss-queue is the left pane of the Cmd-2 workspace alongside [`reading-pipeline`](reading-pipeline.md). The workspace exists specifically to protect this discipline.
 
 ## Related
 
-- [workflows/upstream/discuss.md](../workflows/upstream/discuss.md) — the workflow this dashboard surfaces
+- [workflows/upstream/discuss.md](../workflows/upstream/discuss.md) — the workflow this dashboard feeds
 - [Socratic design summary](../profiles/socratic.md) — the profile invoked to drain the queue
 - [`reading-pipeline`](reading-pipeline.md) — broader sibling view
+- [vault/README.md](../vault/README.md) — definitions of the `lifecycle` states (`proposed` / `current`) this dashboard gates on
 - [surfaces/modal.md](../surfaces/modal.md) — the Reading & Processing workspace this dashboard anchors
 
 <!-- memoria-nav -->

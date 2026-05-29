@@ -10,9 +10,9 @@ Hermes is the worker layer, split into seven specialist profiles. Each has a foc
 
 ## What's in this document
 
-**What the profiles are** — [The seven profiles](#the-seven-profiles), [Core design rule](#core-design-rule) (the load-bearing principle).
+**What the profiles are** — [The seven profiles](#the-seven-profiles), [Core design rule](#core-design-rule) (the load-bearing principle), [Profile boundaries](#profile-boundaries).
 
-**Permissions and constraints** — [Lane permissions matrix](#lane-permissions-matrix), [Autonomy levels](#autonomy-levels), [Folder permission matrix](#folder-permission-matrix), [Lane-override files](#lane-override-files) (the YAML encoding).
+**Permissions and constraints** — [Lane permissions matrix](#lane-permissions-matrix), [Invocation levels](#invocation-levels-cadence), [Folder permission matrix](#folder-permission-matrix), [Lane-override files](#lane-override-files) (the YAML encoding).
 
 **Dispositions and dynamics** — [Delegation ladder](#delegation-ladder), [Routing without an Orchestrator](#routing-without-an-orchestrator), [Inter-profile handoff patterns](#inter-profile-handoff-patterns).
 
@@ -22,7 +22,7 @@ Hermes is the worker layer, split into seven specialist profiles. Each has a foc
 
 ## The seven profiles
 
-| Profile | Primary lane | Autonomy level | One-line mission |
+| Profile | Primary lane | Invocation level | One-line mission |
 | --- | --- | --- | --- |
 | **Librarian** | Library | Level 1–2 (background + Kanban) | Find, ingest, enrich, and classify evidence. Optimistic. |
 | **Mapper** | Mapping | Level 2 (Kanban-pulled) | Map the corpus for a project: scope reports, gap reports, cluster density. Read-only across vault. |
@@ -34,29 +34,66 @@ Hermes is the worker layer, split into seven specialist profiles. Each has a foc
 
 **No Orchestrator, no Reviewer.** Routing lives in lane-overrides and Kanban dispatch — see [Routing without an Orchestrator](#routing-without-an-orchestrator). The review gate rides on the card's `review_status` (a `done` card with `review_status: requested`, promoted to `approved`) enforced by the policy MCP; the mechanical parts of review (claim tracing, similarity, retraction) live in Verifier, the judgment parts with the human.
 
+## Core design rule
+
+**Profiles own outcomes; lanes own claimability.**
+
+A profile is a durable identity with a domain — librarians discover, mappers chart, writers synthesize, verifiers verify. The profile is responsible for the quality of its outputs.
+
+A lane is a board-level contract about *who can claim a card*. The lane tells the dispatcher which profile class is allowed to move a card forward; the exit state is part of the lane contract.
+
+The two work together:
+
+- If a card is in the library lane, only Librarian-class workers may claim it.
+- If a card is `done` and awaiting review (`review_status: requested`), only the human may clear it (no Reviewer profile to do so).
+- When a worker finishes its slice, it completes the card to `done` with `review_status: requested` — it does not mark the work approved.
+
+This is what prevents "everything becomes orchestration." Each profile stays accountable for what it ships.
+
+## Profile boundaries
+
+The profiles are most easily confused in pairs. Each row states the distinction once; the per-profile design summaries carry only the angle unique to that profile.
+
+| Pair | The distinction |
+| --- | --- |
+| Librarian ↔ Mapper | Librarian fetches *new* sources from outside; Mapper maps what's *already* in the corpus. Shared retrieval tooling, opposite direction. |
+| Librarian ↔ Verifier | Librarian proposes optimistically; Verifier checks conservatively. The asymmetry is the design. |
+| Librarian ↔ Writer | Librarian curates evidence; Writer composes claims from it. |
+| Mapper ↔ Writer | Mapper produces maps; Writer produces arguments from them. |
+| Mapper ↔ Verifier | Both read-only. Mapper surveys corpus *structure*; Verifier traces claim *provenance*. |
+| Mapper ↔ Socratic | Mapper emits structured artifacts over the whole corpus; Socratic converses about one source at a time. |
+| Socratic ↔ Writer | Sequential, not interchangeable: Socratic asks questions in the Discuss stage; Writer drafts prose in the Draft stage. |
+| Writer ↔ Verifier | Writer drafts and makes tracing *possible*; Verifier does the tracing. Writer must not pre-empt the checks. |
+| Verifier ↔ Linter | Both check mechanically. Verifier checks content *provenance* (citations, traces, duplicates) — content-aware; Linter checks *structure* (schema, links, file shape) — content-agnostic. They compose. |
+| Coder ↔ Writer | Coder produces the code artifact; Writer produces the prose *about* it. |
+| Coder ↔ Linter | Linter validates structure deterministically; Coder produces code, delegated to an external agent. |
+| Coder ↔ external coding agent | Coder scaffolds the handoff (`code-note`) and documents provenance; the external agent writes the code. |
+
+Beyond these pairs, each profile has non-overlap negations in its own design summary (e.g., Librarian is *not autonomous about classification*, Verifier is *not an LLM-as-judge*, Linter is *not a fixer by default*).
+
 ## Lane permissions matrix
 
-The **consolidated lane view** — what each lane may run (skills), what tools it uses, what's denied, and where it can write. It's the human-readable summary you check first when a worker behaves unexpectedly. A complementary [folder × profile view](#folder-permission-matrix) appears below; the YAML form the policy MCP actually reads is in [lane-override files](#lane-override-files).
+The **consolidated lane view** — what each lane may run (skills), what tools it uses, what's denied, and where it can write. It's the human-readable summary to check first when a worker behaves unexpectedly. A complementary [folder × profile view](#folder-permission-matrix) appears below; the YAML form the policy MCP actually reads is in [lane-override files](#lane-override-files).
 
 | Lane | Primary role | Core commands | Allowed skills | Allowed tools | Denied capabilities | Write scope |
 | --- | --- | --- | --- | --- | --- | --- |
-| **Library** | Find and ingest evidence | `find`, `ingest`, `enrich`, `classify`, `query` | `paper-lookup`, `arxiv-search`, `pyzotero`, `citation-management`, `literature-review`, `obsidian-paper-note`, `rest-passthrough` | `search_web`, `fetch_url`, vault read/write | canonical publish, destructive shell, unrestricted HTTP | `10-inbox/`, `20-sources/` |
-| **Mapping** | Map the corpus | `scope-project`, `gap-report`, `cluster-map`, `comparative-brief` | `scope-project`, `gap-report`, `cluster-mapping`, `comparative-brief` | vault read | all write tools, external APIs, drafting | `40-workbench/01-projects/*/map/corpus-map.md`, `*/gap-report.md`, `*/comparative-briefs/*`, `*/cluster-maps/*` |
+| **Library** | Find and ingest evidence | `find`, `ingest`, `enrich`, `classify`, `query` | `paper-lookup`, `arxiv-search`, `pyzotero`, `citation-management`, `literature-review`, `obsidian-paper-note`, `rest-passthrough` | `search_web`, `fetch_url`, vault read/write | review-gated publish, destructive shell, unrestricted HTTP | `10-inbox/`, `20-sources/` |
+| **Mapping** | Map the corpus | `scope-project`, `gap-report`, `cluster-map`, `comparative-brief` | `scope-project`, `gap-report`, `cluster-mapping`, `comparative-brief` | vault read | all write tools, external APIs, drafting | `40-workbench/01-projects/*/map/corpus-map.md`, `*/map/gap-report.md`, `*/map/comparative-briefs/*`, `*/map/cluster-maps/*` |
 | **Socratic** | Question without producing | `socratic-processing`, `lens-reading` | `socratic-processing`, `lens-reading` (parameterized: `mamykina-lens`, `veinot-equity-lens`, etc.) | vault read | **all write tools** (`policy.allow.write: []`), external APIs, drafting, queue dispatch (`routing.invocation: interactive_only`) | (none — `read_only_mode`, hard) |
-| **Writer** | Draft and synthesize | `draft`, `query`, `lint`, `promote` (handoff) | `llm-wiki draft`, `note-refactor`, `scientific-writing`, `counter-outline` | `search_web`, `fetch_url`, vault read/write | `rest-passthrough`, external-API skills, publish-canonical | `10-inbox/02-answers/`, `40-workbench/01-projects/*/drafts/`, `40-workbench/01-projects/*/framing/` (via `counter-outline`) |
+| **Writer** | Draft and synthesize | `draft`, `query`, `lint`, `promote` (handoff) | `llm-wiki draft`, `note-refactor`, `scientific-writing`, `counter-outline` | `search_web`, `fetch_url`, vault read/write | `rest-passthrough`, external-API skills, publish-review-gated | `10-inbox/02-answers/`, `40-workbench/01-projects/*/drafts/`, `40-workbench/01-projects/*/framing/` (via `counter-outline`) |
 | **Verify** | Verify claims, citations, duplicates | `cite-check`, `similarity-check`, `find-duplicates`, `retraction-check` | `cite-check`, `similarity-check`, `find-duplicates`, `retraction-check` | `search_web`, `fetch_url`, vault read | all write tools except verification reports and gap-candidate cards, drafting | `40-workbench/01-projects/*/verification/*`, `10-inbox/03-candidates/` (gap-candidate cards only) |
-| **Linter** | Validate, report, and log | `lint`, `schema-check`, `schema-migrate`, `health-report`, `graph-analyze`, `session-log`, `dry-run`, `report` | `schema-check`, `graph-analyze`, `health-report`, `session-log` | vault read, file indexer, Git | canonical edits, schema-content auto-fixes, work spawning | `00-meta/02-logs/` (audit and session logs only), dry-run reports |
-| **Coder** | Code artifacts | `code`, `commit`, `revert`, `workspace`, `scaffold` | `scaffold-code-note`, `workspace-coordinate`, `commit-and-document` (thin Hermes-side wrappers; substantive coding work lives in the external coding agent — see [Coder ↔ external coding agent](#coder--external-coding-agent)) | Git, filesystem, repo APIs | canonical edits, prose ownership | `40-workbench/01-projects/*/code/` |
+| **Linter** | Validate, report, and log | `lint`, `schema-check`, `schema-migrate`, `health-report`, `graph-analyze`, `session-log`, `dry-run`, `report` | `schema-check`, `graph-analyze`, `health-report`, `session-log` | vault read, file indexer, Git | review-gated-zone edits, schema-content auto-fixes, work spawning | `00-meta/02-logs/` (audit and session logs only), dry-run reports |
+| **Coder** | Code artifacts | `code`, `commit`, `revert`, `workspace`, `scaffold` | `scaffold-code-note`, `workspace-coordinate`, `commit-and-document` (thin Hermes-side wrappers; substantive coding work lives in the external coding agent — see [Coder ↔ external coding agent](#coder--external-coding-agent)) | Git, filesystem, repo APIs | review-gated-zone edits, prose ownership | `40-workbench/01-projects/*/code/` |
 
 Rules of thumb:
 
 - **Networked skills are lane-restricted.** Only Library can call `rest-passthrough`. The passthrough is the escape hatch (see [architecture/capability-stack.md](../architecture/capability-stack.md#rest-passthrough--the-escape-hatch)); confining it to one lane keeps external I/O auditable.
 - **Socratic and Mapper are read-only.** Any `decision: allow` for `profile: memoria-socratic` or `profile: memoria-mapper` on a `write` action outside its declared scratch path is a configuration bug — surfaced by the [audit-log dashboard](../dashboards/audit-log.md).
-- **No lane writes to canonical zones.** `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, and `50-deliverables/` are policy-MCP `dry_run` for every lane. Promotion is always synchronous with human attention.
+- **No lane writes to review-gated zones.** The four [review-gated zones](../glossary.md#system-and-architecture) are policy-MCP `dry_run` for every lane. Promotion is always synchronous with human attention.
 
-## Autonomy levels
+## Invocation levels (cadence)
 
-Each profile's autonomy level is part of its contract:
+Each profile's invocation level (its cadence) is part of its contract. *(This 1–3 scale is about **how a profile is invoked** — distinct from the system-wide **automation tier** and from Chen 2026's **L1–L5** field taxonomy; see [glossary: Automation tier](../glossary.md#profile-management-and-configuration).)*
 
 - **Level 1 (background)** — runs unattended on a cron schedule. Produces reports; never acts on canonical content. Linter is the definitive example.
 - **Level 2 (Kanban-pulled)** — picks up cards from its lane queue. Produces output to review-gated paths. The bulk of Memoria's work.
@@ -64,7 +101,9 @@ Each profile's autonomy level is part of its contract:
 - **Level 3 (interactive)** — invoked synchronously by the human (via ACP, command palette, or Telegram). No queue. Socratic.
 - **Level 2 (external dispatch)** — handoffs to an external agent (Claude Code, Aider, Codex) via handoff payloads. Coder.
 
-The level governs both the cadence (background / kanban-pulled / interactive) and the expected output mode (report / artifact / conversation). It does not loosen any policy MCP rule.
+A profile can span two levels when it runs on more than one cadence. Librarian is **Level 1–2**: it runs background discovery on cron (Level 1) and also pulls ingest/enrich cards from its queue (Level 2).
+
+The invocation level governs both the cadence (background / kanban-pulled / interactive) and the expected output mode (report / artifact / conversation). It does not loosen any policy MCP rule.
 
 ## Folder permission matrix
 
@@ -73,14 +112,14 @@ This is the operational access map. For the layered folder structure these colum
 | Profile | 00-meta | 10-inbox | 20-sources | 30-synthesis/01-claims | 30-synthesis/02-reference | 30-synthesis/03-moc | 40-workbench | 50-deliverables |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Librarian | Read | Write (discovery, candidates) | Write (create, enrich) | Read only | Read for context | Read for context | Read | Read only |
-| Mapper | Read | Read only | Read only | Read only | Read only | Read only | Write (`01-projects/*/corpus-map.md`, `*/gap-report.md`, `*/comparative-briefs/*`, `*/cluster-maps/*`) | Read only |
+| Mapper | Read | Read only | Read only | Read only | Read only | Read only | Write (`01-projects/*/map/corpus-map.md`, `*/map/gap-report.md`, `*/map/comparative-briefs/*`, `*/map/cluster-maps/*`) | Read only |
 | Socratic | Read | Read only | Read only | Read only | Read only | Read only | Read only | Read only |
-| Writer | Read | Write (answer drafts) | Read only | Read only | Write drafts (review-gated) | Read; suggest | Write (drafts, framing) | Read only unless export task |
+| Writer | Read | Write (answer drafts) | Read only | Read only | Write drafts (review-gated) | Read; suggest | Write (drafts, framing) | Read; export writes degrade to `dry_run` (human-gated) |
 | Verifier | Read | Write (gap-candidate cards in `03-candidates/`) | Read only | Read only | Read only | Read only | Write (`01-projects/*/verification/*`) | Read only |
-| Coder | Read | Read only | Read only | Read only | Read for context | Read | Write (`40-workbench/01-projects/*/code/`, project pages under `01-projects/`) | Read / write on explicit export tasks |
+| Coder | Read | Read only | Read only | Read only | Read for context | Read | Write (`40-workbench/01-projects/*/code/`) | Read; export writes degrade to `dry_run` (human-gated) |
 | Linter | Read; write `02-logs/` (audit, session) | Read | Read | Read | Read | Read | Read | Read |
 
-Rule of thumb: **canonical synthesis remains human-owned** across the `30-synthesis/` canonical zones (`01-claims/`, `02-reference/`, `03-moc/`). **Schema governance remains human-owned** in `00-meta/` except for the logs subfolder Linter writes to. Project scratch (`40-workbench/01-projects/`) is the only zone where multiple profiles write, and each profile writes to its own named subfolder.
+Rule of thumb: **canonical synthesis remains human-owned** across the `30-synthesis/` review-gated zones (`01-claims/`, `02-reference/`, `03-moc/`). **Schema governance remains human-owned** in `00-meta/` except for the logs subfolder Linter writes to. Project scratch (`40-workbench/01-projects/`) and the inbox (`10-inbox/`) are the zones where multiple profiles write. In project scratch each profile writes to its own named subfolder; in the inbox, Writer owns `02-answers/` while `03-candidates/` is intentionally shared by Librarian discovery and Verifier gap cards.
 
 ## Lane-override files
 
@@ -105,7 +144,7 @@ policy:
       - "20-sources/**"
   deny:
     skills:
-      - canonical_publish
+      - review_gated_publish
     write:
       - "30-synthesis/**"
       - "50-deliverables/**"
@@ -125,7 +164,7 @@ The four blocks:
 
 - **`policy.allow`** — skills the lane may load and paths it may write. Patterns are glob-style relative to the vault root.
 - **`policy.deny`** — explicit blocks. Deny wins over allow.
-- **`policy.require`** — invariants the worker must honor. Common values: `audit_log` (every action logged), `timeout_required` (no unbounded calls), `source_tracking` (writes carry a provenance trail), `read_only_mode` (no writes at all — used by Socratic and Mapper), `canonical_write_gate` (writes to canonical zones always degrade to `dry_run`).
+- **`policy.require`** — invariants the worker must honor. Common values: `audit_log` (every action logged), `timeout_required` (no unbounded calls), `source_tracking` (writes carry a provenance trail), `read_only_mode` (no writes at all — used by Socratic and Mapper), `review_gated_write` (writes to review-gated zones always degrade to `dry_run`).
 - **`routing.write_scope`** — the authoritative short-list, usually narrower than `policy.allow.write`. Used by the dispatch rules to decide where a worker's output should land by default.
 - **`routing.invocation`** — how the lane is invoked. `dispatched` (default; the Kanban dispatcher pulls cards from this lane's queue) or `interactive_only` (the lane is never queue-dispatched; only synchronous human invocation reaches it). Socratic uses `interactive_only` so a misconfigured cron job can't queue work onto a write-denied conversational profile.
 
@@ -134,10 +173,10 @@ The four blocks:
 | Lane | File | Notes |
 | --- | --- | --- |
 | Library | `.memoria/lane-overrides/library.yaml` | May call external APIs through approved skills. |
-| Mapping | `.memoria/lane-overrides/mapper.yaml` | `read_only_mode` for the vault; project-scratch writes only. |
+| Mapping | `.memoria/lane-overrides/mapping.yaml` | `read_only_mode` for the vault; project-scratch writes only. |
 | Socratic | `.memoria/lane-overrides/socratic.yaml` | Hard `policy.allow.write: []` — write-denied across the vault. `routing.invocation: interactive_only` — never queue-dispatched. |
-| Writer | `.memoria/lane-overrides/writer.yaml` | May draft and refine; no direct external API; canonical writes degrade to `dry_run`. |
-| Verify | `.memoria/lane-overrides/verifier.yaml` | `read_only_mode` for the vault; verification-report writes only. |
+| Writer | `.memoria/lane-overrides/writer.yaml` | May draft and refine; no direct external API; review-gated-zone writes degrade to `dry_run`. |
+| Verify | `.memoria/lane-overrides/verify.yaml` | `read_only_mode` for the vault; verification-report writes only. |
 | Coder | `.memoria/lane-overrides/coder.yaml` | Writes to `40-workbench/01-projects/*/code/` only. |
 | Linter | `.memoria/lane-overrides/linter.yaml` | Dry-run by default; `auto_fix` is class-gated by the policy MCP; owns `00-meta/02-logs/` for session and audit-trail housekeeping. |
 
@@ -152,7 +191,7 @@ Two files compose at session start:
 1. `~/.hermes/profiles/memoria-<profile>/config.yaml` — model, command surface, skill registry, base MCPs.
 2. `.memoria/lane-overrides/<lane>.yaml` — policy and routing for this vault.
 
-If a worker would claim a card outside its lane override, the policy MCP returns `deny`. If a worker tries to write into a canonical zone, the MCP returns `dry_run` and the action becomes a board comment for the human to act on. Either way, nothing canonical changes without an explicit approval step.
+If a worker would claim a card outside its lane override, the policy MCP returns `deny`. If a worker tries to write into a review-gated zone, the MCP returns `dry_run` and the action becomes a board comment for the human to act on. Either way, nothing canonical changes without an explicit approval step.
 
 ## Skill governance (deferred)
 
@@ -194,7 +233,7 @@ The Coder profile is **narrow by design**: it scaffolds `code-note` handoffs and
 
 ## Commands
 
-Each profile's core verbs are listed in the [Lane permissions matrix](#lane-permissions-matrix) above. The full operational command catalog — every command, owner profile, and dry-run default — lives in [profile-commands.md](profile-commands.md). The rule: any command that writes to a canonical folder or runs a migration must default to dry-run.
+Each profile's core verbs are listed in the [Lane permissions matrix](#lane-permissions-matrix) above. The full operational command catalog — every command, owner profile, and dry-run default — lives in [profile-commands.md](profile-commands.md). The rule: any command that writes to a review-gated folder or runs a migration must default to dry-run.
 
 ## Routing without an Orchestrator
 
@@ -255,22 +294,6 @@ Mapper  ──► [scope-review]  ──► (human decides project is ready)  �
 ```
 
 Linter can act at any point, on any card, with a dry-run report attached as a comment. Socratic is invoked synchronously by the human and never appears in queue-based handoff chains. The Coder operates in parallel for code artifacts.
-
-## Core design rule
-
-**Profiles own outcomes; lanes own claimability.**
-
-A profile is a durable identity with a domain — librarians discover, mappers chart, writers synthesize, verifiers verify. The profile is responsible for the quality of its outputs.
-
-A lane is a board-level contract about *who can claim a card*. The lane tells the dispatcher which profile class is allowed to move a card forward; the exit state is part of the lane contract.
-
-The two work together:
-
-- If a card is in the library lane, only Librarian-class workers may claim it.
-- If a card is `done` and awaiting review (`review_status: requested`), only the human may clear it (no Reviewer profile to do so).
-- When a worker finishes its slice, it completes the card to `done` with `review_status: requested` — it does not mark the work approved.
-
-This is what prevents "everything becomes orchestration." Each profile stays accountable for what it ships.
 
 ## Scaling
 

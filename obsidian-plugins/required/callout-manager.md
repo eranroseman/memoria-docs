@@ -22,4 +22,4 @@ Load-bearing settings: ship the callout definitions in `vault/.obsidian/plugins/
 
 [← Previous: pdf-plus (PDF++)](pdf-plus.md)
 
-[Next: obsidian-Linter — the footgun →](../recommended/obsidian-linter.md)
+[Next: obsidian-linter — the footgun →](../recommended/obsidian-linter.md)

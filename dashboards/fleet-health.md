@@ -6,7 +6,7 @@ topic: dashboards
 
 # `fleet-health` — design summary
 
-**Runtime artifact.** This dashboard ships at `00-meta/01-dashboards/fleet-health.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview. The summary below covers its design role; the runtime queries live in the vault file.
+**Runtime artifact.** Ships at `00-meta/01-dashboards/fleet-health.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview; the runtime queries live there. This page covers the design role.
 
 ## Mission
 
@@ -20,7 +20,7 @@ Track whether the Hermes fleet is healthy: cost per task trending up, success ra
 
 ## Design decisions
 
-- **Reads from a new note type kept in `00-meta/08-metrics/`.** `lane-metric` notes (one per lane per period) and `skill-metric` notes (one per skill per period). These are not in the 15 — they're operational telemetry, not knowledge. A scheduled Hermes task aggregates the audit log and board's task history into these notes.
+- **Reads from a new note type kept in `00-meta/08-metrics/`.** `lane-metric` notes (one per lane per period) and `skill-metric` notes (one per skill per period). These aren't among the 15 canonical note types — they're operational telemetry, not knowledge. A scheduled Hermes task aggregates the audit log and board's task history into these notes.
 - **Trust score combines audit deny rate, drift incidents, secret hits, retry rate, success rate, and (for lanes that produce inline `[!suggestions]` callouts) accept/reject ratios.** Bands: 90+ healthy, 70–89 watch, <70 act. Ratio sub-thresholds: >90% accept = rubber-stamping, <20% accept = prompt drift; both down-weight the lane.
 - **When to enable.** After Phase 6 in [the roadmap](../roadmap/future-directions.md). Before then, board-state and audit-log catch issues directly without aggregation overhead.
 - **Graceful degradation.** Until the metrics aggregator exists, the dashboard is a placeholder with explanatory text rather than empty tables.

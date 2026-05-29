@@ -6,6 +6,7 @@ id: 21
 title: Shared candidate frontmatter format
 status: proposed
 date_proposed: 2026-05-15
+date_resolved:
 supersedes: []
 superseded_by: []
 ---
@@ -21,14 +22,16 @@ Candidate notes can arrive from three pipelines: `find` (forward/backward citati
 Adopt the unified frontmatter schema for candidate notes:
 
 ```yaml
-type: candidate
+type: candidate-note
 source: find                # find | database-search | manual
 candidate_status: pending   # pending | included | excluded
 exclusion_reason: ""
 projects: []                # plural list, matches other templates
 ```
 
-`candidate` is not in the 15 note types in [vault/README.md](../vault/templates.md#note-types); adopting this ADR means adding it as a 16th type with its own template (`templates/candidate-note.md`) and updating the list.
+These are the candidate-specific fields; every note also carries the global required fields (`schema_version`, `created`, `updated`, `lifecycle`) — see [vault/frontmatter-schema.md](../vault/frontmatter-schema.md).
+
+`candidate-note` is not in the 15 note types in [vault/templates.md](../vault/templates.md#note-types); adopting this ADR means adding it as the 16th type with its own template (`00-meta/03-templates/candidate-note.md`) and updating the list.
 
 ## Consequences
 
@@ -45,9 +48,8 @@ projects: []                # plural list, matches other templates
 
 ## Related
 
-- **Related decisions:** [ADR-19 pre-ingest screening](19-pre-ingest-screening.md) consumes this schema for bulk screening.
-- **Files affected:** [vault/README.md](../vault/README.md), `templates/candidate-note.md` (to be created), [dashboards/weekly-review.md](../dashboards/weekly-review.md)
-- **Resolves / supersedes:** none
+- **Consumed by:** [ADR-19 pre-ingest screening](19-pre-ingest-screening.md) — reads this schema for bulk screening.
+- **Files affected:** [vault/README.md](../vault/README.md), `00-meta/03-templates/candidate-note.md` (to be created), [dashboards/weekly-review.md](../dashboards/weekly-review.md)
 
 <!-- memoria-nav -->
 
@@ -55,4 +57,4 @@ projects: []                # plural list, matches other templates
 
 [← Previous: ADR-20: Dual-rater workflow for inter-rater reliability](20-dual-rater-workflow.md)
 
-[Next: ADR-NN: \<title> →](_template.md)
+[Next: ADR-22: Claim supersession relation →](22-claim-supersession.md)

@@ -19,7 +19,7 @@ This document is the answer to "how do we let the agent do more between gates?" 
 
 ## Principle
 
-**Same gate, fewer presses.** Every pattern below is admissible because it routes outputs to `10-inbox/` or to a dashboard surface, never to canonical zones. The policy MCP's canonical-zone deny rule is the structural guarantee that this stays true regardless of how much unattended activity accumulates.
+**Same gate, fewer presses.** Every pattern below is admissible because it routes outputs to `10-inbox/` or to a dashboard surface, never to review-gated zones. The policy MCP's review-gated-zone deny rule is the structural guarantee that this stays true regardless of how much unattended activity accumulates.
 
 ## The human's task surface
 
@@ -56,7 +56,7 @@ These are the "same gate, fewer presses" core. The win is *pre-gate* work that m
 
 | Human task | Why it stays human |
 | --- | --- |
-| The approve gate (`review_state: approved`) | The structural differentiator; agent-approval is the failure mode (Zhang 2026: agents pass surface review, fail artifact-aware review). |
+| The approve gate (`review_status: approved`) | The structural differentiator; agent-approval is the failure mode (Zhang 2026: agents pass surface review, fail artifact-aware review). |
 | What counts as a claim / synthesis faithfulness | Not scalar — the distill judgment. |
 | Merge / split of claim notes | Collapsing two claims is a *meaning* decision, not a structural one. |
 | Framing choice, prose voice, argument | Taste; agents converge to generic (Bisht's hivemind finding). |
@@ -148,7 +148,7 @@ The five layers above are about the **synthesis pipeline** — discovery → tri
 | --- | --- | --- | --- |
 | C.1 | Coder-lane experiment loop | Chen et al. 2026 (long-horizon engineering), Karpathy Autoresearch | [future-directions.md §"Coder lane experiment loop"](future-directions.md#coder-lane-experiment-loop) |
 
-**Why it is not in the layers.** C.1 is not "same gate, fewer presses" on the synthesis pipeline — it is a different lane with its own scalar success criterion that exists *before* the loop runs. It still respects the promotion gate: the loop keeps/reverts code variants internally against the metric, then routes the best variant to `done` for review, and the human promotes it into the project's working code. The keep/revert autonomy is bounded to `40-workbench/01-projects/<project>/code/experiments/<run-id>/`; the policy MCP's canonical-zone deny rule is untouched. It depends only on Layer 0 (reliable unattended runs); it shares nothing else with the synthesis layers, which is why it sits outside the dependency graph.
+**Why it is not in the layers.** C.1 is not "same gate, fewer presses" on the synthesis pipeline — it is a different lane with its own scalar success criterion that exists *before* the loop runs. It still respects the promotion gate: the loop keeps/reverts code variants internally against the metric, then routes the best variant to `done` for review, and the human promotes it into the project's working code. The keep/revert autonomy is bounded to `40-workbench/01-projects/<project>/code/experiments/<run-id>/`; the policy MCP's review-gated-zone deny rule is untouched. It depends only on Layer 0 (reliable unattended runs); it shares nothing else with the synthesis layers, which is why it sits outside the dependency graph.
 
 ## Dependency graph
 
@@ -208,7 +208,7 @@ The cumulative shift: from "review every candidate, approve every triage, manual
 ## What this is not
 
 - **Not the autonomy boundary.** The 15 patterns above keep [architecture/why-no-autonomous-synthesis.md](../architecture/why-no-autonomous-synthesis.md) unchanged. Autonomous keep/revert *for synthesis*, auto-promotion to canonical, scalar-metric optimization, and conversation-as-substrate remain refused. The lone admitted keep/revert loop is the Coder-lane exception (C.1), which operates on code against a pre-existing scalar and still routes its best variant through the human promotion gate — never on synthesis.
-- **Not a substitute for the human review gate.** Every pattern routes outputs to `10-inbox/` or to a dashboard, never to canonical zones. The policy MCP enforces this regardless of how much unattended activity accumulates.
+- **Not a substitute for the human review gate.** Every pattern routes outputs to `10-inbox/` or to a dashboard, never to review-gated zones. The policy MCP enforces this regardless of how much unattended activity accumulates.
 - **Not a strict implementation order across layers.** Layers are dependency-ordered; *within* a layer (and between layers, where the preconditions are independent) the human can sequence by available time, budget, or felt friction.
 - **Not a commitment.** This is a roadmap, not a contract. Any of the 15 (or the Coder-lane C.1) may be deferred indefinitely if the human finds they aren't experiencing the friction they relieve. See each pattern's "When to implement" and "Why not earlier" in [future-directions.md](future-directions.md) for the per-pattern triggers.
 

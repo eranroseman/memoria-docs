@@ -21,6 +21,10 @@ topic: workflows
 
 Hermes for retrieval and draft. Human for verification and filing.
 
+## Example
+
+The human asks "what predicts JITAI receptivity?" in the ACP pane → the Writer searches claim notes, reference notes, and paper notes → drafts a cited synthesis as an `answer-note` in `10-inbox/02-answers/`, each assertion tagged with a `[@citekey]` → the human checks the citekeys actually support the claims, edits, and either promotes the answer toward a `claim-note` or discards it.
+
 ## Related
 
 - **Answer-draft retention:** [ADR-3 answer-draft retention](../../decisions/03-answer-draft-retention.md) — 90-day surfacing.

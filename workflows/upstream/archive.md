@@ -6,7 +6,7 @@ topic: workflows
 
 # Archive
 
-**Group.** Maintenance
+**Group.** Upstream
 **Goal.** Preserve superseded material instead of deleting it.
 
 ## Steps
@@ -19,6 +19,10 @@ topic: workflows
 ## Owners
 
 Human only. Hermes never autonomously archives.
+
+## Example
+
+A 2019 reference page on JITAI timing is superseded by a fresher synthesis → the human sets `lifecycle: archived`, adds `superseded_by: [[jitai-timing-2024]]`, and moves the file to `95-archive/`. It drops out of active Dataview queries but stays in Git history and remains linkable, so older drafts that cite it don't break.
 
 ## Related
 

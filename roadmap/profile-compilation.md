@@ -1,6 +1,6 @@
 ---
 mode: reference
-audience: operator
+audience: implementer
 topic: roadmap
 ---
 
@@ -73,7 +73,7 @@ The build fails if any of these are true. These are the *build-time complement* 
 | Validation | Meaning |
 | --- | --- |
 | Missing mission | A profile's `mission` field must be a non-empty string. |
-| Unjustified canonical write | A profile's `policy.allow.write` includes a canonical zone without `flags.explicit_authorization: true` on the rule. |
+| Unjustified review-gated-zone write | A profile's `policy.allow.write` includes a review-gated zone without `flags.explicit_authorization: true` on the rule. |
 | Unknown tool | A profile references a tool not present in `.memoria/tool-registry.yaml`. |
 | Missing secret | A profile's `.env` declares a key that isn't supplied by the secret manager. |
 | Unknown command | A profile defines a command outside the defined command set in [profiles/README.md](../profiles/README.md). |
@@ -115,6 +115,6 @@ The compilation is one-way: source → compiled output. Never hand-edit anything
 
 ---
 
-[← Previous: Success metrics](success-metrics.md)
+[← Previous: Evaluation and benchmark-informed design](evaluation.md)
 
 [Next: Pilot E1 — Open Notebook as comparative-brief LLM back-end →](pilots/01-open-notebook.md)

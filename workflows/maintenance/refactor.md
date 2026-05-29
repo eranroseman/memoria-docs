@@ -26,6 +26,10 @@ Hermes identifies. Human decides every change.
 hermes run find-duplicates --folder 30-synthesis/01-claims --threshold 0.85
 ```
 
+## Example
+
+`find-duplicates` flags `receptivity-decreases-under-high-cognitive-load.md` and `cognitive-load-lowers-receptivity.md` at 0.88 similarity → the human reviews the pair, decides they're one claim → merges the weaker into the stronger, keeps both source citekeys, and updates backlinks and the `[[jitai-design-moc]]` entry. The merged-away note is archived, not deleted.
+
 ## Related
 
 - **Profile:** [profiles/verifier.md](../../profiles/verifier.md) (runs `similarity-check` and `find-duplicates`)

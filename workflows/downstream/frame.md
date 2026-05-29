@@ -6,7 +6,7 @@ topic: workflows
 
 # Frame
 
-**Group.** Downstream (stage workflow, added 2026-05)
+**Group.** Downstream (stage workflow)
 **Goal.** Generate 2–3 competing project framings *before* committing to one. Prevents "first outline wins by default."
 
 ## Pipeline position

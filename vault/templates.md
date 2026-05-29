@@ -6,11 +6,11 @@ topic: vault
 
 # Note types and templates (reference)
 
-The fifteen note types, their owners, lifecycles, and the templates that produce them. For the conceptual model (folder structure, promotion map, routing rules) see [README.md](README.md); for frontmatter and field-level discipline see [frontmatter-schema.md](frontmatter-schema.md).
+The 15 note types, their owners, lifecycles, and the templates that produce them. For the conceptual model (folder structure, promotion map, routing rules) see [README.md](README.md); for frontmatter and field-level discipline see [frontmatter-schema.md](frontmatter-schema.md).
 
 ## Note types
 
-The fifteen note types, consolidated. **Created by** and **Edited by** name a Hermes profile when the agent writes; **Human** means the human is authoritative. **Promoted by** identifies who advances the note through its lifecycle states.
+The 15 note types, consolidated. **Created by** and **Edited by** name a Hermes profile when the agent writes; **Human** means the human is authoritative. **Promoted by** identifies who advances the note through its lifecycle states.
 
 | Note type | Folder | Created by | Edited by | Promoted by | Lifecycle |
 | --- | --- | --- | --- | --- | --- |
@@ -34,7 +34,7 @@ Lifecycle states are operational: dashboards query them, promotion gates require
 
 ### Naming convention: `-note` vs bare names
 
-The `-note` suffix is not decorative — it marks a **knowledge node**: the authoritative record of one unit (an idea, source, entity, concept, project, code artifact, or answer) that carries its own content. Eleven of the fifteen types are knowledge nodes and carry the suffix.
+The `-note` suffix is not decorative — it marks a **knowledge node**: the authoritative record of one unit (an idea, source, entity, concept, project, code artifact, or answer) that carries its own content. Of the 15 types, 11 are knowledge nodes and carry the suffix.
 
 The four bare names are deliberately *not* knowledge nodes — they are either a **view** over other notes or an **output** produced from them:
 
@@ -47,7 +47,7 @@ The four bare names are deliberately *not* knowledge nodes — they are either a
 
 Two rules govern the suffix:
 
-- **Definition (meaning).** `-note` ⇔ a curated knowledge node. Bare ⇔ a *view* over the graph (`moc`, `canvas`) or an *output* produced from it (`draft`, `deliverable`). This is why `answer-note` keeps the suffix — it is a candidate record entering the inbox → `claim-note` pipeline — while `draft` drops it: it is a document entering the draft → `deliverable` pipeline. The suffix marks *membership of the knowledge graph as a node you curate*, not mere residence in the vault. (Atomicity is a separate property — only `claim-note` and `fleeting-note` are atomic — and is read off the note type, not the suffix.)
+- **Definition (meaning).** `-note` ⇔ a curated knowledge node. Bare ⇔ a *view* over the graph (`moc`, `canvas`) or an *output* produced from it (`draft`, `deliverable`). This is why `answer-note` keeps the suffix — it is a candidate record entering the inbox → `claim-note` pipeline — while `draft` drops it: it is a document entering the draft → `deliverable` pipeline. The suffix marks *membership of the knowledge graph as a node the human curates*, not mere residence in the vault. (Atomicity is a separate property — only `claim-note` and `fleeting-note` are atomic — and is read off the note type, not the suffix.)
 - **Format floor (checkable).** Every `-note` type must be a markdown note in the schema (carries `type` + a lifecycle field). This is one-directional: markdown-ness is *necessary* for `-note` but does not *earn* it — `moc` is a markdown schema note too, yet stays bare because it is a view, not a node.
 
 **Edge case.** `project-note` is the most hub-like knowledge node — it coordinates other work. It keeps the suffix because it is the authoritative record *of a project* (its own scope/status content), not merely a map of other notes. It is the one type where node-vs-view is a judgment call rather than obvious.
@@ -61,7 +61,7 @@ A handful of types have constraints worth calling out.
 - **`claim-note` is human-only writing.** The Writer profile may suggest links, but the canonical claim text is human-authored. One claim per note. `seedling` = one source; `budding` = multi-source, linked; `evergreen` = stable, ready for `30-synthesis/02-reference/`.
 - **`reference-note` requires human finalization.** The Writer drafts; the human signs off. `current` only after review and link consolidation.
 - **`code-note`** is the only shared-ownership type. The Coder writes or modifies; the human reviews via the standard review gate.
-- **`moc` is curation, not catalogue.** A bare list of wikilinks is not a MOC. MOCs add overview, annotated entries, and gaps. `dormant` MOCs are kept but not surfaced in dashboards.
+- **`moc` is curation, not catalogue.** A MOC adds overview, annotated entries, and gaps — not just a list of wikilinks. `dormant` MOCs are kept but not surfaced in dashboards.
 - **`deliverable`** is terminal. Once exported, never edited in place — supersede with a new deliverable if changes are needed.
 
 ### Jupyter notebooks
@@ -99,7 +99,7 @@ Every note carries one universal field, **`lifecycle`** — its durability phase
 | `draft` | `proposed` → `current` (submitted) | `draft_stage`: `outline` / `in-progress` / `submitted` |
 | `deliverable` | `current` (final) | — |
 
-The `lifecycle` enum and each refinement field are validated by the Linter's `schema-check` (see [profiles/linter.md](../profiles/linter.md)). New allowed values are added here first, then to the templates. The `lifecycle` value set is kept **distinct from board-card `status`** (the Hermes enum `triage`/`ready`/`running`/`done`/`archived`); the two are disambiguated by field name — a note carries `lifecycle`, never `status` — even though both happen to include `archived`.
+The `lifecycle` enum and each refinement field are validated by the Linter's `schema-check` (see [profiles/linter.md](../profiles/linter.md)). New allowed values are added here first, then to the templates. The `lifecycle` value set is deliberately kept **distinct from board-card `status`** — see [frontmatter-schema.md](frontmatter-schema.md#rules) for the full disambiguation.
 
 ## Templates
 
@@ -119,7 +119,7 @@ One additional template ships for a *config* artifact rather than a content note
 | --- | --- | --- |
 | `design-system` | [surfaces/design-system.md](../surfaces/design-system.md) | `00-meta/04-reference/design-system.md` |
 
-The design-system file isn't one of the fifteen note types — it's a single-instance config artifact that drives the vault's visual style (read by CSS-snippet generators, Pandoc export configs, and [open-design](https://github.com/nexu-io/open-design) when rendering deliverables). The template follows open-design's portable DESIGN.md format so the same file can drive open-design's render pipeline directly.
+The design-system file isn't one of the 15 note types — it's a single-instance config artifact that drives the vault's visual style, and the template follows [open-design](https://github.com/nexu-io/open-design)'s portable DESIGN.md format so the same file can drive open-design's render pipeline directly. For what consumes the rendered file, see [README.md](README.md#vault-skeleton-human-facing-notes).
 
 <!-- memoria-nav -->
 

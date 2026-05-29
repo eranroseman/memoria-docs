@@ -21,20 +21,20 @@ Writer turns evidence into structured prose — answer drafts, reference-ready c
 
 ## Design decisions
 
-- **Canonical writes degrade to `dry_run`.** Writer's lane-override declares writes to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, and `50-deliverables/` as `dry_run` — the writes don't fail loudly, they become board comments for the human to act on. This is the policy-level enforcement of "canonical synthesis is human-owned"; even an aggressive Writer cannot corrupt the canonical layer.
+- **Review-gated-zone writes degrade to `dry_run`.** Writer's lane-override declares writes to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, and `50-deliverables/` as `dry_run` — the writes don't fail loudly, they become board comments for the human to act on. This is the policy-level enforcement of "canonical synthesis is human-owned"; even an aggressive Writer cannot corrupt the canonical layer.
 - **Synthesis is generative, end-to-end.** Writer's method class is **generative**: composing prose, structuring arguments, suggesting alternative outlines — none of these have deterministic derivations from inputs. LLM-required throughout, with one exception: the `query` step is deterministic vault search before drafting begins.
 - **The `counter-outline` skill is restrictive by design.** When loaded during the Frame stage, `counter-outline` adds policy.deny rules that narrow Writer's write scope to `40-workbench/01-projects/<project>/framing/` only. This is the definitive example of skill-conditional policy: a skill *tightens* the host lane, never loosens it.
 - **No external API access.** Unlike Librarian (network-heavy) or Verifier (Zotero/CrossRef for retraction checks), Writer doesn't reach the outside world. Its inputs are entirely the human's existing vault — sources, claim notes, MOCs. This keeps the cost surface predictable and prevents prompt-injection-via-fetched-content.
 
 ## Permissions and commands
 
-Folder permission matrix lives in [profiles/README.md](../profiles/README.md#folder-permission-matrix); the runtime contract lives in the SOUL.md.
+Folder permission matrix lives in [profiles/README.md](README.md#folder-permission-matrix); the runtime contract lives in the SOUL.md.
 
 ## Related
 
 - Workflows: [write](../workflows/downstream/write.md), [frame](../workflows/downstream/frame.md), [distill](../workflows/upstream/distill.md), [revise](../workflows/downstream/revise.md)
 - ADRs: [15 dedicated review-note type](../decisions/15-dedicated-review-note-type.md), [03 answer draft retention](../decisions/03-answer-draft-retention.md)
-- Architecture: [architecture/why-no-autonomous-synthesis.md](../architecture/why-no-autonomous-synthesis.md) — the principle that motivates the `dry_run` degradation on canonical zones.
+- Architecture: [architecture/why-no-autonomous-synthesis.md](../architecture/why-no-autonomous-synthesis.md) — the principle that motivates the `dry_run` degradation on review-gated zones.
 - Method class: [architecture/why-computational-methods.md](../architecture/why-computational-methods.md) — Writer is on the generative side throughout.
 
 <!-- memoria-nav -->

@@ -6,9 +6,9 @@ topic: roadmap
 
 # Skill governance and lifecycle
 
-> **Status: deferred — maybe later if needed.** This entire feature (state machine, per-skill governance notes in `00-meta/07-skills/`, the `skill-lifecycle` dashboard, the 7-step onboarding checklist) is not part of the active design. Adding a skill today means editing the relevant lane-override file's `policy.allow.skills` list and dropping the SKILL.md into the right profile's `skills/` folder — that's the runtime mechanism, and it works without the governance overlay. The design notes below are preserved for the case where the system accumulates enough skills and passthrough-graduations that the lifecycle discipline becomes worth standing up. See [future-directions.md §"Skill governance"](future-directions.md#skill-governance) for the deferral context.
+> **Status: deferred — maybe later if needed.** This entire feature (state machine, per-skill governance notes in `00-meta/07-skills/`, the `skill-lifecycle` dashboard, the 7-step onboarding checklist) is not part of the active design. Adding a skill today means editing the relevant lane-override file's `policy.allow.skills` list and dropping the SKILL.md into the right profile's `skills/` folder — that's the runtime mechanism, and it works without the governance overlay. The design notes below are preserved for the case where the system accumulates enough skills and passthrough-graduations that the lifecycle overlay becomes worth standing up. See [future-directions.md §"Skill governance"](future-directions.md#skill-governance) for the deferral context.
 
-The expansion-threshold rule for *skills* is its own discipline. Skills are first-class objects with their own state machine, parallel to the card lifecycle on the board. Adding a skill — whether a K-Dense wrapper, a `<service>-fetch` skill graduating from `rest-passthrough`, or a new in-vault skill — passes through these states before it can claim work.
+The expansion-threshold rule for *skills* is its own practice. Skills are first-class objects with their own state machine, parallel to the card lifecycle on the board. Adding a skill — whether a K-Dense wrapper, a `<service>-fetch` skill graduating from `rest-passthrough`, or a new in-vault skill — passes through these states before it can claim work.
 
 ## Skill states
 
@@ -74,7 +74,7 @@ Below those thresholds, stay on the passthrough.
 
 ## Why this lives in the roadmap
 
-Skill governance is operational discipline that matters most once the system is past MVS and accumulating tooling. A fresh install has a fixed set of K-Dense skills and the generic passthrough — no governance needed. The state machine and registry become load-bearing only when passthrough-graduations, retirements, and lane-permission changes start happening regularly. Treat the governance system as something to stand up around Phase 6, not Phase 1.
+Skill governance is operational bookkeeping that matters most once the system is past MVS and accumulating tooling. A fresh install has a fixed set of K-Dense skills and the generic passthrough — no governance needed. The state machine and registry become load-bearing only when passthrough-graduations, retirements, and lane-permission changes start happening regularly. Treat the governance system as something to stand up around Phase 6, not Phase 1.
 
 <!-- memoria-nav -->
 

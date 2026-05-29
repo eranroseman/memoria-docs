@@ -35,9 +35,8 @@ Split the Librarian profile into Retriever (broad discovery, candidate generatio
 
 ## Related
 
-- **Workflows affected:** [Find](../workflows/README.md), [Ingest](../workflows/README.md)
+- **Workflows affected:** [Find](../workflows/upstream/find.md), [Ingest](../workflows/upstream/ingest.md)
 - **Files affected:** [profiles/README.md](../profiles/README.md), [profiles/librarian.md](../profiles/librarian.md)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

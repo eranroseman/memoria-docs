@@ -8,19 +8,19 @@ topic: board
 
 The Kanban board is the control plane for Memoria. It is the shared state machine across profiles and sessions. Every long-lived piece of work lives on the board until a human approves it into the vault.
 
-This document covers the conceptual model: why the board exists, what the states mean, and how cards move through review and retry. Memoria tracks **two lifecycles** — *execution* (the Hermes built-in `status` enum) and *review* (a Memoria overlay in the card `metadata`). For the operational reference — the full state machine, lane exit contracts, review-gate rules, and verdict vocabulary — see [states.md](states.md). For the card schema and handoff format see [card-schema.md](card-schema.md).
+This document covers the conceptual model: why the board exists, what the states mean, and how cards move through review and retry. Memoria tracks **two lifecycles** — *execution* (the Hermes built-in `status` enum) and *review* (a Memoria overlay in the card `metadata`). For the operational reference — the full state machine, lane exit contracts, review-gate rules, and verdict vocabulary — see [states.md](states.md). For the card schema and handoff format see [card-schema.md](card-schema.md). When a word here carries more than one sense — `review`, `verdict`, `promote`, `lane`, `canonical` — the [glossary](../glossary.md) pins which is meant.
 
 ## Why every distinction matters
 
 Memoria's earlier drafts invented one nine-value `status` enum. Those distinctions are still meaningful — they just split across the two lifecycles. Each pairing below is worth keeping:
 
-- **`triage` vs `ready`** — separates specification from dispatch. A card in `triage` may be missing an `assignee`, a `canonical_target`, or a coherent task description. Promotion to `ready` (via `hermes kanban specify`) is an explicit "I'm done thinking about scope" moment that the dispatcher waits for. This is the Hermes Triage state, driven by human action rather than an orchestrator — see [Cards born in `triage` vs cards born in `ready`](#cards-born-in-triage-vs-cards-born-in-ready) below.
+- **`triage` vs `ready`** — separates specification from dispatch. A card in `triage` may be missing an `assignee`, a `promote_target`, or a coherent task description. `hermes kanban specify` turns it into a concrete spec (`triage → todo`); releasing that spec to `ready` is the explicit "I'm done thinking about scope" moment that the dispatcher waits for. This is the Hermes Triage state, driven by human action rather than an orchestrator — see [Cards born in `triage` vs cards born in `ready`](#cards-born-in-triage-vs-cards-born-in-ready) below.
 - **`ready` vs `running`** — separates dispatch from execution. Multiple cards can be `ready`; a profile holds one `running` card at a time.
 - **`blocked` vs awaiting review** — both stall the card, for different reasons. `blocked` is a decision the worker cannot make at all (the work itself can't proceed); a `done` card with `review_status: requested` is a check on already-completed work.
 - **`review_status: rejected` vs auto-retry** — `rejected` is a quality decision (the work was wrong); a retry is an execution problem (a tool failed, a query timed out). Rejection is human-driven and exits via discard-or-supersede; a retry is dispatcher-driven and re-attempts the same card by returning it to `ready`.
 - **`review_status: approved` vs `status: archived`** — separation matters when promotion involves moving files or running follow-on tasks. `approved` says "the work is good"; `archived` says "everything downstream has been handled."
 
-The key discipline: cards never reach canonical on a worker's say-so. The card lives until the human changes the review state.
+The key rule: cards never reach canonical on a worker's say-so. The card lives until the human changes the review state.
 
 ## Cards born in `triage` vs cards born in `ready`
 
@@ -34,10 +34,10 @@ The rule: **if the card is fully specified at creation time, start at `ready`; i
 
 A card with `review_status: rejected` is not "back to the worker." The human's judgment is "no, this work isn't right." What happens next is a separate decision made by the human with full context:
 
-| Path | What happens | Outcome marker |
+| Path | What happens | Archive marker |
 | --- | --- | --- |
-| **Supersede** | Human spawns a new card on the same lane with revised specification — addressing the issues that caused rejection. The new card carries a `metadata.supersedes: <original-card-id>` provenance field; the original card is archived. This is the standard "revise and retry" pattern. | Original card → `archived` with `outcome: superseded`. New card starts in `triage`. |
-| **Discard** | Human decides the work shouldn't exist. The card is archived without a successor. The rejection itself is the answer. | Card → `archived` with `outcome: discarded`. |
+| **Supersede** | Human spawns a new card on the same lane with revised specification — addressing the issues that caused rejection. The new card carries a `metadata.supersedes: <original-card-id>` provenance field; the original card is archived. This is the standard "revise and retry" pattern. | Original card → `archived` with `metadata.archive_reason: superseded`. New card starts in `triage`. |
+| **Discard** | Human decides the work shouldn't exist. The card is archived without a successor. The rejection itself is the answer. | Card → `archived` with `metadata.archive_reason: discarded`. |
 
 Both paths are explicit human actions. There is no implicit "return to lane queue" — every rework starts as a new card with new specs, which is more honest about how revisions actually work (the original prompt was usually wrong, not just the work product).
 
@@ -48,7 +48,7 @@ This is *not* the same as a retry. A retry is automatic re-dispatch after a tran
 The board is where work memory lives across sessions and across worker handoffs.
 
 - **Same card, same identity.** A retry does not create a new card.
-- **Session-safe memory.** Closing your chat does not lose the work; the card persists in `kanban.db`.
+- **Session-safe memory.** Closing the chat does not lose the work; the card persists in `kanban.db`.
 - **No chat-history dependence.** The next worker reads the card, not the transcript.
 - **Visible until archived.** A card in any non-terminal state is on the board.
 - **Shared memory across roles.** The handoff summary (and the `metadata` payload) is the API between profiles.
@@ -82,7 +82,7 @@ Trigger creates card ──► Specialist executes ──► Verifier / Linter r
                                                                                           │
                                                                                           ├─ review_status: approved ──► archived
                                                                                           │
-                                                                                          └─ review_status: rejected ──► archived (outcome: superseded or discarded)
+                                                                                          └─ review_status: rejected ──► archived (archive_reason: superseded or discarded)
                                                                                                                            │
                                                                                                                            └─ (optional) new triage card with provenance
 ```
@@ -91,7 +91,7 @@ Triggers (human action, cron, git hook, file watcher) create cards according to 
 
 ## Board implementation: Hermes built-in Kanban
 
-Memoria uses the **Hermes built-in Kanban board**. Once you adopt a board, this is the mandated choice — not one option among several. (The [minimum-viable system](../roadmap/README.md#minimum-viable-system) can run Hermes terminal-only and defer the board until task volume justifies it; what's mandated is *which* board you adopt, not that you start with one.)
+Memoria uses the **Hermes built-in Kanban board**. Once a board is adopted, this is the mandated choice — not one option among several. (The [minimum-viable system](../roadmap/README.md#minimum-viable-system) can run Hermes terminal-only and defer the board until task volume justifies it; what's mandated is *which* board to adopt, not that one is adopted from the start.)
 
 - [Hermes Kanban feature](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban)
 - [Kanban tutorial](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban-tutorial)

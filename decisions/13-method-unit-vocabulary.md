@@ -25,7 +25,7 @@ Original question: tag claim notes with methodological patterns (Idea2Story-styl
 
 - `methods:` stays free-text indefinitely.
 - Methodological querying remains imprecise (tag-search, no structured aggregation).
-- The retirement preserves the rationale: don't build vocabularies you can't yet name.
+- The retirement preserves the rationale: don't build vocabularies that can't yet be named.
 
 ## Alternatives considered
 
@@ -34,7 +34,6 @@ Original question: tag claim notes with methodological patterns (Idea2Story-styl
 ## Related
 
 - **Files affected:** [vault/README.md](../vault/README.md), [vault/frontmatter-schema.md](../vault/frontmatter-schema.md)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

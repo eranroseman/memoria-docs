@@ -8,7 +8,7 @@ topic: profiles
 
 The Memoria Coder profile and external coding agents (Kilocode, Aider, Claude Code, Codex) operate as **parallel agents with a shared filesystem**. Hermes owns research and reference; the coding agent owns code. The `code-note` is the human-readable handoff between them.
 
-This reference is the authoritative how-to. The summary in [profiles/README.md](../profiles/README.md#coder--external-coding-agent) is the architectural framing; this document specifies the workspace patterns.
+This reference is the authoritative how-to. The summary in [profiles/README.md](README.md#coder--external-coding-agent) is the architectural framing; this document specifies the workspace patterns.
 
 ## The two-agent boundary
 

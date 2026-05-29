@@ -15,16 +15,16 @@ Linter is Memoria's deterministic conscience. It validates structure (frontmatte
 ## What this profile is not
 
 - **Not a content checker.** Linter doesn't grade quality, judge whether a claim is well-supported, or assess whether a draft reads well. Those are Verifier's (provenance) and the human's (quality) domains. Linter checks *structure*: does the frontmatter parse, does the wikilink resolve, does the schema version match the authoritative reference.
-- **Not Verifier.** Both run mechanical checks, but at different layers. Verifier asks "does this draft's content trace to real sources?" — content-aware. Linter asks "is this note's schema valid, does its `extract_path` point at an existing file, is `data.json` consistent with the committed template?" — content-agnostic. They compose.
+- **Not Verifier.** Both run mechanical checks; Verifier is content-aware, Linter is content-agnostic (see [Profile boundaries](README.md#profile-boundaries)). Linter's questions are structural: is the schema valid, does `extract_path` resolve, is `data.json` consistent with the committed template?
 - **Not an LLM.** This is non-negotiable. Memoria's design treats Linter's determinism as load-bearing — if the verdict-band rollup ever depended on LLM judgment, it would no longer be reproducible across runs, which would defeat its role as a CI gate. Any check that needs LLM judgment is by definition not a Linter check.
-- **Not a fixer by default.** Dry-run is the default. Auto-fix is allowed only for the `safe-and-unambiguous` and `authorized-targeted` classes; schema changes, content edits, and canonical edits are always report-only. The policy MCP enforces the class gate at the tool layer — Linter cannot bypass it even if it tried.
+- **Not a fixer by default.** Dry-run is the default. Auto-fix is allowed only for the `safe-and-unambiguous` and `authorized-targeted` classes; schema changes, content edits, and review-gated-zone edits are always report-only. The policy MCP enforces the class gate at the tool layer — Linter cannot bypass it even if it tried.
 
 ## Design decisions
 
 - **Zero-LLM and deterministic — the design parallel to the trust score.** Linter's verdict band (PASS / REVIEW / FAIL) is the structural rollup; the fleet-health dashboard's trust score is the operational rollup. Both are headline single numbers; both are reproducibly computed from logs and findings; neither involves LLM judgment in the rollup. This parallelism is intentional — operational health and structural health get separate headline metrics with the same epistemic discipline.
-- **Owns `00-meta/02-logs/`.** Linter writes per-session log summaries, rotates the policy MCP audit log weekly (`audit.jsonl` → `00-meta/02-logs/archive/audit-YYYY-WW.jsonl`), and writes lint findings. This is the only path where Linter writes routinely. The rotation is classed as `authorized-targeted` in the auto-fix table, so the policy MCP allows it without escalation.
+- **Owns `00-meta/02-logs/`.** Linter writes per-session log summaries, rotates the policy MCP audit log weekly (`audit.jsonl` → `00-meta/02-logs/archive/audit-YYYY-WW.jsonl`), and writes lint findings. This is the only path where Linter writes routinely (the rotation mechanics and its `authorized-targeted` classification are detailed in [Log rotation](#log-rotation) below).
 - **M-detectors are the silent-failure layer.** The eight M-detectors catch failure modes the human wouldn't notice by reading content: a Dataview query that references a field no template emits (`dashboard-field-drift`), a `data.json` that drifted from the committed version (`plugin-config-drift`), an `extract_path` pointing at a missing file (`extract-path-broken`). The defining property is "silent" — the failure mode looks like "nothing to do" when there's actually something to do. The full detector specs live in `M-detectors.md` alongside the runtime SOUL.md.
-- **Auto-fix is class-gated by the policy MCP.** When `profile = "memoria-linter"` and `action = "auto_fix"`, the MCP requires `flags.class ∈ {"safe-and-unambiguous", "authorized-targeted"}`. Schema/content changes and canonical edits are always `deny` regardless of who requests them. Class gating is the runtime enforcement of the auto-fix policy — not just a design rule, an enforced one.
+- **Auto-fix is class-gated by the policy MCP.** When `profile = "memoria-linter"` and `action = "auto_fix"`, the MCP requires `flags.class ∈ {"safe-and-unambiguous", "authorized-targeted"}`. Schema/content changes and review-gated-zone edits are always `deny` regardless of who requests them. Class gating is the runtime enforcement of the auto-fix policy — not just a design rule, an enforced one.
 
 ## Auto-fix policy
 
@@ -35,7 +35,7 @@ Linter classifies every proposed fix into one of four classes. The class determi
 | `safe-and-unambiguous` | Trailing whitespace, missing `created` timestamp on a new note, missing required template field with one obvious value | **Auto-fix** (delegated to Templater — see [§"Implementing safe-and-unambiguous fixes via Templater"](#implementing-safe-and-unambiguous-fixes-via-templater)) |
 | `authorized-targeted` | Audit-log rotation, lint-findings file truncation, dashboard `last_updated` refresh | **Auto-fix** (Linter's own logs/dashboards only) |
 | `schema-content` | Frontmatter field rename, value-set change, deprecated field removal | **Dry-run** (always — needs `schema-migrate`) |
-| `canonical-edit` | Any write to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, `50-deliverables/` | **Deny** (the policy MCP forces `dry_run` regardless of class) |
+| `review-gated-edit` | Any write to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, `50-deliverables/` | **Deny** (the policy MCP forces `dry_run` regardless of class) |
 
 The gate is `policy.allow.auto_fix.classes: ["safe-and-unambiguous", "authorized-targeted"]` in `lane-overrides/linter.yaml`; anything else is `deny`. See [architecture/policy-mcp.md](../architecture/policy-mcp.md) for the request/response contract and audit-log shape.
 
@@ -79,7 +79,7 @@ This keeps Linter's fix surface small (one delegation pattern) and uses a battle
 
 ## Permissions and commands
 
-Folder permission matrix lives in [profiles/README.md](../profiles/README.md#folder-permission-matrix); the runtime contract (lint check table, full M-detector specs, threshold values) lives in the SOUL.md and M-detectors.md alongside it. The command catalog is in [profiles/profile-commands.md](profile-commands.md).
+Folder permission matrix lives in [profiles/README.md](README.md#folder-permission-matrix); the runtime contract (lint check table, full M-detector specs, threshold values) lives in the SOUL.md and M-detectors.md alongside it. The command catalog is in [profiles/profile-commands.md](profile-commands.md).
 
 ## Related
 

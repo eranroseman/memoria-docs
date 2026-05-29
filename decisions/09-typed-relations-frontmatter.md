@@ -35,9 +35,9 @@ Adding typed relationships to claim-note frontmatter — e.g. `supports: [[x]]`,
 
 ## Related
 
-- **Workflows affected:** [Distill](../workflows/README.md), [Promote](../workflows/README.md)
+- **Workflows affected:** [Distill](../workflows/upstream/distill.md), [Promote](../workflows/upstream/promote.md)
 - **Files affected:** [vault/README.md](../vault/README.md), `00-meta/03-templates/claim-note.md` (in the starter vault)
-- **Resolves / supersedes:** ADR-16 ([Contradictions dashboard](16-contradictions-dashboard.md)) depends on this being adopted.
+- **Required by:** [ADR-16 (Contradictions dashboard)](16-contradictions-dashboard.md) — blocked until this is adopted.
 
 <!-- memoria-nav -->
 

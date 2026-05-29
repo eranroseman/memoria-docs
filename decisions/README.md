@@ -17,9 +17,9 @@ This folder holds Memoria's Architecture Decision Records (ADRs) — one file pe
 
 ## Index of all decisions
 
-The list below is the authoritative chronological index. For a grouped view by topic (vault / workflows / profiles / dashboards / retired), see [by-topic.md](by-topic.md).
+The list below is the authoritative chronological index. For a grouped view by topic (vault / workflows / profiles / dashboards / retired), see [by-topic.md](by-topic.md). Four deferred ADRs (12, 18, 19, 20) share one rationale, documented once in [adopt-on-demand: systematic-review tooling](adopt-on-demand-for-reviews.md).
 
-Resolved decisions that don't have their own file are noted in the **Resolution** column; their historical context is preserved in this index. Decisions with their own ADR file are linked.
+The **Resolution / location** column records the one-line outcome for every decision. Decisions with their own ADR file are linked from the Title column; decisions resolved index-only (no separate file) have their full historical context preserved here.
 
 | # | Title | Status | Resolution / location |
 |---|---|---|---|
@@ -43,7 +43,7 @@ Resolved decisions that don't have their own file are noted in the **Resolution*
 | 18 | [Evidence quality fields layer](18-evidence-quality-fields.md) | `proposed` | Per-project activation when a protocol or journal requires it. |
 | 19 | [Pre-ingest screening layer (PRISMA + ASReview)](19-pre-ingest-screening.md) | `proposed` | Adopt when starting a formal scoping or systematic review. |
 | 20 | [Dual-rater workflow for inter-rater reliability](20-dual-rater-workflow.md) | `proposed` | Activate only when the chapter / paper requires it. |
-| 21 | [Shared candidate frontmatter format](21-shared-candidate-frontmatter.md) | `proposed` | Defer. Would standardize a `type: candidate` schema across candidate sources and add `candidate-note` as a 16th note type (the current 15 are authoritative in [vault/templates.md](../vault/templates.md#note-types)). |
+| 21 | [Shared candidate frontmatter format](21-shared-candidate-frontmatter.md) | `proposed` | Defer. Would standardize a `type: candidate-note` schema across candidate sources and add `candidate-note` as a 16th note type (the current 15 are authoritative in [vault/templates.md](../vault/templates.md#note-types)). |
 
 ## Numbering gaps and the graveyard
 

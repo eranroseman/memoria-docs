@@ -24,7 +24,7 @@ Surface unreviewed answer drafts in the weekly dashboard. After a configurable t
 ## Consequences
 
 - Drafts remain visible until the human decides their fate.
-- The 90-day threshold prevents the inbox from becoming a permanent graveyard.
+- The 90-day threshold prevents the inbox from becoming a permanent dumping ground.
 - Human owns every discard — the agent never silently retires its own work.
 
 ## Alternatives considered
@@ -35,9 +35,8 @@ Surface unreviewed answer drafts in the weekly dashboard. After a configurable t
 
 ## Related
 
-- **Workflows affected:** [Distill](../workflows/README.md), [Lint](../workflows/README.md)
+- **Workflows affected:** [Distill](../workflows/upstream/distill.md), [Lint](../workflows/maintenance/lint.md)
 - **Files affected:** [profiles/linter.md](../profiles/linter.md), [weekly-review.md](../dashboards/weekly-review.md)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

@@ -6,7 +6,7 @@ topic: workflows
 
 # Verify
 
-**Group.** Downstream (stage workflow, added 2026-05)
+**Group.** Downstream (stage workflow)
 **Goal.** Trace every substantive claim in a draft back to a claim note in `30-synthesis/01-claims/`. Flag unsupported claims for the revise loop.
 
 ## Pipeline position
@@ -17,7 +17,7 @@ Between draft (inside [Write](write.md)) and [Revise](revise.md). Fires automati
 
 1. The human commits to `40-workbench/01-projects/<project>/drafts/<chapter>.md`. A git post-commit hook creates a `verify` card targeting Verifier.
 2. Verifier runs `cite-check`: parses the draft into discrete claims (one per sentence containing a `[@citekey]` or a substantive factual assertion), traces each to claim notes via citekey lookup and similarity search.
-3. The output lands as a `[!verification]` callout at the top of the draft (see [surfaces/README.md](../../surfaces/inline.md)), summarizing total claims / traced / failed. The detailed per-claim report writes to `40-workbench/01-projects/<project>/verification/<chapter>-<date>.md`.
+3. The output lands as a `[!verification]` callout at the top of the draft (see [surfaces/inline.md](../../surfaces/inline.md)), summarizing total claims / traced / failed. The detailed per-claim report writes to `40-workbench/01-projects/<project>/verification/<chapter>-<date>.md`.
 4. For each failed trace, Verifier spawns a `gap:<claim-text>` card in the upstream queue (`10-inbox/03-candidates/` with `type: gap-candidate`). This is the feedback loop that closes downstream back to upstream — see [Find](../upstream/find.md) for what happens to gap cards.
 5. The `verify` card moves to one of three exit states (`verify-clean`, `verify-needs-revision`, `verify-needs-attention`). The human decides per claim whether the gap is substantive (needs to be filled) or the claim should be softened.
 6. Card moves to [Revise](revise.md) if any claim needs human action, or `accepted` if everything traced cleanly.

@@ -17,7 +17,7 @@ Every command begins with the prefix **`Memoria:`** so the human can type `Cmd-P
 Two-tier discipline:
 
 - The **core commands** below are the operational surface. They cover capture, processing, interactive retrieval, projects, maintenance, and lens-based reading.
-- Anything beyond these is an *human addition*, not part of the standard Memoria UX. Humans add their own custom commands freely — but the standard set is what every Memoria install ships with, what cross-machine portability assumes, and what the [Commander](../plugins/optional/cmdr.md) recommendation set is drawn from.
+- Anything beyond these is a *human addition*, not part of the standard Memoria UX. Humans add their own custom commands freely — but the standard set is what every Memoria install ships with, what cross-machine portability assumes, and what the [Commander](../plugins/optional/cmdr.md) recommendation set is drawn from.
 
 ## The standard commands
 
@@ -39,7 +39,7 @@ Two-tier discipline:
 
 ### Interactive retrieval (3 commands — transient ACP)
 
-These commands invoke a profile via a *transient* ACP session: the agent-client plugin opens a fresh chat session, the agent returns results, the session closes. No persistent pane, no `savedSessions[]` entry. They're for "ask one specific question and get an answer" — distinct from the persistent Socratic processing chat above, and distinct from the substantive card-based work in the Project section below (which produces durable artifacts via the Kanban).
+These commands invoke a profile via a *transient* ACP session: the agent-client plugin opens a fresh chat session, the agent returns results, the session closes. No session-persistent pane, no `savedSessions[]` entry. They're for "ask one specific question and get an answer" — distinct from the session-persistent Socratic processing chat above (*persistent* here means the chat session outlives one exchange — unrelated to the persistent *surface type*, the dashboards), and distinct from the substantive card-based work in the Project section below (which produces durable artifacts via the Kanban).
 
 One transient command per ACP-suitable profile in the picker (Mapper / Writer / Verifier), each pointed at the kind of question the profile is shaped to answer.
 
@@ -49,7 +49,7 @@ One transient command per ACP-suitable profile in the picker (Mapper / Writer / 
 | `Memoria: counter-outline this section` | Invokes Writer with the `counter-outline` skill loaded in transient ACP mode. Returns 2–3 competing outlines for the current section directly in chat — no file artifact, no project-scratch write. Useful for quick brainstorming before committing to a framing direction. For the substantive *committed* counter-outline (which writes to `40-workbench/01-projects/<project>/framing/`), use `Memoria: frame this section` in the Project section below. | QuickAdd Macro → `open-new-chat-view` → `switch-agent-to-memoria-writer` (active selection auto-attached). The first message — pre-filled by the macro template — invokes the `counter-outline` skill via Hermes slash command. Human closes the view after the response. |
 | `Memoria: similarity-check this claim` | Invokes Verifier in transient ACP mode with the current selection (or active note's body if no selection) as the query. Returns the top 3 most-similar existing claim-notes by cosine similarity over the embedding index, with the similarity score per result. No card created; no `near-duplicate-candidate` flag written. Useful before filing a new claim note to check for duplicates; if the human decides to file anyway, the card-time `similarity-check` runs separately and produces the audit-trail entry. See [profiles/verifier.md `similarity-check`](../profiles/profile-commands.md) for the substantive card-based version. | QuickAdd Macro → `open-new-chat-view` → `switch-agent-to-memoria-verifier` (active selection or note auto-attached). The first message — pre-filled by the macro template — requests top-N similars via Hermes slash command. Human closes the view after the response. |
 
-The architectural distinction: **persistent ACP** (Socratic, default) is for long conversations during processing; **transient ACP** (Mapper / Writer / Verifier via these commands) is for quick queries with no expected artifact. See [`obsidian-plugins.md#agent-client`](../plugins/required/agent-client.md) for the per-profile rationale.
+See [`agent-client.md`](../plugins/required/agent-client.md) for the per-profile rationale behind which profiles get session-persistent versus transient ACP sessions.
 
 **The transient commands don't replace their card-based counterparts.** Each profile has both surfaces:
 
@@ -111,7 +111,7 @@ The `Cmd-P → "M"` filter convention works from the moment the first three comm
 
 ## What's deliberately NOT in this catalog
 
-- **Card state management.** Approving, denying, rejecting individual cards happens through inline callout buttons (see [`surfaces/README.md`](inline.md)) or through the Kanban directly. There's no `Memoria: approve this card` command because card state changes need card context the palette doesn't provide.
+- **Card state management.** Approving, denying, rejecting individual cards happens through inline callout buttons (see [`surfaces/inline.md`](inline.md)) or through the Kanban directly. There's no `Memoria: approve this card` command because card state changes need card context the palette doesn't provide.
 - **Profile administration.** Reloading a profile, editing a lane-override, editing a profile source in `.memoria/profiles/memoria-<name>/` and redeploying with `install.ps1` — these are CLI operations, not palette operations. The palette is for *daily ops*; profile config is a *deployment concern*.
 - **Search and retrieval (search-engine-style).** The vault's native search, Dataview queries, and `qmd` search are richer than any palette command could be. Memoria doesn't try to substitute its own search. The Interactive retrieval commands above are a different category — *conversational* retrieval where the human asks a profile a question and gets a curated response, not full-text / vector / property search that returns ranked results from an index.
 - **Composing custom workflows.** Humans add their own commands for their own workflows; this catalog is the *standard Memoria set*, not an exhaustive human surface.
@@ -120,13 +120,13 @@ The `Cmd-P → "M"` filter convention works from the moment the first three comm
 
 - [`obsidian-plugins.md`](../plugins/required/quickadd.md) — QuickAdd and Templater plugin details.
 - [`obsidian-plugins.md`](../plugins/optional/cmdr.md) — Commander plugin for putting top commands on buttons.
-- [`surfaces/README.md`](README.md) — workspaces, dashboards, callouts, and the command palette as one of the five Memoria surfaces.
+- [`surfaces/README.md`](README.md) — the four Obsidian surface types (dashboards, workspaces, callouts, status line) that this command palette sits alongside. The palette itself is one of Memoria's five human-facing channels; see the [glossary](../glossary.md#surfaces-and-channels) for how *types* and *channels* relate.
 - [`workflows/README.md`](../workflows/README.md) — workflows the commands trigger (workflow Discuss, Assess, Frame, Verify).
 
 <!-- memoria-nav -->
 
 ---
 
-[← Previous: design-system template](design-system.md)
+[← Previous: Ambient surfaces: the status line](ambient.md)
 
-[Next: Daily Health — design summary →](../dashboards/README.md)
+[Next: design-system template →](design-system.md)

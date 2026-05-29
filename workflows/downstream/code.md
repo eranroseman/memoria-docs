@@ -21,6 +21,10 @@ topic: workflows
 
 Human owns intent and review. Coder owns implementation. Hermes scaffolds and bookkeeps.
 
+## Example
+
+A chapter needs a reproducible figure → the Coder scaffolds `40-workbench/01-projects/<project>/code/figure-3-receptivity-curve.md` (a `code-note`) linking the motivating claim note → the external coding agent implements the script in the same folder → the human reviews via the standard review gate → the `code-note` records purpose, dependencies, and how to regenerate the figure.
+
 ## Related
 
 - **Profile:** [profiles/coder.md](../../profiles/coder.md)

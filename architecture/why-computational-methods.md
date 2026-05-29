@@ -32,7 +32,7 @@ When designing a new workflow or skill, choose the method class by asking five q
 4. **Can a deterministic step narrow the candidate set before an LLM judges the remainder?** → Hybrid. (Examples: `cite-check` with embedding-pre-filter on claim-source matches.)
 5. **Is the task open-ended generation — prose, dialogue, alternative outlines, creative comparison?** → Generative. LLM-required. (Examples: Socratic processing, draft synthesis, counter-outline.)
 
-If none of the first four applies and the task isn't open-ended generation, you've found a gap — the task probably doesn't need to be automated at all.
+If none of the first four applies and the task isn't open-ended generation, it's a gap — the task probably doesn't need to be automated at all.
 
 ## The hybrid pattern
 
@@ -53,7 +53,7 @@ Concrete instances in Memoria:
 - **`[!brief]` comparative read.** New source → top-5 most-comparable existing sources by shared citations + embedding similarity → LLM composes the comparative narrative across 5 sources, not the entire corpus.
 - **`_proposed_classification`.** A new paper-note → small multi-label classifier produces topic/methods/study_design proposals → if classifier confidence > 0.85, accept; else fall back to LLM proposal.
 
-The benefit isn't just cost. The deterministic step's output is *auditable* (you can show which sources contributed to the rank, what the similarity score was, why the candidate was selected). The LLM's output is qualitative — useful but opaque. The hybrid keeps the audit trail authoritative.
+The benefit isn't just cost. The deterministic step's output is *auditable* (it can show which sources contributed to the rank, what the similarity score was, why the candidate was selected). The LLM's output is qualitative — useful but opaque. The hybrid keeps the audit trail authoritative.
 
 ## Methods Memoria uses
 
@@ -170,7 +170,7 @@ For the practical details — embedding model selection (`bge-small-en` vs `all-
 - [profiles/writer.md](../profiles/writer.md) — generative, LLM-required.
 - [profiles/socratic.md](../profiles/socratic.md) — generative, LLM-required.
 - [profiles/linter.md](../profiles/linter.md) — fully deterministic.
-- [surfaces/README.md inline surfaces](../surfaces/inline.md) — hybrid pattern for `[!suggestions]` and `[!brief]`.
+- [surfaces/inline.md](../surfaces/inline.md) — hybrid pattern for `[!suggestions]` and `[!brief]`.
 - [profiles/librarian.md](../profiles/librarian.md) — the classifier-with-LLM-fallback approach for `_proposed_classification` confidence scoring.
 - [architecture/capability-stack.md model routing](../architecture/capability-stack.md) — when LLM calls are needed, route synthesis to Claude and cheap tasks (embed, classify, summarize) to cheaper models or local inference.
 

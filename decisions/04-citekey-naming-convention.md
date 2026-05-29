@@ -41,9 +41,8 @@ This produces `mamykina2010sense` from a Mamykina 2010 paper titled "Sense and s
 
 ## Related
 
-- **Workflows affected:** [Zotero capture](../workflows/README.md), [Ingest](../workflows/README.md)
+- **Workflows affected:** [Zotero capture](../workflows/upstream/zotero-capture.md), [Ingest](../workflows/upstream/ingest.md)
 - **Files affected:** [vault/README.md](../vault/README.md), `00-meta/03-templates/paper-note.md` (in the starter vault)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

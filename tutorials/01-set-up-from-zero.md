@@ -9,29 +9,31 @@ topic: tutorials
 By the end of this tutorial you will have:
 
 - A working vault with the minimum-viable folder structure
-- One Hermes profile (Librarian) compiled and registered
-- One source ingested from Zotero into the vault with a real `[!brief]` callout
+- One Hermes profile (Librarian) installed and registered
+- One research source ingested from Zotero into the vault, carrying its `[!brief]` comparative-read callout
 - One audit-log entry proving the policy MCP gated the write
 
 This is the **minimum viable system** ([roadmap/README.md](../roadmap/README.md#minimum-viable-system)) path. You can grow from here. Don't worry about the full seven-profile setup yet; it earns its place once your review queue is a bottleneck.
 
-Expect 60–90 minutes if you're new to all the pieces.
+New to terms like *lane*, *card*, *profile*, or *comparative-brief*? Keep the [glossary](../glossary.md) open in a second tab — this tutorial uses a few of them before the architecture docs define them in full.
+
+Expect to spend 60–90 minutes if you're new to all the pieces. Commands are shown in **Windows PowerShell** (the installer is `install.ps1`); blocks labelled `bash` are plain `git`/`hermes` CLI calls that run identically in any shell, so on macOS/Linux you only need to swap PowerShell cmdlets like `Copy-Item` and `notepad` for their local equivalents.
 
 ## What you need before starting
 
-- A machine with **Python 3.11+**, **git**, and **Pandoc** available on `$PATH`.
+- A machine with **Python 3.11+**, **git**, and **Pandoc** available on your `PATH`.
 - **Obsidian** (free, [obsidian.md](https://obsidian.md)).
 - **Zotero** + the **Better BibTeX** extension installed and signed in.
-- **Hermes** installed and on `$PATH` (`hermes --version` returns something). Hermes setup is upstream of Memoria — see [hermes-agent.nousresearch.com](https://hermes-agent.nousresearch.com/) if you need to install it.
+- **Hermes** installed and on your `PATH` (`hermes --version` returns something). Hermes setup is upstream of Memoria — see [hermes-agent.nousresearch.com](https://hermes-agent.nousresearch.com/) if you need to install it.
 - A Claude API key. Set `ANTHROPIC_API_KEY` in your shell.
 - An OpenRouter API key (or any cheap-model provider). Set `OPENROUTER_API_KEY`.
-- An email for the OpenAlex polite pool. Set `OPENALEX_EMAIL` to your real address.
+- An email for the OpenAlex polite pool. Set `OPENALEX_EMAIL` to a working address you control.
 
-If any of these are missing, stop and fix that first. The rest of the tutorial assumes them.
+If any are missing, stop and fix that first — the rest of the tutorial assumes them.
 
 ## Step 1 — Get the starter vault
 
-Clone the `memoria-vault` repo (or your fork) into any folder name you want. The repo's name is `memoria-vault` but **the local folder name is your choice** — Memoria's install script detects its own location at runtime, so it doesn't care what the folder is called:
+Clone the `memoria-vault` repo (or your fork). **The local folder name is your choice** — the installer detects its own location at runtime, so it doesn't matter what you call it:
 
 ```bash
 # Use the default name…
@@ -42,7 +44,7 @@ git clone https://github.com/<your-handle>/memoria-vault.git my-research-vault
 cd my-research-vault
 ```
 
-You should see the vault skeleton (`00-meta/`, `10-inbox/`, `20-sources/`, `30-synthesis/`, …) plus `.obsidian/` (plugin configs + snippets) and `.memoria/` (the seven profile directories, MCP server source, lane-overrides) at the root. The starter vault ships pre-populated — no skeleton-creation step needed.
+You should see the vault skeleton (`00-meta/`, `10-inbox/`, `20-sources/`, `30-synthesis/`, …) plus `.obsidian/` (plugin configs + snippets) and `.memoria/` (the seven profile directories, the MCP server code, lane-overrides) at the root. The starter vault ships pre-populated — no skeleton-creation step needed.
 
 ## Step 2 — Open the vault in Obsidian
 
@@ -72,7 +74,7 @@ In Zotero, **Edit → Preferences → Better BibTeX**:
 - **Citation key formula**: `[auth.lower][year][title:lower:condense:6]` (matches Memoria's expected `mamykina2010sense` shape — see [ADR-04](../decisions/04-citekey-naming-convention.md)).
 - **Automatic export**: configure auto-export to `.memoria/library.bib` inside the vault. This is the authoritative `.bib` Memoria reads.
 
-Drag one PDF you've been meaning to read into Zotero. Better BibTeX assigns it a citekey (e.g., `mamykina2010sense`). Note that key — you'll use it in step 6.
+Drag one PDF you've been meaning to read into Zotero. Better BibTeX assigns it a citekey (e.g., `mamykina2010sense`). Note that key — you'll use it in Step 6.
 
 ## Step 4 — Install the seven profiles
 
@@ -82,7 +84,14 @@ The seven Memoria profile directories are already in the vault at `.memoria/prof
 ./install.ps1
 ```
 
-This deploys all seven profiles in one pass. For each profile the script: stages the source files, substitutes `{{VAULT_PATH}}` in `mcp.json` with the absolute path of this vault, calls `hermes profile install <staged> --alias memoria-<name> --force --yes`, and (if `.env` doesn't already exist for that profile) copies `.env.EXAMPLE` to `.env` as a starting point. Re-running the script after a `git pull` is the way to update — it always overwrites author-owned files (SOUL.md, config.yaml, mcp.json, skills/, cron/) and preserves `.env`.
+This installs every profile in one pass. For each profile the script:
+
+1. Stages the profile files.
+2. Substitutes `{{VAULT_PATH}}` in `mcp.json` with this vault's absolute path.
+3. Calls `hermes profile install <staged> --alias memoria-<name> --force --yes`.
+4. Copies `.env.EXAMPLE` to `.env` as a starting point — but only if that profile has no `.env` yet.
+
+To update later, re-run the script after a `git pull`: it always overwrites the author-owned files (`SOUL.md`, `config.yaml`, `mcp.json`, `skills/`, `cron/`) and never touches your `.env`.
 
 Fill in the secrets for the Librarian profile:
 
@@ -94,7 +103,7 @@ notepad ~/.hermes/profiles/memoria-librarian/.env
 ANTHROPIC_API_KEY=sk-ant-...
 OPENROUTER_API_KEY=sk-or-...
 OPENALEX_EMAIL=you@example.com
-OBSIDIAN_REST_API_KEY=<the 32-char token from step 2>
+OBSIDIAN_REST_API_KEY=<the 32-char token from Step 2>
 ```
 
 Confirm the install succeeded:
@@ -103,13 +112,13 @@ Confirm the install succeeded:
 hermes profile list
 ```
 
-You should see all seven `memoria-*` profiles in the output. For this tutorial you'll exercise `memoria-librarian` and `memoria-linter`; the others are installed but unused until later steps.
+You should see all seven `memoria-*` profiles in the output. This tutorial drives `memoria-librarian` directly and `memoria-linter` at the end; the rest stay idle until later steps. One wrinkle worth knowing now: the `[!brief]` callout the Librarian writes during ingest is produced by the *comparative-brief* skill, which belongs to the **Mapper** profile's contract — so Step 7 credits it to Mapper even though you never invoke Mapper by hand here.
 
-## Step 5 — Verify the lane overrides and policy MCP
+## Step 5 — Confirm the policy MCP is connected
 
-The policy MCP reads lane-override YAML files at startup. Under direct profile management those files live at `.memoria/lane-overrides/` in the vault, and the installer wired each profile's `mcp.json` to point at the policy MCP source (`.memoria/mcp/policy_mcp.py`) plus the lane-overrides directory via the `{{VAULT_PATH}}` substitution. No copy step needed.
+The policy MCP reads lane-override YAML files at startup. Under direct profile management those files live at `.memoria/lane-overrides/` in the vault, and the installer pointed each profile's `mcp.json` at the policy MCP code (`.memoria/mcp/policy_mcp.py`) plus the lane-overrides directory via the `{{VAULT_PATH}}` substitution. No copy step needed.
 
-You can verify the wiring by reading any profile's deployed `mcp.json`:
+You can confirm this by reading any profile's installed `mcp.json`:
 
 ```powershell
 Get-Content ~/.hermes/profiles/memoria-librarian/mcp.json
@@ -117,11 +126,11 @@ Get-Content ~/.hermes/profiles/memoria-librarian/mcp.json
 
 You should see the `policy` server pointing at this vault's `.memoria/mcp/policy_mcp.py` with an absolute path. If the path still contains `{{VAULT_PATH}}`, the installer didn't substitute it — re-run `install.ps1`.
 
-The default `.memoria/lane-overrides/library.yaml` allows writes to `10-inbox/`, `20-sources/`, denies writes to `30-synthesis/01-claims/` (degrades them to `dry_run`), and routes the audit log to `00-meta/02-logs/audit.jsonl`. You don't need to change anything.
+The default `.memoria/lane-overrides/library.yaml` allows writes to `10-inbox/` and `20-sources/` (these log as `decision: allow_with_log`), degrades any write to `30-synthesis/01-claims/` down to `dry_run`, and routes the audit log to `00-meta/02-logs/audit.jsonl`. You don't need to change anything.
 
 ## Step 6 — Ingest your first source
 
-Pick the citekey you noted in step 3. Then:
+Pick the citekey you noted in Step 3. Then:
 
 ```bash
 hermes -p memoria-librarian run llm-wiki ingest --source mamykina2010sense
@@ -132,11 +141,11 @@ Replace `mamykina2010sense` with your actual citekey. Hermes will:
 1. Read the citation from `library.bib`
 2. Call OpenAlex / Crossref / Unpaywall to enrich (citation count, abstract, OA status)
 3. Run Marker on the PDF to extract markdown into `90-assets/extracts/` (if the PDF is open access; otherwise this step is skipped and the paper-note carries `extract_path: ""`)
-4. Compose a `comparative-brief` `[!brief]` callout
+4. Compose the `comparative-brief` `[!brief]` callout (the Mapper-defined comparative read — see Step 7)
 5. Write the paper-note to `20-sources/01-papers/<citekey>.md`
 6. Append an entry to `00-meta/02-logs/audit.jsonl` for every write
 
-Expect 30–90 seconds. If `llm-wiki` doesn't resolve, check that `hermes skills list` includes it; if not, install with `hermes skills install llm-wiki`.
+This usually takes 30–90 seconds. If `llm-wiki` doesn't resolve, check that `hermes skills list` includes it; if not, install with `hermes skills install llm-wiki`.
 
 ## Step 7 — Verify the audit log
 
@@ -156,7 +165,7 @@ In Obsidian (or with `Get-Content`), open `00-meta/02-logs/audit.jsonl` inside t
 
 The presence of `before_hash`, `after_hash`, and `decision` is the proof: the policy MCP saw the write and gated it. If the file changes outside this audit trail, the Linter's `vault-hash-drift` detector ([profiles/linter.md](../profiles/linter.md)) will flag it.
 
-Open the paper-note (`20-sources/01-papers/<citekey>.md`) in Obsidian. The top should show a `[!brief]` callout — Mapper's comparative read against your existing corpus. Since you only have one source, the callout will note that there's nothing to compare against yet; that's correct.
+Open the paper-note (`20-sources/01-papers/<citekey>.md`) in Obsidian. The top should show a `[!brief]` callout — the Mapper-defined comparative read against your existing corpus. Since you only have one source, the callout will note that there's nothing to compare against yet; that's correct, and it fills out with genuine comparisons as the corpus grows.
 
 ## What just happened
 
@@ -164,19 +173,19 @@ You've exercised all three Memoria layers:
 
 - **Board** — implicit; the ingest ran as a single card flowing through `ready → running → archived`.
 - **Workers** — Librarian claimed the card, called the policy MCP for each write, wrote a paper-note.
-- **Vault** — the paper-note now lives in `20-sources/01-papers/`, the audit log records what happened, the `[!brief]` callout will populate properly once you have a few more sources.
+- **Vault** — the paper-note now lives in `20-sources/01-papers/`, and the audit log records what happened.
 
-This is the loop you'll repeat. Each new source goes through this path. Promotion to claim notes in `30-synthesis/01-claims/` is a separate, human-driven step — agents can't auto-write there (the policy MCP degrades any worker write to `30-synthesis/01-claims/` to `dry_run`, regardless of profile).
+This is the loop you'll repeat. Each new source goes through this path. Promotion to claim notes in `30-synthesis/01-claims/` is a separate, human-driven step — agents can't auto-write there, because (as Step 5 showed) the policy MCP degrades any worker write to that folder down to `dry_run`, regardless of profile.
 
 ## What to do next
 
 Now that one source is in the vault:
 
-1. **Ingest 5–10 more sources.** Drag them into Zotero, run `hermes ... ingest --source <citekey>` for each. Once you have 5+, the `[!brief]` callouts on subsequent sources will start showing real comparative reads.
-2. **Run the Linter once.** `hermes -p memoria-linter run lint --target 20-sources/` will report any structural issues (frontmatter shape, link health). The Linter profile was already deployed by `install.ps1` in step 4 — fill in `~/.hermes/profiles/memoria-linter/.env` the first time you run it.
+1. **Ingest 5–10 more sources.** Drag them into Zotero and run `hermes ... ingest --source <citekey>` for each. Once you have 5+, the `[!brief]` callouts finally have a corpus to compare against.
+2. **Run the Linter once.** `hermes -p memoria-linter run lint --target 20-sources/` will report any structural issues (frontmatter shape, link health). The Linter profile was already installed by `install.ps1` in Step 4 — fill in its `~/.hermes/profiles/memoria-linter/.env` the first time you run it, exactly as you did for the Librarian.
 3. **Open the [weekly-review](../dashboards/weekly-review.md)** once a week (Friday afternoon is the recommended ritual). Decide what to promote from `10-inbox/` and classify outstanding paper-notes.
 
-When you start to feel the absence of capabilities — comparative scope reports, claim verification, drafting assistance — that's when to add more profiles. The [graduated start path](../roadmap/README.md#implementation-paths-graduated-start) describes when each profile earns its keep.
+When you start to feel the absence of capabilities — comparative scope reports, claim verification, drafting assistance — that's when to add more profiles. The [graduated start path](../roadmap/README.md#implementation-paths-graduated-start) describes when each one is worth adding.
 
 ## If something goes wrong
 

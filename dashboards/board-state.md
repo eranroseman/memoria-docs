@@ -6,7 +6,7 @@ topic: dashboards
 
 # `board-state` — design summary
 
-**Runtime artifact.** This dashboard ships at `00-meta/01-dashboards/board-state.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview. The summary below covers its design role; the runtime queries live in the vault file.
+**Runtime artifact.** Ships at `00-meta/01-dashboards/board-state.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview; the runtime queries live there. This page covers the design role.
 
 ## Mission
 
@@ -27,6 +27,8 @@ A Dataview view of cards on the Hermes Kanban board: active cards, review queue,
 ## Related
 
 - [board/README.md](../board/README.md) — Kanban state machine, lane definitions, review gate
+- [glossary.md](../glossary.md#board-and-cards) — disambiguates the overloaded "review": `review_status`, `verdict`, and the Linter's verdict band
+- [vault/README.md](../vault/README.md) — claim-note `maturity` stages (seedling → budding → evergreen) shown in the histogram
 - [`discuss-queue`](discuss-queue.md) — upstream-discipline view (paper notes awaiting Socratic processing)
 - [Daily Health](README.md) — daily health glance, includes today's queue (filtered subset of board-state)
 - [`audit-log`](audit-log.md) — per-decision forensics complementing board-level state

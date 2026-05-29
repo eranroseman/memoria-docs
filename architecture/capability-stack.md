@@ -17,6 +17,8 @@ The minimum capability stack to operate Memoria:
 7. **A local REST API or Agent Client Protocol (ACP)** to let Hermes write into Obsidian.
 8. **Pandoc** for export.
 
+**Optional, adopt-when-needed: agent-side retrieval.** When the agent needs semantic recall over the vault (the Mapper's corpus queries, the search skills), Memoria uses **`qmd`** ([tobi/qmd](https://github.com/tobi/qmd) — local BM25 + vector + LLM-rerank over Markdown) as its retrieval substrate. It is *not* in the minimum stack — add it when corpus size makes keyword search insufficient. It is distinct from the human-side **Smart Connections** plugin (see [glossary: qmd](../glossary.md#computational-methods) and [plugins/recommended/smart-connections.md](../plugins/recommended/smart-connections.md)).
+
 ## Use pre-built skills, don't roll your own
 
 Pre-built skills cover most of the enrichment and ingest work; the agent should use them rather than writing API clients from scratch.
@@ -53,11 +55,11 @@ A single reusable Hermes skill that wraps any REST endpoint. Used when an API ma
 | Network policy | `external_api_policy: explicit_only` — must be invoked with explicit URL, not via prompt-driven URL synthesis |
 | Auth | Reads bearer tokens from environment variables; no secrets in the skill itself |
 
-The rule: if you find yourself calling the same endpoint repeatedly through the passthrough, that's the signal to promote it to a dedicated skill (a `<service>-fetch` skill with a narrower contract). The passthrough is for the long tail; dedicated skills are for the head.
+The rule: if the same endpoint is called repeatedly through the passthrough, that's the signal to promote it to a dedicated skill (a `<service>-fetch` skill with a narrower contract). The passthrough is for the long tail; dedicated skills are for the head.
 
 ## Model routing: synthesis on Claude, cheap tasks elsewhere
 
-Not every model call needs the most capable model. The discipline:
+Not every model call needs the most capable model. The rule:
 
 | Task class | Examples | Recommended model | Why |
 | --- | --- | --- | --- |

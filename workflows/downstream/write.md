@@ -26,7 +26,7 @@ Human owns argument assembly and drafting (steps 3–5, 7). Mapper owns step 1 v
 
 ## Canvas → Draft sub-workflow
 
-Canvas is the spatial layer between synthesis and writing. It is an argument map, not a canonical note. Use it when you have **8–15 relevant claim notes** and need to see how they fit together before drafting.
+Canvas is the spatial layer between synthesis and writing. It is an argument map, not a canonical note. Use it when there are **8–15 relevant claim notes** to see how they fit together before drafting.
 
 **1. Collect notes onto the canvas.** Drag claim notes from the file explorer onto a new Canvas file. Save as `40-workbench/01-projects/<project>/canvas/{chapter-or-section-name}.canvas`.
 
@@ -44,7 +44,7 @@ hermes run draft "outline the argument on {canvas topic}" \
 
 **5. Move to draft.** Create `40-workbench/01-projects/<project>/drafts/{chapter-name}.md`. Open Canvas in a split pane. Write section by section, citing citekeys from notes on the Canvas.
 
-**6. Archive the Canvas.** When the section is drafted, move the canvas to `95-archive/` with `lifecycle: archived`. Canvases are scratchpads, not deliverables — but they have provenance value (the argument map you built).
+**6. Archive the Canvas.** When the section is drafted, move the canvas to `95-archive/` with `lifecycle: archived`. Canvases are scratchpads, not deliverables — but they have provenance value (the argument map that was built).
 
 **Conventions:**
 
@@ -56,7 +56,7 @@ hermes run draft "outline the argument on {canvas topic}" \
 
 - **Stages owned elsewhere:** [Assess](assess.md), [Frame](frame.md), [Verify](verify.md), [Revise](revise.md), [Export](export.md)
 - **Profile:** [profiles/writer.md](../../profiles/writer.md)
-- **Workspace layout:** [surfaces/README.md — Drafting workspace](../../surfaces/modal.md)
+- **Workspace layout:** [surfaces/modal.md — Drafting workspace](../../surfaces/modal.md)
 
 <!-- memoria-nav -->
 

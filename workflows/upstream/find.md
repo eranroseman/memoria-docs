@@ -34,7 +34,7 @@ The Librarian wants forward citations from the Mamykina paper. Runs `hermes run 
 - **Profile:** [profiles/librarian.md](../../profiles/librarian.md)
 - **Candidate schema:** [ADR-21 shared candidate frontmatter](../../decisions/21-shared-candidate-frontmatter.md)
 - **Pre-ingest screening at scale:** [ADR-19 pre-ingest screening](../../decisions/19-pre-ingest-screening.md)
-- **Gap cards from Verify** land here as `type: gap-candidate`; see [Verify](../downstream/verify.md).
+- **Gap cards from Verify** land here as `type: gap-candidate`; see [Verify](../downstream/verify.md). (This is the current distinct type; the shared candidate frontmatter in [ADR-21](../../decisions/21-shared-candidate-frontmatter.md) is a separate, still-proposed unification.)
 
 <!-- memoria-nav -->
 

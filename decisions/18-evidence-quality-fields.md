@@ -23,21 +23,20 @@ Adding `funding`, `coi` (conflict of interest), `risk_of_bias`, `population`, `i
 
 ## Consequences
 
-- Casual reading doesn't carry the evidence-quality overhead.
-- Systematic reviews have the fields they need when they need them.
+- Theoretical and technical papers stay clean — only empirical work carries the quality fields.
+- When a protocol or target journal demands them, the fields are already specified and ready to populate.
 - The `NA` convention for non-empirical work means the fields can coexist with theoretical sources without polluting queries.
 
 ## Alternatives considered
 
-**Always-on schema**: rejected — most paper-notes wouldn't carry meaningful values.
+**Always-on schema**: rejected — quality fields on every paper-note (including theory and tooling) would mostly sit empty.
 
 **Per-project schema branch** (a fork of the paper-note template): rejected — additive fields are cheaper than maintaining two templates.
 
 ## Related
 
-- **Related decisions:** [ADR-12 systematic-review mode](12-systematic-review-mode.md), [ADR-19 pre-ingest screening](19-pre-ingest-screening.md), [ADR-20 dual-rater workflow](20-dual-rater-workflow.md) — same domain.
+- **Part of:** [Adopt-on-demand: systematic-review tooling](adopt-on-demand-for-reviews.md) — the shared rationale, plus the other three members (ADR-12, ADR-19, ADR-20).
 - **Files affected:** `00-meta/03-templates/paper-note.md` (in the starter vault), [vault/README.md](../vault/README.md)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

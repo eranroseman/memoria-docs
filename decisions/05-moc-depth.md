@@ -31,7 +31,7 @@ No separate decision is needed beyond following the thresholds.
 ## Consequences
 
 - The original "MOC depth" framing is dissolved into the linking-patterns reference.
-- Humans consult the linking-patterns thresholds, not this ADR, when deciding MOC granularity.
+- The human consults the linking-patterns thresholds, not this ADR, when deciding MOC granularity.
 
 ## Alternatives considered
 
@@ -40,7 +40,6 @@ Keeping this as an open decision was considered briefly but rejected — the thr
 ## Related
 
 - **Files affected:** [vault/linking-patterns.md](../vault/linking-patterns.md#moc-creation-thresholds)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

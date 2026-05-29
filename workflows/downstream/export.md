@@ -6,7 +6,7 @@ topic: workflows
 
 # Export
 
-**Group.** Downstream (stage workflow, added 2026-05)
+**Group.** Downstream (stage workflow)
 **Goal.** Run Pandoc to turn a verified draft into the final, frozen deliverable.
 
 ## Pipeline position

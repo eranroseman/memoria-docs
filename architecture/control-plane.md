@@ -28,7 +28,7 @@ Each layer has exactly one job. None of them owns business logic except the MCP 
 - **Failure isolation.** If the plugin breaks, the same operations run from the CLI. If the API server is down, Hermes can still execute via the CLI and its own MCP client.
 - **One source of truth per concern.** Policy is in the policy MCP; task state is in the tasks MCP — never in the palette glue, which holds no state.
 
-The discipline that makes this work: **never put business logic in the palette / QuickAdd glue.** That glue should be thin enough to rebuild in an afternoon; behavior lives in the MCP servers and Hermes, not the UI.
+The principle that makes this work: **never put business logic in the palette / QuickAdd glue.** That glue should be thin enough to rebuild in an afternoon; behavior lives in the MCP servers and Hermes, not the UI.
 
 ## Fail-closed startup
 
@@ -37,7 +37,7 @@ The Hermes API is the dispatch entry point — and the one with the largest blas
 - **Default to loopback only.** Bind to `127.0.0.1` unless explicitly configured otherwise. The vast majority of deployments (the local-only, local-mesh, and obsidian-sync options; see [roadmap/deployment-options.md](../roadmap/deployment-options.md)) never need anything else. Under the always-on option and the micro-always-on variant of local-mesh (where the laptop reaches the desktop's Hermes via Tailscale-bridged SSH or API), the binding may need to extend to a network interface — but only with the API's auth token set.
 - **Always authenticate; never expose a non-loopback bind unprotected.** Hermes requires `API_SERVER_KEY` for **every** deployment, including the default loopback bind — so the auth token is always set, not just when going off-host. Binding to a non-loopback interface additionally requires explicitly setting `API_SERVER_HOST`; do that only with the key in place. Failing closed at startup is what makes the always-on option (VPS-side API reachable from the desktop) viable without a long-running unauthenticated endpoint. The vault side mirrors this: the obsidian-local-rest-api plugin requires its own `apiKey` whenever it is reachable beyond loopback.
 
-The discipline is binary: every HTTP surface runs authenticated, and a non-loopback bind is opt-in. There is no "I'll add the token later" — a misconfiguration here is invisible until someone notices traffic in the audit log they didn't expect.
+The rule is binary: every HTTP surface runs authenticated, and a non-loopback bind is opt-in. There is no "I'll add the token later" — a misconfiguration here is invisible until someone notices traffic in the audit log they didn't expect.
 
 ## MCP server registration
 

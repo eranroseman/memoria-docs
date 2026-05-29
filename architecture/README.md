@@ -12,7 +12,7 @@ Memoria has three layers — a Kanban board that orchestrates work, seven Hermes
 
 **The three-layer model** — [Three layers](#three-layers) (the diagram), [Why three layers, not one](#why-three-layers-not-one) (the rationale + the *Thin control over thick state* finding), [Layer 1: Board](#layer-1-board-kanban), [Layer 2: Workers](#layer-2-workers-hermes-profiles), [Layer 3: Vault](#layer-3-vault-obsidian-folders).
 
-**Human-facing surface** — [Human surfaces](#human-surfaces) (CLI / palette / Telegram / API / dashboards).
+**Human-facing channels** — [Human channels](#human-channels) (CLI / palette / Telegram / API / dashboards).
 
 **Filesystem and runtime** — [On-disk layout](#on-disk-layout), [Profile management](#profile-management).
 
@@ -62,7 +62,7 @@ A one-line characterization of this design, borrowed from Chen et al. 2026 (*Tow
 
 This is not just a Memoria-internal preference. Chen et al.'s ablation removes their *File-as-Bus* protocol (the same shape as the Memoria vault layer) and measures the consequence: PaperBench drops by 6.41 points and MLE-Bench Lite by 31.82 points. The same conclusion is reached independently by AgentRxiv (Schmidgall & Moor 2025), which shows that agents reading prior agent-generated reports gain ~11% over isolated agents on MATH-500. A third independent confirmation comes from PARNESS (Wang & Luan 2026), whose entire design rests on naming "no existing tool persists cross-run knowledge in a form that can be retrieved into a finite LLM context" as one of the field's five structural problems and addressing it with a persistent knowledge layer. Three unrelated systems, three architectures, one finding: long-horizon agent work fails when state lives in chat and succeeds when state lives in files.
 
-A fourth, from the coordination angle: Yue et al. 2026 (*Building MCP-Native Hierarchical AI Scientist Ecosystems*) argues that scaling multi-agent discovery requires an MCP-native interoperability substrate plus **durable shared artifacts** — "task boards, lab notebooks, provenance stores" — because unstructured chat-and-memory coordination "becomes brittle as the number of agents grows" and makes it "hard to audit claims back to computations and data." Memoria already instantiates exactly that pairing: the Kanban board is the task board, the vault is the lab notebook + provenance store, and the policy MCP is the interoperability layer. The distinction worth noting is that Yue treats MCP as an *interoperability* layer; Memoria additionally uses it as a **permission / policy boundary** (the canonical-zone deny rule), which the perspective does not contemplate. See [architecture/why-pattern-provenance.md §Reference](why-pattern-provenance.md#reference) for the verdict.
+A fourth, from the coordination angle: Yue et al. 2026 (*Building MCP-Native Hierarchical AI Scientist Ecosystems*) argues that scaling multi-agent discovery requires an MCP-native interoperability substrate plus **durable shared artifacts** — "task boards, lab notebooks, provenance stores" — because unstructured chat-and-memory coordination "becomes brittle as the number of agents grows" and makes it "hard to audit claims back to computations and data." Memoria already instantiates exactly that pairing: the Kanban board is the task board, the vault is the lab notebook + provenance store, and the policy MCP is the interoperability layer. The distinction worth noting is that Yue treats MCP as an *interoperability* layer; Memoria additionally uses it as a **permission / policy boundary** (the review-gated-zone deny rule), which the perspective does not contemplate. See [architecture/why-pattern-provenance.md §Reference](why-pattern-provenance.md#reference) for the verdict.
 
 Memoria's three-layer split is the structural form of that finding. See [architecture/why-pattern-provenance.md](why-pattern-provenance.md) for the borrow/adapt/ignore mapping that places each of these systems against Memoria's design choices.
 
@@ -111,21 +111,21 @@ The vault stores durable knowledge. Folders encode lifecycle stage, not subject 
 | `00-meta/` | Templates, CSL, config, logs, dashboards, schema. |
 | `10-inbox/` | Fleeting captures, answer drafts, discovery candidates. |
 | `20-sources/` | One zone for everything that describes the world: literature, items, entities. |
-| `30-synthesis/` | One zone for everything that expresses your thinking: claim notes, reference notes, MOCs. |
+| `30-synthesis/` | One zone for everything that expresses the human's thinking: claim notes, reference notes, MOCs. |
 | `40-workbench/` | Active work: projects, drafts, code, canvas. |
 | `50-deliverables/` | Finished outputs: manuscripts, presentations, media, releases. |
 | `90-assets/` | Attachments and binary assets. |
 | `95-archive/` | Deprecated, superseded notes. |
 
-The grouping is load-bearing. `20-sources/{01-papers, 02-items, 03-entities}` says "everything that describes something external." `30-synthesis/{01-claims, 02-reference, 03-moc}` says "everything that expresses your thinking." `40-workbench/01-projects/<project>/{map, framing, canvas, drafts, verification, code}` says "things being worked on" — one folder per project, all its working artifacts inside. This makes ownership and access policy easier to enforce.
+The grouping is load-bearing. `20-sources/{01-papers, 02-items, 03-entities}` says "everything that describes something external." `30-synthesis/{01-claims, 02-reference, 03-moc}` says "everything that expresses the human's thinking." `40-workbench/01-projects/<project>/{map, framing, canvas, drafts, verification, code}` says "things being worked on" — one folder per project, all its working artifacts inside. This makes ownership and access policy easier to enforce.
 
 See [vault/README.md](../vault/README.md) for the full layout, note types, templates, and linking patterns.
 
-## Human surfaces
+## Human channels
 
-Memoria exposes five human-facing channels, each owning one cognitive mode. The discipline that keeps the design coherent: **each surface owns one mode**; using a surface for the wrong mode (Telegram for desktop work, CLI for daily ops) produces drift.
+Memoria exposes five human-facing channels, each owning one cognitive mode. The rule that keeps the design coherent: **each channel owns one mode**; using a channel for the wrong mode (Telegram for desktop work, CLI for daily ops) produces drift.
 
-| Surface | Mode | Use it for |
+| Channel | Mode | Use it for |
 | --- | --- | --- |
 | **Obsidian dashboards + ACP panes** | Desktop, focused, deliberate | Daily triage, reading, authoring, agent conversations on the active note. |
 | **Command palette** (Obsidian) | Desktop, instant, frequent | The five-to-ten most-used actions. |
@@ -133,9 +133,9 @@ Memoria exposes five human-facing channels, each owning one cognitive mode. The 
 | **Telegram** | Mobile, async, lightweight | Fleeting capture, source-URL capture, urgent push notifications, on-the-go Socratic. |
 | **API server** (port 8642) | Programmatic, integration | File-system watchers, Zotero hooks, git post-commit, cross-machine dispatch. |
 
-Inside Obsidian, the four-type surface taxonomy (persistent dashboards, modal workspaces, inline callouts, ambient status bar) is the human-facing companion to this table. See [surfaces/README.md](../surfaces/README.md) for "what kind of thing appears where, inside Obsidian."
+Inside Obsidian, the four-type surface taxonomy (persistent dashboards, modal workspaces, inline callouts, ambient status line) is the human-facing companion to this table. See [surfaces/README.md](../surfaces/README.md) for "what kind of thing appears where, inside Obsidian."
 
-**For per-surface detail** — when to use CLI vs dashboards, the two distinct uses of Telegram (notifications vs mobile capture), the deliberately-narrowed Telegram toolset, what the API is and isn't for, and the surface failure modes — see [surfaces-overview.md](surfaces-overview.md).
+**For per-channel detail** — when to use CLI vs dashboards, the two distinct uses of Telegram (notifications vs mobile capture), the deliberately-narrowed Telegram toolset, what the API is and isn't for, and the channel failure modes — see [channels-overview.md](channels-overview.md).
 
 ## On-disk layout
 
@@ -145,7 +145,7 @@ Memoria spans **two filesystem locations**: the starter vault (versioned, holds 
 
 ## Profile management
 
-The seven profile directories under `.memoria/profiles/memoria-<name>/` are **hand-authored**. They are checked into the starter vault repo as authored, and `install.ps1` copies them verbatim into `~/.hermes/profiles/memoria-<name>/` (substituting `{{VAULT_PATH}}` placeholders in `mcp.json`). There is no build step; what you read in the vault is what the agent reads at runtime.
+The seven profile directories under `.memoria/profiles/memoria-<name>/` are **hand-authored**. They are checked into the starter vault repo as authored, and `install.ps1` copies them verbatim into `~/.hermes/profiles/memoria-<name>/` (substituting `{{VAULT_PATH}}` placeholders in `mcp.json`). There is no build step; what's in the vault is what the agent reads at runtime.
 
 The trade-off is that shared content (audit-log behavior, common policy invariants, common MCP connections) lives in seven copies that must be kept in lockstep by hand. The Linter's `profile-install-drift` detector (see the [Linter design summary](../profiles/linter.md) and the runtime `M-detectors.md` alongside the Linter SOUL.md in the starter vault) catches one direction of drift (the deployed copy diverging from the vault source); inter-profile drift between the seven SOUL.md files relies on human review during edits. See the [deferred compiler design](../roadmap/profile-compilation.md) for the alternative that may become relevant if drift becomes painful at the seven-profile scale.
 
@@ -158,7 +158,7 @@ The recommended interaction pattern is:
 3. The worker executes the task, writes any provisional outputs (e.g., paper notes, answer drafts) into the lane's declared write scope, and completes the card to `done` with `review_status: requested`.
 4. The **human** examines the work, then sets `review_status` to `approved` or `rejected`. Some review decisions are partially automated — Verifier produces a `[!verification]` callout the human reads — but the approval is always human-driven.
 5. If `approved`, the worker (or the next workflow trigger) archives the card and the output remains in its current location (or is moved to a canonical layer if promotion is part of the task).
-6. If `rejected`, the human chooses between two follow-ups: spawn a revision card on the same lane (carrying a `metadata.supersedes` link back to the original; original archived with `outcome: superseded`) or archive the original entirely with `outcome: discarded`. See [board/README.md Post-rejection paths](../board/README.md#post-rejection-paths).
+6. If `rejected`, the human chooses between two follow-ups: spawn a revision card on the same lane (carrying a `metadata.supersedes` link back to the original; original archived with `metadata.archive_reason: superseded`) or archive the original entirely with `metadata.archive_reason: discarded`. See [board/README.md Post-rejection paths](../board/README.md#post-rejection-paths).
 7. **Linter** can act on any card structurally — usually before review — to flag schema, link, or orphan issues. It only ever produces reports, never silent fixes.
 
 Cards never close on a worker's say-so. The card lives until the human changes the review state.
@@ -173,7 +173,7 @@ Cards never close on a worker's say-so. The card lives until the human changes t
 - **Retries reuse the same card.** No duplicates; history is preserved in comments.
 - **Handoff notes carry context.** The next worker should not need to re-read the conversation.
 - **Every agent logs what it changed and why.** The policy MCP records every write decision to an audit log; the Linter rotates the log and produces the session summaries that make reversibility auditable.
-- **Prefer extending the architecture over adopting peer systems.** A new tool that lives *inside* Memoria's existing surfaces — a plugin, a skill, a dashboard, a lane — composes with the policy MCP, the audit log, and the surface discipline. A new tool that lives *alongside* Memoria as a peer (its own UI, its own state, its own auth) creates boundary disputes, duplicates state, and usually ships a feature that bypasses the policy gate. Extensions compose; peers compete. When evaluating a new capability, look for the extension shape first.
+- **Prefer extending the architecture over adopting peer systems.** A new tool that lives *inside* Memoria's existing channels and surfaces — a plugin, a skill, a dashboard, a lane — composes with the policy MCP, the audit log, and the channel discipline. A new tool that lives *alongside* Memoria as a peer (its own UI, its own state, its own auth) creates boundary disputes, duplicates state, and usually ships a feature that bypasses the policy gate. Extensions compose; peers compete. When evaluating a new capability, look for the extension shape first.
 
 ## Memory tiers
 
@@ -196,7 +196,7 @@ The MCP guards eight distinct actions (`read`, `write`, `append`, `move`, `delet
 
 Two structural rules sit above the lane configuration:
 
-- **Canonical zones are never auto-written.** Writes to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, and `50-deliverables/` degrade to `dry_run` regardless of lane policy.
+- **Review-gated zones are never auto-written.** Writes to the four [review-gated zones](../glossary.md#system-and-architecture) degrade to `dry_run` regardless of lane policy.
 - **Linter auto-fix is class-gated** to `safe-and-unambiguous` or `authorized-targeted` (see [profiles/linter.md](../profiles/linter.md#auto-fix-policy)).
 
 Every allowed write produces an append-only audit entry in `00-meta/02-logs/audit.jsonl` with SHA-256 `before_hash` and `after_hash` for tamper detection and reversibility. The MCP — not the worker — computes the hashes; hash failures cause `deny`.
@@ -245,4 +245,4 @@ The architecture implies a bounded, stage-gated, human-in-the-loop cadence: dail
 
 [← Previous: Vision](../vision.md)
 
-[Next: Human surfaces →](surfaces-overview.md)
+[Next: Human channels →](channels-overview.md)

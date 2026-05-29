@@ -55,7 +55,7 @@ Numbered-prefix subdirectories (e.g., `01-templates`, `02-csl`, `01-papers`) are
 │
 ├── .obsidian/                          # Obsidian config (auto-hidden by Obsidian)
 │   ├── plugins/
-│   │   ├── obsidian-Linter/data.json
+│   │   ├── obsidian-linter/data.json
 │   │   ├── obsidian-citation-plugin/data.json
 │   │   ├── agent-client/data.json.example
 │   │   ├── obsidian-local-rest-api/data.json.example
@@ -85,12 +85,12 @@ Numbered-prefix subdirectories (e.g., `01-templates`, `02-csl`, `01-papers`) are
     │   ├── policy_mcp.py
     │   ├── tasks_mcp.py
     │   └── requirements.txt
-    ├── lane-overrides/                 # YAML files the policy MCP reads at startup
+    ├── lane-overrides/                 # YAML files the policy MCP reads at startup (named {lane}.yaml)
     │   ├── library.yaml
-    │   ├── mapper.yaml
+    │   ├── mapping.yaml
     │   ├── socratic.yaml
     │   ├── writer.yaml
-    │   ├── verifier.yaml
+    │   ├── verify.yaml
     │   ├── coder.yaml
     │   └── linter.yaml
     ├── csl/                            # Pandoc citation style files
@@ -140,7 +140,7 @@ The script is **idempotent and always-overwrite**: re-running after `git pull` r
 - **One artifact, one install.** The human's primary interaction is with the Obsidian vault. Bundling install material with the vault gives a single unified UX: clone one repo, run one script, everything is in place.
 - **Dot-prefix for tooling.** Both `.obsidian/` (Obsidian's own config) and `.memoria/` (Memoria's install material) use the dot-prefix convention so Obsidian's vault scanner auto-hides them from the file explorer, search, graph view, and Dataview queries. Human sees content; tooling stays out of the way without any per-vault exclusion config.
 - **Direct profile management (no compiler).** The seven profile directories under `.memoria/profiles/` are hand-authored, not generated. Shared content (audit-log behavior, common policies, common MCP connections) lives in seven places and is maintained by hand. Drift between sibling profiles is caught by the Linter rather than prevented at build time. See [the deferred compiler vision](../roadmap/profile-compilation.md) for the alternative that may become relevant if drift becomes painful at the seven-profile scale.
-- **Source = runtime.** Under direct management, the file in `.memoria/profiles/memoria-librarian/SOUL.md` is exactly what gets installed to `~/.hermes/profiles/memoria-librarian/SOUL.md`. No build step means no "compiled vs source" duality — what you read in the repo is what the agent reads at runtime.
+- **Source = runtime.** Under direct management, the file in `.memoria/profiles/memoria-librarian/SOUL.md` is exactly what gets installed to `~/.hermes/profiles/memoria-librarian/SOUL.md`. No build step means no "compiled vs source" duality — what's in the repo is what the agent reads at runtime.
 - **MCP servers ship with the vault.** The Python sources for `policy_mcp.py` and `tasks_mcp.py` live at `.memoria/mcp/`. Each profile's `mcp.json` points at this location via the `{{VAULT_PATH}}` placeholder, substituted at install time. Humans don't need a separate clone of an MCP-source repo.
 
 ## Version control
@@ -163,6 +163,6 @@ The script is **idempotent and always-overwrite**: re-running after `git pull` r
 
 ---
 
-[← Previous: Human surfaces](surfaces-overview.md)
+[← Previous: Human channels](channels-overview.md)
 
 [Next: Memory tiers →](memory-tiers.md)

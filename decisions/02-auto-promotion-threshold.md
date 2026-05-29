@@ -23,7 +23,7 @@ Manual flagging via `maturity: evergreen`, surfaced by the [weekly dashboard](..
 
 ## Consequences
 
-- Slower throughput — the human must explicitly mark notes evergreen.
+- Slower promotion — the human must explicitly mark notes evergreen.
 - No false-positive promotions clogging the canonical `30-synthesis/02-reference/` layer.
 - The weekly ritual carries the promotion decision; promotion never happens silently.
 
@@ -37,7 +37,6 @@ A link-density heuristic was considered and rejected: it confuses "well-cited" w
 
 - **Workflows affected:** [Promote](../workflows/upstream/promote.md)
 - **Files affected:** [weekly-review.md](../dashboards/weekly-review.md)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

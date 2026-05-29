@@ -6,14 +6,14 @@ topic: surfaces
 
 # Inline surfaces: callouts in notes
 
-Not every agent output belongs in a dashboard. Some context is only useful while you are looking at a specific note — the comparative read on a paper note matters when you open that note to read the source, not in a daily roll-up. Dashboards surface *decisions across notes*; inline callouts surface *context inside one note*.
+Not every agent output belongs in a dashboard. Some context is only useful while looking at a specific note — the comparative read on a paper note matters when the human opens that note to read the source, not in a daily roll-up. Dashboards surface *decisions across notes*; inline callouts surface *context inside one note*.
 
 Memoria uses three callout types, defined via [Callout Manager](../plugins/required/callout-manager.md) and rendered consistently across the vault:
 
 | Callout | Where | Producer | Purpose |
 | --- | --- | --- | --- |
-| `[!brief]` | Top of every paper note in `20-sources/01-papers/` | Mapper (via `comparative-brief`, triggered when a new source enters the queue) | Comparative read — what this source overlaps with, what it may contradict, what new constructs it introduces. Primes attention before you read the PDF. |
-| `[!suggestions]`- | End of any note Librarian has run link suggestions against | Librarian (after `enrich` or weekly link pass) | Bounded (5 forward + 5 backward, hard cap) candidate links with Approve/Reject affordances. Collapsed by default to avoid rubber-stamping volume. The [fleet-health dashboard](../dashboards/fleet-health.md) tracks accept/reject ratios over time as a drift signal — a sustained accept rate above ~90% means the human is rubber-stamping; below ~20% means the agent's prompt needs tuning. |
+| `[!brief]` | Top of every paper note in `20-sources/01-papers/` | Mapper (via `comparative-brief`, triggered when a new source enters the queue) | Comparative read — what this source overlaps with, what it may contradict, what new constructs it introduces. Primes attention before reading the PDF. |
+| `[!suggestions]` | End of any note Librarian has run link suggestions against | Librarian (after `enrich` or weekly link pass) | Bounded (5 forward + 5 backward, hard cap) candidate links with Approve/Reject affordances. Collapsed by default to avoid rubber-stamping volume. The [fleet-health dashboard](../dashboards/fleet-health.md) tracks accept/reject ratios over time as a drift signal — a sustained accept rate above ~90% means the human is rubber-stamping; below ~20% means the candidate scoring needs tuning (see [the deterministic/LLM split below](#how-the-callout-content-is-produced-deterministic-narrowing--llm-enrichment)). |
 | `[!verification]` | Top of any draft in `40-workbench/01-projects/*/drafts/` | Verifier (auto-fired on draft commit) | Per-claim trace back to claim notes, with failed traces and a link to the per-claim verification report. |
 
 Example shape for `[!brief]`:
@@ -52,4 +52,4 @@ Callouts are policy-MCP writes like any other — when Mapper attaches a `[!brie
 
 [← Previous: Modal surfaces: workspaces](modal.md)
 
-[Next: Ambient surfaces: status bar →](ambient.md)
+[Next: Ambient surfaces: the status line →](ambient.md)

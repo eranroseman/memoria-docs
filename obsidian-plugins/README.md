@@ -12,7 +12,9 @@ This folder documents which plugins Memoria uses, what their `data.json` should 
 
 ## Plugins Memoria depends on
 
-The filesystem sorts these alphabetically, but **the priority order is what matters when setting up the vault**. Install plugins in the order below; skip optional ones until you feel their absence.
+The filesystem sorts these alphabetically, but **the priority order is what matters when setting up the vault**. Install plugins in the order below; skip optional ones until their absence is felt.
+
+The on-disk folders are only three — `required/`, `recommended/`, `optional/`. The finer tiers below (deployment-conditional, optional, future-migration) are editorial groupings: **`obsidian-git` and `zotlit` live under `optional/`** even though they're called out separately here.
 
 ### Required (8) — Memoria breaks without these
 
@@ -21,7 +23,7 @@ The filesystem sorts these alphabetically, but **the priority order is what matt
 | [obsidian-local-rest-api](required/obsidian-local-rest-api.md) | Exposes the vault to Hermes for read/write via HTTP. Required for the [control plane](../architecture/control-plane.md). **Its `data.json` contains secrets — gitignore it.** |
 | [agent-client](required/agent-client.md) | Implements ACP (Agent Client Protocol) inside Obsidian. Routes human conversations with Hermes (and optionally Claude Code, Codex, Gemini CLI, Kilo Code) through a chat pane attached to the active note. Makes the Socratic profile invocable from a reading session. |
 | [dataview](required/dataview.md) | Powers every dashboard. Without it, the persistent-surfaces layer in [surfaces/README.md](../surfaces/README.md) is non-functional. |
-| [templater-obsidian](required/templater.md) | Runs the safe-and-unambiguous frontmatter scripts the Linter relies on (see [linter.md](../profiles/linter.md#implementing-safe-and-unambiguous-fixes-via-templater)). |
+| [templater-obsidian](required/templater.md) | Runs the safe-and-unambiguous frontmatter scripts the Memoria Linter relies on (see [linter.md](../profiles/linter.md#implementing-safe-and-unambiguous-fixes-via-templater)). |
 | [quickadd](required/quickadd.md) | Registers Memoria's command palette entries (see [command-palette.md](../surfaces/command-palette.md)). |
 | [obsidian-citation-plugin](required/obsidian-citation-plugin.md) | Inserts citations from the BibTeX/BibLaTeX file Better BibTeX exports, and creates paper notes from a configured template. Memoria's primary Zotero-to-vault path for note creation today. |
 | [pdf-plus (PDF++)](required/pdf-plus.md) | Deep-linking from notes to specific PDF passages. Foundational for claim-level citation. |
@@ -31,8 +33,8 @@ The filesystem sorts these alphabetically, but **the priority order is what matt
 
 | Plugin | Purpose |
 | --- | --- |
-| [obsidian-Linter](recommended/obsidian-linter.md) | Frontend formatting Linter. **Has a load-bearing footgun.** |
-| [smart-connections + markdb-connect](recommended/smart-connections.md) | Vector search across notes; Zotero ↔ vault linking. |
+| [obsidian-linter](recommended/obsidian-linter.md) | Frontend Markdown formatter. **Has a dangerous footgun.** |
+| [smart-connections](recommended/smart-connections.md) (+ `markdb-connect`) | Vector search across notes — **`smart-connections` is the Obsidian plugin**. The paired `markdb-connect` is a *Zotero* add-on (installed in Zotero, not under `.obsidian/plugins/`) that tags Zotero items having vault notes; see the linked file. |
 | [supercharged-links + obsidian-style-settings](recommended/supercharged-links.md) | Color-code internal links by note `type` so a link to a paper-note looks different from a link to a claim-note. |
 | [hover-editor](recommended/hover-editor.md) | Preview wikilinked notes in a popup without leaving the current note. |
 | [tag-wrangler](recommended/tag-wrangler.md) | Bulk-rename, merge, and inspect tags across the vault. Useful given Memoria's controlled-vocabulary discipline. |
@@ -41,7 +43,7 @@ The filesystem sorts these alphabetically, but **the priority order is what matt
 
 | Plugin | Purpose |
 | --- | --- |
-| [obsidian-git](optional/obsidian-git.md) | Auto-commits vault changes. Required under the local-only and obsidian-sync deployment options as the sync (the local-only option) or history (the obsidian-sync option) mechanism. |
+| [obsidian-git](optional/obsidian-git.md) | Auto-commits vault changes and pushes to a **GitHub** remote — Git is the version-history and offsite-backup layer (not device sync, which Syncthing or Obsidian Sync handle). Listed here because its `autoPush`/backup settings vary by deployment option. |
 
 ### Optional (4) — install only if a specific use case justifies it
 
@@ -62,10 +64,10 @@ Plus [visual style discipline](ui-discipline.md) — restraint about how the vau
 
 ## The `data.json` convention
 
-Each plugin stores its settings as a JSON file at `.obsidian/plugins/<plugin-id>/data.json`. The format is plugin-specific — there's no shared schema. Memoria ships canonical `data.json` files (or `.example` / `.TODO` variants for plugins that need per-human setup) directly in the starter vault's `.obsidian/plugins/` tree — they ship to the human as part of the vault, no separate template-copy step. The lifecycle doc lives at [`plugin-configs-lifecycle.md`](plugin-configs-lifecycle.md) alongside this README. The discipline:
+Each plugin stores its settings as a JSON file at `.obsidian/plugins/<plugin-id>/data.json`. The format is plugin-specific — there's no shared schema. Memoria ships canonical `data.json` files (or `.example` / `.TODO` variants for plugins that need per-human setup) directly in the starter vault's `.obsidian/plugins/` tree — they ship to the human as part of the vault, no separate template-copy step. **What the `.example` and `.TODO` suffixes mean, and how drift is audited, is owned by [`plugin-configs-lifecycle.md`](plugin-configs-lifecycle.md#the-three-suffix-conventions)** — read it before editing any shipped config. The quick discipline:
 
 - **Ship a reviewed `data.json` per plugin** in the vault. The human clones the vault, opens it, and the plugin settings are already correct.
-- **Commit `data.json` files to Git by default** — they are configuration, not state, and belong in version control. **Exception: any plugin whose `data.json` contains secrets must be gitignored.** Today the known offender is [obsidian-local-rest-api](required/obsidian-local-rest-api.md), which stores a generated `apiKey` and an RSA private key directly in `data.json`. Before committing a plugin's `data.json` for the first time, open it and confirm there are no keys, tokens, certificates, or other credentials inside; if there are, gitignore the file and ship a sanitized `data.json.example` instead.
+- **Commit `data.json` files to Git by default** — they are configuration, not state, and belong in version control. **Exception: any plugin whose `data.json` contains secrets must be gitignored.** Today that's exactly one plugin — [obsidian-local-rest-api](required/obsidian-local-rest-api.md), which ships a `.example` instead and documents the specific secrets and how they regenerate. Before committing any plugin's `data.json` for the first time, open it and confirm there are no keys, tokens, certificates, or other credentials inside; if there are, gitignore the file and ship a sanitized `data.json.example` instead.
 - **Never edit `data.json` while Obsidian is running.** Obsidian writes the file on settings change, so external edits race. Quit Obsidian, edit, restart.
 
 ### `.gitignore` snippet for known-secret plugins
@@ -85,7 +87,7 @@ Add new entries here whenever a plugin update introduces secret storage. The fir
 
 ## When this doc is wrong
 
-Plugin behavior changes across versions. If a setting documented here doesn't exist in the installed version, the plugin has either added it (the doc is behind) or removed it (the doc is stale). Update the doc the same session you notice the drift — see the same discipline in [failure-modes.md](../operations/failure-modes.md).
+Plugin behavior changes across versions. If a setting documented here doesn't exist in the installed version, the plugin has either added it (the doc is behind) or removed it (the doc is stale). Update the doc the same session the mismatch is noticed — see the same discipline in [failure-modes.md](../operations/failure-modes.md).
 
 <!-- memoria-nav -->
 

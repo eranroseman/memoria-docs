@@ -39,13 +39,13 @@ Two knobs are easy to conflate. **Whether a cron task is scheduled at all** is a
 
 The recommended enablement order, by safety:
 
-1. **Linter first.** All Linter writes go to `00-meta/02-logs/` (audit and session logs) or dashboard files. No content edits, no canonical writes. Lowest blast radius. Enable after Phase 3 (profile build) is stable.
-2. **Mapping next.** Writes go to project-scratch (`40-workbench/01-projects/*/map/corpus-map.md` etc.). No canonical writes. Enable a few weeks after Linter cron is stable.
-3. **Librarian (eventually).** Librarian writes to `10-inbox/` and `20-sources/` — actual content, but in zones the human classifies before promotion. Higher blast radius; enable only after the discovery-loop discipline is established (see [future-directions.md — discovery loop](future-directions.md#the-discovery-loop)).
+1. **Linter first.** All Linter writes go to `00-meta/02-logs/` (audit and session logs) or dashboard files. No content edits, no review-gated-zone writes. Lowest blast radius. Enable after Phase 3 (profile build) is stable.
+2. **Mapping next.** Writes go to project-scratch (`40-workbench/01-projects/*/map/corpus-map.md` etc.). No review-gated-zone writes. Enable a few weeks after Linter cron is stable.
+3. **Librarian (eventually).** Librarian writes to `10-inbox/` and `20-sources/` — actual content, but in zones the human classifies before promotion. Higher blast radius; enable only after the discovery-loop practice is established (see [future-directions.md — discovery loop](future-directions.md#the-discovery-loop)).
 4. **Never auto-enable Writer, Verifier, or Coder.** These produce review-gated artifacts the human must look at; scheduled cron-dispatch would silently fill the review queue. Always human-initiated.
 5. **Socratic doesn't apply.** Socratic is `routing.invocation: interactive_only` — the Kanban dispatcher won't queue-dispatch it regardless of `cron_mode`.
 
-The discipline: each cron-enable is a deliberate decision recorded in the human's deployment notes. "Linter cron enabled 2026-06-12 after 4 weeks of stable dry-run reports" is the kind of provenance that makes the system auditable when something goes wrong.
+The convention: each cron-enable is a deliberate decision recorded in the human's deployment notes. "Linter cron enabled 2026-06-12 after 4 weeks of stable dry-run reports" is the kind of provenance that makes the system auditable when something goes wrong.
 
 <!-- memoria-nav -->
 

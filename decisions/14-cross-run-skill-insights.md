@@ -19,7 +19,7 @@ Have Hermes maintain a `00-meta/skill-insights/` log of patterns learned across 
 
 ## Decision
 
-**Defer.** Significant architecture for a single-user vault. Premature.
+**Defer.** Too much architecture for a single-user vault to justify yet.
 
 ## Consequences
 
@@ -36,7 +36,6 @@ Have Hermes maintain a `00-meta/skill-insights/` log of patterns learned across 
 ## Related
 
 - **Files affected:** none currently
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

@@ -23,8 +23,8 @@ Formal scoping reviews and systematic reviews often require inter-rater reliabil
 
 ## Consequences
 
-- Most reading doesn't carry rater-disagreement overhead.
-- Systematic reviews have the fields they need.
+- Solo reading and synthesis ignore the rater fields entirely.
+- Formal reviews can report Cohen's kappa on inclusion decisions when the bar requires it.
 - Meaningless without a second human rater — adoption requires a collaborator, not just a flag.
 
 ## Alternatives considered
@@ -35,9 +35,8 @@ Formal scoping reviews and systematic reviews often require inter-rater reliabil
 
 ## Related
 
-- **Related decisions:** [ADR-12 systematic-review mode](12-systematic-review-mode.md), [ADR-19 pre-ingest screening](19-pre-ingest-screening.md).
+- **Part of:** [Adopt-on-demand: systematic-review tooling](adopt-on-demand-for-reviews.md) — the shared rationale, plus the other three members (ADR-12, ADR-18, ADR-19).
 - **Files affected:** `00-meta/03-templates/paper-note.md` (in the starter vault)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

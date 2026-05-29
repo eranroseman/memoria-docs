@@ -23,8 +23,8 @@ Pre-ingest screening differs from `find` in scale (200–5000 candidates vs. 10�
 
 ## Consequences
 
-- Casual research doesn't carry PRISMA-screening overhead.
-- Systematic reviews have the right tool when they need it.
+- Day-to-day `find` stays lightweight — PRISMA screening only spins up for a formal review.
+- A formal review gets ASReview ranking and explicit PRISMA criteria exactly when the protocol calls for them.
 - Shared candidate frontmatter (ADR-21) means a single Dataview query covers both pipelines.
 
 ## Alternatives considered
@@ -35,10 +35,10 @@ Pre-ingest screening differs from `find` in scale (200–5000 candidates vs. 10�
 
 ## Related
 
-- **Related decisions:** [ADR-12 systematic-review mode](12-systematic-review-mode.md), [ADR-21 shared candidate frontmatter](21-shared-candidate-frontmatter.md), [ADR-20 dual-rater workflow](20-dual-rater-workflow.md).
-- **Workflows affected:** [Find](../workflows/README.md)
+- **Part of:** [Adopt-on-demand: systematic-review tooling](adopt-on-demand-for-reviews.md) — the shared rationale, plus the other three members (ADR-12, ADR-18, ADR-20).
+- **Consumes:** [ADR-21 shared candidate frontmatter](21-shared-candidate-frontmatter.md) — the screening pipeline reads this schema.
+- **Workflows affected:** [Find](../workflows/upstream/find.md)
 - **Files affected:** [profiles/librarian.md](../profiles/librarian.md)
-- **Resolves / supersedes:** none
 
 <!-- memoria-nav -->
 

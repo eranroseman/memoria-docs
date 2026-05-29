@@ -6,7 +6,7 @@ topic: workflows
 
 # Revise
 
-**Group.** Downstream (stage workflow, added 2026-05)
+**Group.** Downstream (stage workflow)
 **Goal.** Close the gap-loop: address verification findings (from [Verify](verify.md)) before export.
 
 ## Pipeline position
@@ -17,9 +17,9 @@ Between [Verify](verify.md) and [Export](export.md).
 
 1. The `revise` card opens with the verification report attached.
 2. Human reads the per-claim findings. For each failed trace, three options:
-   - **Soften the claim** — rewrite the sentence so it doesn't make a load-bearing assertion. Recommended when the gap is real but the chapter's argument doesn't depend on this claim.
+   - **Soften the claim** — rewrite the sentence so it makes a more cautious assertion. Recommended when the gap is real but the chapter's argument doesn't depend on this claim.
    - **Pursue the gap** — mark the corresponding `gap:` card with reading priority, push the chapter back to the next revision cycle, and read the missing source. Recommended when the claim is load-bearing.
-   - **Accept the soft claim** — leave the sentence; tag the chapter with a known-soft-claim list in the project's `notes.md`. Recommended when the gap exists in the literature itself (you've established the claim is contested, not unsupported).
+   - **Accept the soft claim** — leave the sentence; tag the chapter with a known-soft-claim list in the project's `notes.md`. Recommended when the gap exists in the literature itself (the claim has been established as contested, not unsupported).
 3. After revisions, the human re-commits, which fires [Verify](verify.md) again. Loop continues until verify returns clean (or the human explicitly marks remaining gaps as accepted-soft).
 4. Once verify is clean (or all remaining gaps are accepted-soft), the `revise` card closes and the project card moves to `export`.
 
