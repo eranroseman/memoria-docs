@@ -1,0 +1,105 @@
+---
+mode: reference
+audience: operator
+topic: vault
+---
+
+# Frontmatter schema (reference)
+
+Frontmatter discipline has two concerns: **field shape** (what fields exist, what values they take) and **namespace ownership** (who is allowed to write which field). This document is the authoritative reference for both. For the conceptual model (folder structure, note types, promotion map) see [README.md](README.md); for the universal `lifecycle` field and per-type refinements see [templates.md](templates.md#lifecycle).
+
+The vault ships an human-facing companion at `00-meta/04-reference/schema-reference.md` (see [README.md vault skeleton](README.md#vault-skeleton-human-facing-notes)). That note is the in-vault version templates and the Linter point at; this document is the design source it's generated from.
+
+## Frontmatter
+
+Every note has a `type` field (one of the 15 type names) and a universal `lifecycle` field (`proposed` / `current` / `dormant` / `archived`). Some types add a refinement within a phase (`maturity` for claim-notes; `project_phase`, `draft_stage`). `status` is reserved for board cards, not notes — the two value sets are disjoint.
+
+### Frontmatter namespace discipline
+
+Frontmatter has three namespaces. Each has a different owner.
+
+| Namespace | Owner | Example fields | Rule |
+| --- | --- | --- | --- |
+| **Main YAML** | Human (authoritative) | `title`, `type`, `topic`, `methods`, `lifecycle`, `maturity` | Human-set values are authoritative; the agent must never silently rewrite. |
+| **`_proposed_classification`** | Agent (proposal only) | proposed `topic`, `methods`, `study_design` | Agent populates; human reviews; on classification, selected fields are promoted to main YAML and the proposed block is removed. |
+| **`_enrichment`** | Agent (maintained) | API-derived fields: citation counts, abstract, venue. The `enriched_date` field sits at the top level (not inside `_enrichment`) because dashboards and the Linter's stale-enrichment check query it directly. | Agent refreshes on schedule; values are mutable; never overwrite human edits to corresponding main fields. |
+
+Rules:
+
+- Stable identifiers (DOI, OpenAlex ID, ORCID, ROR) may be promoted from `_enrichment` to main YAML once verified.
+- Derived metrics (citation counts, OA status) stay in `_enrichment` — they drift over time.
+- The agent must never overwrite human-set frontmatter fields, even if API data contradicts.
+- Zotero is the source of truth for bibliographic fields (citekey, DOI, title, authors). The paper note references these for navigation but does not duplicate them; Zotero wins on disagreement, the vault wins for synthesis and links.
+
+## Frontmatter field categorization
+
+Frontmatter fields split into four categories by *what they're for*. The split keeps the core query surface small — every note carries the global and time fields, but only the notes that need them carry domain fields.
+
+| Category | What it's for | Example fields | Present on |
+| --- | --- | --- | --- |
+| **Global** | Identity. The minimal fields every note carries. | `type`, `schema_version` | Every note |
+| **Lifecycle** | The note's durability phase. One universal field, plus an optional type-specific refinement. | `lifecycle` (universal); `maturity`, `project_phase`, `draft_stage` (refinements) | `lifecycle` on every note; a refinement only on types that need it |
+| **Time** | When the note was created, last touched, or is due. | `created`, `updated`, `enriched_date`, `triage_completed`, `promoted_date` | Every note carries `created` and `updated` (paper-note uses `added` instead of `created`); the rest are type-specific |
+| **Domain** | Type-specific data. The fields one kind of note uses but others don't. | `citekey`, `doi`, `authors`, `methods`, `topic`, `sources`, `moc`, `projects`, `zotero_uri`, `pdf_uri`, `extract_path` | Only the note types that need them |
+
+## Rules
+
+- **`type` is universal and load-bearing.** Every note has a `type` field whose value is one of the 15 type names. Missing or unknown `type` is a schema-hygiene flag for the Linter.
+- **`lifecycle` is universal; refinements are type-specific.** Every note carries `lifecycle` ∈ `proposed` / `current` / `dormant` / `archived`. Types that need finer state within a phase add a refinement: `maturity` (claim-note, within `current`), `project_phase` (project-note), `draft_stage` (draft). For sources, triage *is* the `proposed`→`current` transition — no separate field. Orthogonal `*_status` fields (`pub_status`, `maintenance_status`, `outreach_status`) describe the *thing the note is about*, not the note's lifecycle. See [Lifecycle](templates.md#lifecycle).
+- **Time fields are mostly common.** `created` and `updated` are universal except that `paper-note` historically uses `added` instead of `created`; treat the two as synonymous for paper notes.
+- **Domain fields are scoped to their type.** Don't pad every note with null domain fields. A `claim-note` should not carry a `doi` field just to keep the schema "uniform."
+- **`status` is card-only; notes use `lifecycle`.** The board card's `status` tracks board state (`unspecified` / `queued` / `claimed` / `delivered` / … / `closed` — see [board/README.md](../board/README.md)). Notes never carry `status`; their durability phase is `lifecycle` (`proposed` / `current` / `dormant` / `archived`). The two value sets are deliberately disjoint, so a bare value tells you whether it belongs to a note or a card.
+- **Once the design is in use, any frontmatter change to a template bumps that template's `schema_version`.** Adding a field, removing a field, renaming a field, changing a field's value space — all of these are schema changes that require a version bump *if there are existing notes in human vaults that would lag behind*. New notes get the new version; existing notes stay on the old version until migrated. The Linter's schema-version-mismatch check ([profiles/linter.md](../profiles/linter.md)) surfaces notes still on older versions; `schema-migrate --dry-run` proposes the migration. This rule is what turns per-field migration debt into a single rollup signal — "127 notes still on v1" rather than "127 notes missing field X, 89 missing field Y, ..." per field. **Bumping is per-template, not global** — only the template whose schema changed bumps. Paper-note and code-note can be on different versions independently. **Pre-first-deployment, the design is fluid; the baseline is `schema_version: 1` for every template and the bump discipline activates the first time a template ships into a vault that holds real notes.**
+
+## Controlled vocabularies
+
+For controlled-vocabulary fields, the allowed values are:
+
+| Field | Where it lives | Allowed values |
+| --- | --- | --- |
+| `lifecycle` | Every note | `proposed`, `current`, `dormant`, `archived` |
+| `status` (card-only) | Board card | `unspecified`, `queued`, `claimed`, `blocked-on-human`, `delivered`, `declined`, `requeued`, `accepted`, `closed` |
+| `maturity` | claim-note | `seedling`, `budding`, `evergreen` |
+| `project_phase` | project-note | `planning`, `active`, `paused`, `complete` |
+| `draft_stage` | draft | `outline`, `in-progress`, `submitted` |
+| `pub_status` | paper-note | `active`, `preprint`, `retracted`, `deprecated`, `expression-of-concern` |
+| `maintenance_status` | item-note | `active`, `deprecated`, `archived`, `unmaintained` |
+| `role_in_stack` | item-note | `primary-tool`, `dependency`, `alternative`, `reference-only` |
+| `review_status` | Board card | `unreviewed`, `requested`, `in-review`, `approved`, `rejected` |
+
+The Linter's `schema-check` (see [linter.md](../profiles/linter.md)) validates frontmatter against this reference. **New allowed values go through this reference first, not the other way around** — a template or query that uses a value not listed here is the bug, not the reference.
+
+## Reach-into-source fields (paper-note)
+
+The `paper-note` frontmatter carries three deliberate hooks into the underlying paper. Each gives a different reach with different access semantics:
+
+| Field | Form | What it opens | When to use |
+| --- | --- | --- | --- |
+| `zotero_uri` | `zotero://select/items/<key>` | Zotero item record (metadata, attachments list, tags) | Managing citation metadata, retraction status, attachments |
+| `pdf_uri` | `zotero://open-pdf/library/items/<key>` | PDF directly in Zotero's reader | Reading or annotating the paper |
+| `extract_path` | Vault-relative path (e.g., `90-assets/extracts/mamykina2010sense.md`) | Marker-extracted markdown — the in-vault, searchable representation | Grep, quoting in claim notes, feeding text to a model |
+
+All three are populated by the Librarian profile during [ingest](../workflows/upstream/ingest.md) — none are human-typed. The PDF itself lives in Zotero's storage, not in the vault; see [workflows/upstream/zotero-capture.md](../workflows/upstream/zotero-capture.md) for the source-of-truth rationale.
+
+## Properties UI vs YAML frontmatter
+
+Obsidian's Properties UI is a UI layer over the underlying YAML. Same storage, different editor. Use them deliberately:
+
+- **Properties UI** for ad-hoc human edits — single-note changes, quick field updates. Lower syntax-error risk.
+- **YAML frontmatter** for system notes, dashboards, registry files, and any Templater-generated note. Better Git diffs, deterministic for automation, full formatting control.
+
+The rule: if the field is being set by code or by a template, treat the YAML as authoritative. If it's being set by a person reading the note, the Properties UI is friendlier.
+
+## Related design documents
+
+- [vault/README.md](README.md) — folder structure, note types, lifecycle states, namespace discipline (who writes what)
+- [linter.md](../profiles/linter.md) — schema-check lint rules that enforce this reference
+- [vault/README.md#vault-skeleton-human-facing-notes](README.md#vault-skeleton-human-facing-notes) — the human-facing companion in `00-meta/04-reference/schema-reference.md`
+
+<!-- memoria-nav -->
+
+---
+
+[← Previous: Note types and templates (reference)](templates.md)
+
+[Next: Linking patterns →](linking-patterns.md)

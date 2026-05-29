@@ -1,14 +1,20 @@
+---
+mode: explanation
+audience: operator
+topic: profiles
+---
+
 # Linter — design summary
 
 **Runtime contract.** Full prompt, lint check table, and the M-detector specifications live at `.memoria/profiles/memoria-linter/SOUL.md` and `.memoria/profiles/memoria-linter/M-detectors.md` in the starter vault.
 
 ## Mission
 
-Linter is Memoria's deterministic conscience. It validates structure (frontmatter shape, link health, schema versions), catches silent-failure modes the operator wouldn't notice (the eight M-detectors), and owns audit-log rotation and per-session log writing. The defining trait is **zero-LLM throughout**: every check Linter runs is regex, AST walk, SHA-256 hash, file existence, or set arithmetic. The same vault state produces the same report on every run, in every environment — which is what makes Linter the only Memoria profile that can sit inside CI gating.
+Linter is Memoria's deterministic conscience. It validates structure (frontmatter shape, link health, schema versions), catches silent-failure modes the human wouldn't notice (the eight M-detectors), and owns audit-log rotation and per-session log writing. The defining trait is **zero-LLM throughout**: every check Linter runs is regex, AST walk, SHA-256 hash, file existence, or set arithmetic. The same vault state produces the same report on every run, in every environment — which is what makes Linter the only Memoria profile that can sit inside CI gating.
 
 ## What this profile is not
 
-- **Not a content checker.** Linter doesn't grade quality, judge whether a claim is well-supported, or assess whether a draft reads well. Those are Verifier's (provenance) and the operator's (quality) domains. Linter checks *structure*: does the frontmatter parse, does the wikilink resolve, does the schema version match the canonical reference.
+- **Not a content checker.** Linter doesn't grade quality, judge whether a claim is well-supported, or assess whether a draft reads well. Those are Verifier's (provenance) and the human's (quality) domains. Linter checks *structure*: does the frontmatter parse, does the wikilink resolve, does the schema version match the authoritative reference.
 - **Not Verifier.** Both run mechanical checks, but at different layers. Verifier asks "does this draft's content trace to real sources?" — content-aware. Linter asks "is this note's schema valid, does its `extract_path` point at an existing file, is `data.json` consistent with the committed template?" — content-agnostic. They compose.
 - **Not an LLM.** This is non-negotiable. Memoria's design treats Linter's determinism as load-bearing — if the verdict-band rollup ever depended on LLM judgment, it would no longer be reproducible across runs, which would defeat its role as a CI gate. Any check that needs LLM judgment is by definition not a Linter check.
 - **Not a fixer by default.** Dry-run is the default. Auto-fix is allowed only for the `safe-and-unambiguous` and `authorized-targeted` classes; schema changes, content edits, and canonical edits are always report-only. The policy MCP enforces the class gate at the tool layer — Linter cannot bypass it even if it tried.
@@ -16,18 +22,77 @@ Linter is Memoria's deterministic conscience. It validates structure (frontmatte
 ## Design decisions
 
 - **Zero-LLM and deterministic — the design parallel to the trust score.** Linter's verdict band (PASS / REVIEW / FAIL) is the structural rollup; the fleet-observability dashboard's trust score is the operational rollup. Both are headline single numbers; both are reproducibly computed from logs and findings; neither involves LLM judgment in the rollup. This parallelism is intentional — operational health and structural health get separate headline metrics with the same epistemic discipline.
-- **Owns `00-meta/04-logs/`.** Linter writes per-session log summaries, rotates the policy MCP audit log weekly (`audit.jsonl` → `00-meta/04-logs/archive/audit-YYYY-WW.jsonl`), and writes lint findings. This is the only path where Linter writes routinely. The rotation is classed as `authorized-targeted` in the auto-fix table, so the policy MCP allows it without escalation.
-- **M-detectors are the silent-failure layer.** The eight M-detectors (M1–M8) catch failure modes the operator wouldn't notice by reading content: a Dataview query that references a field no template emits (M4), a `data.json` that drifted from the committed version (M6), an `extract_path` pointing at a missing file (M8). The defining property is "silent" — the failure mode looks like "nothing to do" when there's actually something to do. The full detector specs live in `M-detectors.md` alongside the runtime SOUL.md.
+- **Owns `00-meta/02-logs/`.** Linter writes per-session log summaries, rotates the policy MCP audit log weekly (`audit.jsonl` → `00-meta/02-logs/archive/audit-YYYY-WW.jsonl`), and writes lint findings. This is the only path where Linter writes routinely. The rotation is classed as `authorized-targeted` in the auto-fix table, so the policy MCP allows it without escalation.
+- **M-detectors are the silent-failure layer.** The eight M-detectors catch failure modes the human wouldn't notice by reading content: a Dataview query that references a field no template emits (`dashboard-field-drift`), a `data.json` that drifted from the committed version (`plugin-config-drift`), an `extract_path` pointing at a missing file (`extract-path-broken`). The defining property is "silent" — the failure mode looks like "nothing to do" when there's actually something to do. The full detector specs live in `M-detectors.md` alongside the runtime SOUL.md.
 - **Auto-fix is class-gated by the policy MCP.** When `profile = "memoria-linter"` and `action = "auto_fix"`, the MCP requires `flags.class ∈ {"safe-and-unambiguous", "authorized-targeted"}`. Schema/content changes and canonical edits are always `deny` regardless of who requests them. Class gating is the runtime enforcement of the auto-fix policy — not just a design rule, an enforced one.
+
+## Auto-fix policy
+
+Linter classifies every proposed fix into one of four classes. The class determines whether the fix can apply automatically or requires explicit human action; the policy MCP enforces the class gate at the tool layer — Linter cannot bypass it.
+
+| Class | Examples | Default |
+| --- | --- | --- |
+| `safe-and-unambiguous` | Trailing whitespace, missing `created` timestamp on a new note, missing required template field with one obvious value | **Auto-fix** (delegated to Templater — see [§"Implementing safe-and-unambiguous fixes via Templater"](#implementing-safe-and-unambiguous-fixes-via-templater)) |
+| `authorized-targeted` | Audit-log rotation, lint-findings file truncation, dashboard `last_updated` refresh | **Auto-fix** (Linter's own logs/dashboards only) |
+| `schema-content` | Frontmatter field rename, value-set change, deprecated field removal | **Dry-run** (always — needs `schema-migrate`) |
+| `canonical-edit` | Any write to `30-synthesis/01-claims/`, `30-synthesis/03-moc/`, `50-deliverables/` | **Deny** (the policy MCP forces `dry_run` regardless of class) |
+
+The gate is `policy.allow.auto_fix.classes: ["safe-and-unambiguous", "authorized-targeted"]` in `lane-overrides/linter.yaml`; anything else is `deny`. See [architecture/policy-mcp.md](../architecture/policy-mcp.md) for the request/response contract and audit-log shape.
+
+## Severity scale
+
+Every Linter finding carries a severity. The scale drives dashboard surfacing, notification routing, and the verdict-band rollup:
+
+| Severity | Meaning | Examples |
+| --- | --- | --- |
+| `LOW` | Cosmetic or eventually-fixable. Doesn't block; aggregated weekly. | Trailing whitespace, missing optional field, slightly stale `enriched_date`. |
+| `MEDIUM` | Real drift that hasn't yet caused breakage. Surfaced in [`weekly-dashboard`](../dashboards/weekly-overview.md); reviewed during the Friday ritual. | `data.json` plugin config diverged from committed version (`plugin-config-drift`), unused MOC entry, broken non-canonical link. |
+| `HIGH` | Active breakage or imminent breakage. Surfaced in [`index`](../dashboards/README.md) and [`drift-watch`](../dashboards/drift-watch.md); pushed to Telegram. | Broken `extract_path` (`extract-path-broken`), schema version mismatch on a recently-edited note, audit-log SHA-chain break (`vault-hash-drift`). |
+| `CRITICAL` | System integrity at risk. Always pushes to Telegram, blocks dispatch until acknowledged. | Audit-log tamper detection failure, policy MCP startup failure, lane-override file invalid. |
+
+The verdict band rolls up by counting findings: `PASS` if no HIGH/CRITICAL; `REVIEW` if any MEDIUM but no HIGH; `FAIL` if any HIGH or CRITICAL.
+
+## Log rotation
+
+Linter owns `00-meta/02-logs/` and rotates the policy MCP audit log on a weekly schedule:
+
+- **Source.** `00-meta/02-logs/audit.jsonl` (append-only by the policy MCP throughout the week).
+- **Rotation trigger.** Sunday 00:00 local, or when the active file exceeds 50 MB, whichever comes first.
+- **Archive.** Moved to `00-meta/02-logs/archive/audit-YYYY-WW.jsonl` (ISO week-numbered). The active file is recreated empty and the policy MCP resumes appending.
+- **Retention.** Archive files are kept indefinitely by default. The human can configure quarterly deletion in `.memoria/log-retention.yaml`; Linter checks this file on each rotation pass.
+- **Hash chain.** Each archive's first entry's `before_hash` matches the previous archive's last `after_hash`. `vault-hash-drift` (audit-log SHA-chain break) fires if the link fails — the chain stays auditable across rotations.
+
+Rotation is classed as `authorized-targeted` in the [auto-fix table](#auto-fix-policy), so the policy MCP allows it without escalation. Session logs (`00-meta/02-logs/sessions/YYYY-MM-DD-HHMM.jsonl`) are written one per Hermes session and not rotated; they accumulate, but human pruning is rare since each is small.
+
+## Implementing safe-and-unambiguous fixes via Templater
+
+Linter delegates `safe-and-unambiguous` auto-fixes to [Templater](../plugins/required/templater.md) rather than writing them directly. Templater already handles frontmatter parsing, atomic file updates, and Obsidian's open-buffer reconciliation — all of which Linter would otherwise have to re-implement carefully and risk getting wrong.
+
+The pattern:
+
+1. Linter detects a fixable finding (e.g., missing `created` on a fleeting note with `_creation_marker:` present).
+2. Linter invokes a Templater script via the plugin's headless API, passing the file path and fix parameters.
+3. Templater performs the edit using its existing safe-edit primitives (preserves cursor position, reconciles with open buffers, atomic write).
+4. Linter records the fix in the audit log; the policy MCP audits the Templater call as Linter's own write.
+
+This keeps Linter's fix surface small (one delegation pattern) and uses a battle-tested library for the dangerous parts (concurrent edits, atomic writes). Anything outside Templater's safe-edit surface — multi-file refactors, content-level rewrites, schema migrations — falls back to dry-run regardless of class.
 
 ## Permissions and commands
 
-Folder permission matrix lives in [02-profiles.md](../02-profiles.md#folder-permission-matrix); the runtime contract (lint check table, severity scale, verdict band, auto-fix classes, log rotation) lives in the SOUL.md. The M-detector procedural detail lives in M-detectors.md alongside it.
+Folder permission matrix lives in [profiles/README.md](../profiles/README.md#folder-permission-matrix); the runtime contract (lint check table, full M-detector specs, threshold values) lives in the SOUL.md and M-detectors.md alongside it. The command catalog is in [profiles/profile-commands.md](profile-commands.md).
 
 ## Related
 
-- Workflows: [10-maintenance-linting](../04-workflows/10-maintenance-linting.md)
-- Reference: [reference/policy-mcp.md](../reference/policy-mcp.md) — the auto-fix class gate is enforced here; the audit log Linter rotates is owned here.
-- Reference: [reference/profile-compilation.md](../reference/profile-compilation.md) — **deferred design.** M1 was originally specified against this compiler; under direct profile management M1 is install drift (vault source vs deployed copy), not build drift.
-- Method class: [rationale/computational-methods.md](../rationale/computational-methods.md) — Linter is the canonical example of a fully deterministic profile.
-- ADRs: [16 contradictions dashboard](../07-roadmap/decisions/16-contradictions-dashboard.md) — adjacent concept; Linter is structural, the contradictions surface is content.
+- Workflows: [lint](../workflows/maintenance/lint.md)
+- Reference: [architecture/policy-mcp.md](../architecture/policy-mcp.md) — the auto-fix class gate is enforced here; the audit log Linter rotates is owned here.
+- Reference: [roadmap/profile-compilation.md](../roadmap/profile-compilation.md) — **deferred design.** `profile-install-drift` was originally specified against this compiler; under direct profile management `profile-install-drift` is the install-drift check (vault source vs deployed copy), not build drift.
+- Method class: [architecture/why-computational-methods.md](../architecture/why-computational-methods.md) — Linter is the definitive example of a fully deterministic profile.
+- ADRs: [16 contradictions dashboard](../decisions/16-contradictions-dashboard.md) — adjacent concept; Linter is structural, the contradictions surface is content.
+
+<!-- memoria-nav -->
+
+---
+
+[← Previous: Coder — design summary](coder.md)
+
+[Next: Coder profile and the external coding agent →](why-coder-external-agent.md)

@@ -1,0 +1,39 @@
+---
+mode: how-to
+audience: operator
+topic: plugins
+---
+
+# obsidian-citation-plugin
+
+The current Required plugin for getting Zotero references into the vault. Reads the BibTeX/BibLaTeX export Better BibTeX produces, exposes `@`-autocomplete for inserting citations, and creates paper notes from a configured template.
+
+**Authoritative template:** shipped at `.obsidian/plugins/obsidian-citation-plugin/data.json` in the starter vault — installed as the human's working file directly, no template-copy step. The shipped file embeds the authoritative paper-note frontmatter (matching the schema in [vault/README.md](../../vault/README.md)), the `_proposed_classification` block, and the `_enrichment` block. Treat changes to this file as schema migrations.
+
+Load-bearing settings:
+
+- `citationExportPath` — absolute path to the Better BibTeX export. Memoria uses `.memoria/library.bib` (machine-read tool input, alongside the lane-overrides and CSL files). The legacy convention of naming the bib after the vault (`<vault-name>.bib`) is no longer used — `library.bib` aligns with the universal BibTeX convention and the Pandoc workflow's `--bibliography .memoria/library.bib` reference.
+- `citationExportFormat: "biblatex"` — the modern BibLaTeX format; preserves Unicode and modern entry types better than legacy `bibtex`.
+- `literatureNoteFolder` — must point at the paper-note literature folder (`20-sources/01-papers/` in Memoria's schema). Wrong folder means the plugin creates notes outside the Librarian's scope, and the Linter immediately flags them.
+- `literatureNoteTitleTemplate: "@{{citekey}}"` — keeps the filename and citekey identical so backlinks resolve cleanly.
+- `literatureNoteContentTemplate` — the body skeleton. **This is the most load-bearing setting.** It must include:
+  - The full canonical frontmatter (see [vault/README.md](../../vault/README.md) for the schema and key order).
+  - The `_proposed_classification` HTML comment block — Librarian fills it on ingest; human promotes to main frontmatter on classification.
+  - The `_enrichment` HTML comment block — Librarian populates from API enrichment (citation count, scite, MeSH, OpenAlex concepts, etc.) and never touches main frontmatter for derived metrics.
+
+The template is the source of truth for what a freshly-ingested paper note looks like. Drift between the template and the Librarian's expected schema breaks the classify and enrichment workflows. Treat changes to it as schema migrations — diff the change against [vault/README.md](../../vault/README.md) and the Librarian's contract in [librarian.md](../../profiles/librarian.md) before saving.
+
+## Alternative: zotero-integration (Zotero Integration by mgmeyers)
+
+A third option, not in current use but worth naming. Lives between citation plugin (BibTeX-file based) and [ZotLit](../optional/zotlit.md) (SQLite-direct): connects to Zotero's local HTTP API while Zotero is running, supporting color-coded annotation imports and Nunjucks templates.
+
+- **Switch to this** if the annotation workflow ever moves from Obsidian (via PDF++) into Zotero itself. Color-coded highlights pulled from Zotero into structured paper notes is the use case it wins on.
+- **Don't switch yet** because Memoria's design assumes PDF annotation happens in Obsidian, not Zotero — see [pdf-plus](pdf-plus.md). The decision to flip annotation workflow direction is bigger than a plugin choice; it changes the human's daily rhythm.
+
+<!-- memoria-nav -->
+
+---
+
+[← Previous: quickadd](quickadd.md)
+
+[Next: pdf-plus (PDF++) →](pdf-plus.md)

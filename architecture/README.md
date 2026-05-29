@@ -1,0 +1,255 @@
+---
+mode: explanation
+audience: system-designer
+topic: architecture
+---
+
+# Architecture
+
+Memoria has three layers — a Kanban board that orchestrates work, seven Hermes profiles that execute it, and an Obsidian vault that stores durable knowledge. The layers are connected through explicit handoffs but never collapsed into one.
+
+## What's in this document
+
+**The three-layer model** — [Three layers](#three-layers) (the diagram), [Why three layers, not one](#why-three-layers-not-one) (the rationale + the *Thin control over thick state* finding), [Layer 1: Board](#layer-1-board-kanban), [Layer 2: Workers](#layer-2-workers-hermes-profiles), [Layer 3: Vault](#layer-3-vault-obsidian-folders).
+
+**Human-facing surface** — [Human surfaces](#human-surfaces) (CLI / palette / Telegram / API / dashboards).
+
+**Filesystem and runtime** — [On-disk layout](#on-disk-layout), [Profile management](#profile-management).
+
+**How it operates** — [How the layers interact](#how-the-layers-interact), [Core principles](#core-principles), [Operating model](#operating-model).
+
+**Mechanisms and pointers to depth** — [Memory tiers](#memory-tiers), [Permission enforcement: the policy MCP](#permission-enforcement-the-policy-mcp), [Control plane](#control-plane), [Why Memoria refuses to autonomize synthesis](#why-memoria-refuses-to-autonomize-synthesis), [Pattern provenance](#pattern-provenance), [Capability stack](#capability-stack).
+
+## Three layers
+
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│  Board layer (Kanban) — orchestration and memory of active work │
+│  states: pending → ready → active → awaiting-review →           │
+│          approved → done                                        │
+│  (rejected, retry-needed, blocked-on-human are off-path)        │
+└────────────────────────────┬────────────────────────────────────┘
+                             │ assigns lane / advances state
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Worker layer (Hermes) — seven profiles execute work in lanes  │
+│  Librarian · Mapper · Socratic · Writer · Verifier ·    │
+│  Coder · Linter                                                │
+└────────────────────────────┬────────────────────────────────────┘
+                             │ every write checked by the policy MCP
+                             │ (allow / allow_with_log / deny / dry_run)
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Vault layer (Obsidian) — durable knowledge by lifecycle stage  │
+│  00-meta · 10-inbox · 20-sources · 30-synthesis · 40-workbench  │
+│  50-deliverables · 90-assets · 95-archive                       │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Why three layers, not one
+
+A single-agent or single-document system blurs three different concerns: *what work is in progress*, *who is doing it*, and *what stable knowledge has accumulated*. Memoria treats each as its own layer with its own semantics.
+
+- **The board never holds knowledge.** It tracks work. Cards die at `done`; knowledge lives in the vault.
+- **The workers never hold permanent state.** They claim cards, act, and release. Continuity comes from the board (in-flight) or the vault (settled).
+- **The vault never schedules work.** It is the destination, not the orchestrator.
+
+This separation is what makes retries safe, handoffs lossless, and review enforceable.
+
+### Thin control over thick state
+
+A one-line characterization of this design, borrowed from Chen et al. 2026 (*Toward Autonomous Long-Horizon Engineering for ML Research*): **thin control over thick state.** The orchestrator and the workers carry as little persistent context as possible; the durable knowledge — plans, claim notes, drafts, audit traces — lives in files. Workers re-ground on those files between steps rather than relying on conversational handoffs.
+
+This is not just a Memoria-internal preference. Chen et al.'s ablation removes their *File-as-Bus* protocol (the same shape as the Memoria vault layer) and measures the consequence: PaperBench drops by 6.41 points and MLE-Bench Lite by 31.82 points. The same conclusion is reached independently by AgentRxiv (Schmidgall & Moor 2025), which shows that agents reading prior agent-generated reports gain ~11% over isolated agents on MATH-500. A third independent confirmation comes from PARNESS (Wang & Luan 2026), whose entire design rests on naming "no existing tool persists cross-run knowledge in a form that can be retrieved into a finite LLM context" as one of the field's five structural problems and addressing it with a persistent knowledge layer. Three unrelated systems, three architectures, one finding: long-horizon agent work fails when state lives in chat and succeeds when state lives in files.
+
+A fourth, from the coordination angle: Yue et al. 2026 (*Building MCP-Native Hierarchical AI Scientist Ecosystems*) argues that scaling multi-agent discovery requires an MCP-native interoperability substrate plus **durable shared artifacts** — "task boards, lab notebooks, provenance stores" — because unstructured chat-and-memory coordination "becomes brittle as the number of agents grows" and makes it "hard to audit claims back to computations and data." Memoria already instantiates exactly that pairing: the Kanban board is the task board, the vault is the lab notebook + provenance store, and the policy MCP is the interoperability layer. The distinction worth noting is that Yue treats MCP as an *interoperability* layer; Memoria additionally uses it as a **permission / policy boundary** (the canonical-zone deny rule), which the perspective does not contemplate. See [architecture/why-pattern-provenance.md §Reference](why-pattern-provenance.md#reference) for the verdict.
+
+Memoria's three-layer split is the structural form of that finding. See [architecture/why-pattern-provenance.md](why-pattern-provenance.md) for the borrow/adapt/ignore mapping that places each of these systems against Memoria's design choices.
+
+## Layer 1: Board (Kanban)
+
+The board is the control plane. It persists every task as a card with state, assignee, blocker, retry count, and handoff note, and it keeps the card alive until the human review gate is passed.
+
+Recommended states:
+
+- `pending` — card created, specification in progress; dispatcher ignores.
+- `ready` — specified and dispatchable.
+- `active` — owned by one profile.
+- `blocked-on-human` — needs a human decision the worker cannot make.
+- `awaiting-review` — ready for human review (or Linter dry-run report).
+- `rejected` — human declined this review pass; revise and return.
+- `retry-needed` — failed but reusable (same card, not a new one).
+- `approved` — human accepted.
+- `done` — canonical, archived, or shipped.
+
+The key rule: `awaiting-review` is a real state, not a label. A card can be worked on, blocked, returned, and retried without losing history or confusing completion with approval.
+
+See [board/README.md](../board/README.md) for full board schema, state transitions, and the review gate rules.
+
+## Layer 2: Workers (Hermes profiles)
+
+Hermes is split into seven specialist profiles rather than one generalist agent. Each profile has narrow permissions, a focused command surface, the MCPs it actually needs, and a clear exit condition.
+
+| Profile | Role |
+| --- | --- |
+| **Librarian** | Discovers, ingests, enriches, and classifies sources. Exits at `awaiting-review`. |
+| **Mapper** | Maps the corpus for a project: scope reports, gap reports, cluster maps. Read-only across vault except project scratch. |
+| **Socratic** | Questions the human about a paper note or framing. Write-denied across the entire vault. Invoked synchronously. |
+| **Writer** | Synthesizes evidence into drafts, answer notes, and reference-ready prose. Cannot canonize. |
+| **Verifier** | Traces draft claims to claim notes; verifies citations; flags duplicates and retractions. Read-only across vault except verification reports. |
+| **Coder** | Builds and maintains code artifacts, scripts, project scaffolding. Cannot edit canonical synthesis. |
+| **Linter** | Validates structure, metadata, schema, link health; owns session and audit-trail housekeeping. Default is dry-run. |
+
+There is no Orchestrator profile and no Reviewer profile. Routing lives in lane-overrides + Kanban dispatch (not a reasoning agent); review gates live in the policy MCP and the board state machine (not a dedicated profile). See [profiles/README.md](../profiles/README.md#routing-without-an-orchestrator) for the routing rule, and [profiles/README.md](../profiles/README.md) for per-profile detail.
+
+## Layer 3: Vault (Obsidian folders)
+
+The vault stores durable knowledge. Folders encode lifecycle stage, not subject area — see [vault/README.md](../vault/README.md) for the authoritative layout, including the full tree, subfolder roles, and access matrix.
+
+| Folder | Role |
+| --- | --- |
+| `00-meta/` | Templates, CSL, config, logs, dashboards, schema. |
+| `10-inbox/` | Fleeting captures, answer drafts, discovery candidates. |
+| `20-sources/` | One zone for everything that describes the world: literature, items, entities. |
+| `30-synthesis/` | One zone for everything that expresses your thinking: claim notes, reference notes, MOCs. |
+| `40-workbench/` | Active work: projects, drafts, code, canvas. |
+| `50-deliverables/` | Finished outputs: manuscripts, presentations, media, releases. |
+| `90-assets/` | Attachments and binary assets. |
+| `95-archive/` | Deprecated, superseded notes. |
+
+The grouping is load-bearing. `20-sources/{01-papers, 02-items, 03-entities}` says "everything that describes something external." `30-synthesis/{01-claims, 02-reference, 03-moc}` says "everything that expresses your thinking." `40-workbench/01-projects/<project>/{map, framing, canvas, drafts, verification, code}` says "things being worked on" — one folder per project, all its working artifacts inside. This makes ownership and access policy easier to enforce.
+
+See [vault/README.md](../vault/README.md) for the full layout, note types, templates, and linking patterns.
+
+## Human surfaces
+
+Memoria exposes five human-facing channels, each owning one cognitive mode. The discipline that keeps the design coherent: **each surface owns one mode**; using a surface for the wrong mode (Telegram for desktop work, CLI for daily ops) produces drift.
+
+| Surface | Mode | Use it for |
+| --- | --- | --- |
+| **Obsidian dashboards + ACP panes** | Desktop, focused, deliberate | Daily triage, reading, authoring, agent conversations on the active note. |
+| **Command palette** (Obsidian) | Desktop, instant, frequent | The five-to-ten most-used actions. |
+| **CLI** (`hermes …`) | Desktop, occasional, precise | Forensic queries, profile administration, manual dispatch. |
+| **Telegram** | Mobile, async, lightweight | Fleeting capture, source-URL capture, urgent push notifications, on-the-go Socratic. |
+| **API server** (port 8642) | Programmatic, integration | File-system watchers, Zotero hooks, git post-commit, cross-machine dispatch. |
+
+Inside Obsidian, the four-type surface taxonomy (persistent dashboards, modal workspaces, inline callouts, ambient status bar) is the human-facing companion to this table. See [surfaces/README.md](../surfaces/README.md) for "what kind of thing appears where, inside Obsidian."
+
+**For per-surface detail** — when to use CLI vs dashboards, the two distinct uses of Telegram (notifications vs mobile capture), the deliberately-narrowed Telegram toolset, what the API is and isn't for, and the surface failure modes — see [surfaces-overview.md](surfaces-overview.md).
+
+## On-disk layout
+
+Memoria spans **two filesystem locations**: the starter vault (versioned, holds all install material including the seven hand-authored profile dirs under `.memoria/profiles/`), and the user's Hermes runtime (per-user, holds installed profile copies written by `install.ps1`) at `~/.hermes/profiles/memoria-*/`. Git is the authoritative history layer; sync (Obsidian Sync, Syncthing, or manual git pull/push) is separate from history.
+
+**See [architecture/on-disk-layout.md](on-disk-layout.md)** for the full tree, the vault/runtime relationship, the install flow, version-control rules (in / out of git), and the "sync ≠ history" discipline.
+
+## Profile management
+
+The seven profile directories under `.memoria/profiles/memoria-<name>/` are **hand-authored**. They are checked into the starter vault repo as authored, and `install.ps1` copies them verbatim into `~/.hermes/profiles/memoria-<name>/` (substituting `{{VAULT_PATH}}` placeholders in `mcp.json`). There is no build step; what you read in the vault is what the agent reads at runtime.
+
+The trade-off is that shared content (audit-log behavior, common policy invariants, common MCP connections) lives in seven copies that must be kept in lockstep by hand. The Linter's `profile-install-drift` detector (see the [Linter design summary](../profiles/linter.md) and the runtime `M-detectors.md` alongside the Linter SOUL.md in the starter vault) catches one direction of drift (the deployed copy diverging from the vault source); inter-profile drift between the seven SOUL.md files relies on human review during edits. See the [deferred compiler design](../roadmap/profile-compilation.md) for the alternative that may become relevant if drift becomes painful at the seven-profile scale.
+
+## How the layers interact
+
+The recommended interaction pattern is:
+
+1. A trigger (human action, cron job, git hook, file watcher) creates a card on the board with a lane and an initial state. Routing is encoded in the trigger's rules — there is no profile that "decides" lane assignment.
+2. **Specialist profile** (Librarian, Mapper, Writer, Verifier, Coder) claims a card from its lane and moves it to `active`. Socratic is invoked synchronously by the human and doesn't appear in queue-based handoffs.
+3. The worker executes the task, writes any provisional outputs (e.g., paper notes, answer drafts) into the lane's declared write scope, and moves the card to `awaiting-review`.
+4. The **human** examines the work, then sets the card to `approved` or `rejected`. Some review decisions are partially automated — Verifier produces a `[!verification]` callout the human reads — but the approval is always human-driven.
+5. If `approved`, the worker (or the next workflow trigger) advances the card to `done` and the output remains in its current location (or is moved to a canonical layer if promotion is part of the task).
+6. If `rejected`, the human chooses between two follow-ups: spawn a revision card on the same lane (carrying a `supersedes` link back to the original; original closes with `outcome: superseded`) or close the original entirely with `outcome: discarded`. See [board/README.md Post-rejection paths](../board/README.md#post-rejection-paths).
+7. **Linter** can act on any card structurally — usually before review — to flag schema, link, or orphan issues. It only ever produces reports, never silent fixes.
+
+Cards never close on a worker's say-so. The card lives until the human changes the review state.
+
+## Core principles
+
+- **The board is the shared state machine.** All long-lived work lives there.
+- **Lanes are specialist execution paths.** Not separate boards.
+- **Review is a state, not a comment.** It is queryable, ownable, and blocks dispatch.
+- **Folders encode what a note is, not what it is about.** Topics belong in frontmatter and links.
+- **Canonical synthesis is human-owned.** `30-synthesis/01-claims/` is never auto-written.
+- **Retries reuse the same card.** No duplicates; history is preserved in comments.
+- **Handoff notes carry context.** The next worker should not need to re-read the conversation.
+- **Every agent logs what it changed and why.** The policy MCP records every write decision to an audit log; the Linter rotates the log and produces the session summaries that make reversibility auditable.
+- **Prefer extending the architecture over adopting peer systems.** A new tool that lives *inside* Memoria's existing surfaces — a plugin, a skill, a dashboard, a lane — composes with the policy MCP, the audit log, and the surface discipline. A new tool that lives *alongside* Memoria as a peer (its own UI, its own state, its own auth) creates boundary disputes, duplicates state, and usually ships a feature that bypasses the policy gate. Extensions compose; peers compete. When evaluating a new capability, look for the extension shape first.
+
+## Memory tiers
+
+Memory spans two **Hermes-native** layers — working context (session-bound) and profile memory (`MEMORY.md` + `USER.md`, frozen-snapshot per profile), plus on-demand SQLite **session search** — and two substrates **Memoria adds**: board memory (the task packet, card-bound, travels between profiles) and vault memory (project files for cross-lane state; append-only audit logs for the operational record). Confusing the scopes is the source of most "the agent forgot" and "the agent remembered something it shouldn't have" bugs.
+
+**See [architecture/memory-tiers.md](memory-tiers.md)** for the full substrate table, the rules that keep memory from bleeding across lanes, and why the thin-control-over-thick-state split matters.
+
+## Permission enforcement: the policy MCP
+
+Profile permissions and lane scopes are not just documentation — they are enforced at the tool layer by a **policy MCP** that intercepts every vault write. Prompts are advisory; the policy MCP catches misrouted writes at the file-system level, before they happen.
+
+The MCP guards eight distinct actions (`read`, `write`, `append`, `move`, `delete`, `mkdir`, `auto_fix`, `report`) and returns one of four decisions per request:
+
+| Decision | Meaning |
+| --- | --- |
+| `allow` | Action proceeds; logged only if the lane requires it. |
+| `allow_with_log` | Action proceeds; audit entry mandatory. |
+| `deny` | Action blocked; the worker must escalate. |
+| `dry_run` | Action logged and reported but not performed; surfaced for human approval. |
+
+Two structural rules sit above the lane configuration:
+
+- **Canonical zones are never auto-written.** Writes to `30-synthesis/01-claims/`, `30-synthesis/03-moc/`, and `50-deliverables/` degrade to `dry_run` regardless of lane policy.
+- **Linter auto-fix is class-gated** to `safe-and-unambiguous` or `authorized-targeted` (see [profiles/linter.md](../profiles/linter.md#auto-fix-policy)).
+
+Every allowed write produces an append-only audit entry in `00-meta/02-logs/audit.jsonl` with SHA-256 `before_hash` and `after_hash` for tamper detection and reversibility. The MCP — not the worker — computes the hashes; hash failures cause `deny`.
+
+### Skill-conditional policy
+
+Lane-overrides are the baseline policy a profile carries. A small set of skills tighten that baseline further — the currently-shipped example is `counter-outline` (Writer-loaded; narrows write scope to scratch-only). The mechanism, frontmatter contract, and composition semantics are in [architecture/policy-mcp.md](../architecture/policy-mcp.md#skill-conditional-policy); the catalog of restrictive skills is in [profiles/README.md](../profiles/README.md#skills-with-restrictive-policy).
+
+**Full mechanism details** — decision protocol, request/response contracts, action vocabulary, audit log schema, SHA-256 implementation rules — are in [architecture/policy-mcp.md](../architecture/policy-mcp.md). This summary covers what the architecture relies on; the reference doc is the source of truth.
+
+## Control plane
+
+The board defines *what state* a card is in. The policy MCP defines *where* a worker may write. The **control plane** is the daily-use surface that lets the human trigger discrete actions: three thin layers — Obsidian Command Palette → Hermes API → MCP servers — between the human and Hermes. None of them owns business logic except the MCP servers.
+
+The Hermes API is fail-closed: binds to `127.0.0.1` by default, and refuses to start on a non-loopback interface unless its auth token is set.
+
+**See [architecture/control-plane.md](control-plane.md)** for the layer-by-layer responsibility table, fail-closed startup rules, and MCP server registration shape.
+
+## Why Memoria refuses to autonomize synthesis
+
+Karpathy's Autoresearch pattern works for ML experiments because three conditions hold: the metric is monotonic, changes are reversible, and experiments are independent. Knowledge work satisfies none of these. Memoria adopts the parts that *do* fit (overnight discovery loop, point-of-action similarity check) and refuses the parts that don't (autonomous keep/revert; scalar-metric-driven canonization).
+
+**See [architecture/why-no-autonomous-synthesis.md](why-no-autonomous-synthesis.md)** for the three boundaries (cognition-bound vs compute-bound, no autonomous keep/revert, no scalar metric) and what they imply for scheduled operations, agent scope, and cost discipline.
+
+## Pattern provenance
+
+Memoria draws on a broad survey of contemporary AI-research systems (LitSearch, ResearchArena, AI-Scientist, LatteReview, OmegaWiki, Idea2Story, Karpathy Autoresearch, and others). The headline borrowed patterns are summarized in [vision.md](../vision.md#contemporary-ai-research-systems); the autonomy boundary that rejects several wholesale is in [architecture/why-no-autonomous-synthesis.md](why-no-autonomous-synthesis.md).
+
+**Full borrow / adapt / ignore table** — every pattern, every source repo, every rationale — lives in [architecture/why-pattern-provenance.md](why-pattern-provenance.md). The net design shift is from agent-assisted to **bounded, stage-gated knowledge production**: the agent becomes better at bookkeeping, retrieval, and drafting; the human remains the gatekeeper for meaning, promotion, and final structure.
+
+## Capability stack
+
+The minimum capability stack to operate Memoria is eight components: Hermes (seven profiles), the Hermes Kanban, Obsidian, Zotero + Better BibTeX, the external enrichment APIs (OpenAlex, Semantic Scholar, PubMed, Crossref, Unpaywall, ORCID, ROR), git, the Obsidian REST API or ACP for editor integration, and Pandoc for export.
+
+On top of that base, **pre-built skills** (K-Dense `paper-lookup` / `pyzotero` / `citation-management`; Obsidian `obsidian-paper-note`; Hermes built-in `llm-wiki`) cover most enrichment and ingest work; the agent should use them rather than writing API clients from scratch. **Model routing** — Claude for synthesis, cheap models (via OpenRouter or similar) for bulk/mechanical tasks — keeps the discovery loop's `$1–3/day` budget achievable.
+
+**See [architecture/capability-stack.md](capability-stack.md)** for the full skill catalog (K-Dense, Obsidian, Hermes built-in, the REST passthrough escape hatch), the model-routing table, and the plugins/apps/external-tools list.
+
+## Operating model
+
+The architecture implies a specific operating model:
+
+1. **Daily.** Capture new sources in Zotero. Let Hermes ingest them. Skim the inbox for answer drafts and discovery candidates.
+2. **Weekly.** Run the [weekly dashboard](../surfaces/README.md). Clear unreviewed synthesis. Promote evergreen claim notes. Classify partial paper notes.
+3. **Per-project.** Draft from `30-synthesis/01-claims/`, arrange in `40-workbench/01-projects/*/canvas/`, write in `40-workbench/01-projects/*/drafts/`, export to `50-deliverables/` via Pandoc.
+4. **Continuously.** The Linter runs scheduled checks; cron and git-hook triggers advance cards through their lifecycle; the human clears the approval queue.
+
+This model is bounded, stage-gated, and human-in-the-loop by default. Autonomy is added at the edges (scheduled discovery, automatic enrichment) without weakening the review gate.
+
+<!-- memoria-nav -->
+
+---
+
+[← Previous: Vision](../vision.md)
+
+[Next: Human surfaces →](surfaces-overview.md)

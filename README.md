@@ -1,48 +1,84 @@
+---
+mode: reference
+audience: anyone
+topic: general
+---
+
 # Memoria design documents
 
 Memoria is a research operating system that turns sources into durable knowledge through explicit states, specialized Hermes profiles, and a Kanban board that preserves review, retries, and handoffs.
 
-This folder is the canonical design document set.
-
-## How to read this
-
-Read the spine docs in order if you are new. Jump to the section that matches your task if you are not. The **Mode** column follows the [Diátaxis][diataxis] framework: *Explanation* (concepts and rationale), *Reference* (precise contracts and tables), *How-to* (operational recipes), *Tutorial* (learning by doing).
+This folder is the authoritative design document set. It is organized **by topic** (one folder per concept), with [Diátaxis][diataxis] mode (`explanation`, `reference`, `how-to`, `tutorial`) declared in each file's front-matter rather than in the folder path.
 
 [diataxis]: https://diataxis.fr/
 
-### Spine documents
+## Reading by topic — if you're new, read these in order
 
-| # | Document | Mode | Audience | What it covers |
-| --- | --- | --- | --- | --- |
-| 00 | [Vision](00-vision.md) | Explanation | Anyone | Purpose, design goals, naming rationale, what Memoria is and is not. |
-| 01 | [Architecture](01-architecture.md) | Explanation | System designer | The three-layer model: Kanban board, Hermes workers, vault. Full depth in [01-architecture/](01-architecture/). |
-| 02 | [Profiles](02-profiles.md) | Reference + Explanation | Operator configuring Hermes | Seven Hermes profiles, their permissions, commands, skills, MCPs, and delegation. |
-| 03 | [Board and states](03-board.md) | Reference | Operator | Kanban states, worker lanes, review gate, board schema fields. |
-| 04 | [Workflows](04-workflows.md) | How-to | Daily user | Stage-gated pipelines (9 upstream stages, 8 downstream + optional Canvas). Per-workflow detail in [04-workflows/](04-workflows/). |
-| 05 | [Notes, folders, linking](05-notes-folders.md) | Reference | Daily user | Note types, folder roles, templates, linking patterns. |
-| 06 | [Operator surfaces](06-surfaces.md) | Explanation + Reference | Daily user | Four surface types (persistent, modal, inline, ambient); per-type detail in [06-surfaces/](06-surfaces/). |
-| 07 | [Implementation roadmap](07-roadmap.md) | How-to | Implementer | Phased plan, MVS, graduated start. Subsection detail in [07-roadmap/](07-roadmap/). |
+Each topic folder has a `README.md` with the conceptual overview. The reading order builds the system from the inside out: what it is, then how it's structured, then how it operates.
 
-### Subfolders
+1. [vision.md](vision.md) — Purpose, design goals, what Memoria is and is not.
+2. [architecture/](architecture/) — Three-layer model (board, workers, vault). Why every layer.
+3. [board/](board/) — The control plane: states, review gate, handoff schema.
+4. [profiles/](profiles/) — The seven Hermes workers: missions, permissions, command catalog.
+5. [vault/](vault/) — The vault: folder taxonomy, fifteen note types, frontmatter schema, linking.
+6. [workflows/](workflows/) — How work flows through the system: upstream, downstream, maintenance pipelines.
+7. [surfaces/](surfaces/) — How the human interacts: persistent, modal, inline, ambient.
+8. [roadmap/](roadmap/) — Phased plan, deployment, autonomy progression, design tensions.
 
-| Folder | Mode | What it holds |
-| --- | --- | --- |
-| [profiles/](profiles/) | Reference + Explanation | Seven per-profile **design summaries** (researcher, cartographer, socratic, writer, verifier, coder, linter) covering each profile's mission, boundary with adjacent profiles, and load-bearing design decisions. The full runtime prompts (SOUL.md files) live separately at `.memoria/profiles/memoria-<name>/SOUL.md` in the starter vault — the design summary points there for the runtime contract. |
-| [dashboards/](dashboards/) | Reference + Explanation | Eleven per-dashboard **design summaries** (index, board-state, drift-watch, fleet-observability, weekly-dashboard, audit-log, reading-pipeline, process-queue, open-questions, schema-hygiene, skill-lifecycle) covering each dashboard's mission, boundary with adjacent dashboards, and load-bearing design decisions. The runtime Dataview queries live at `00-meta/05-dashboards/<name>.md` in the starter vault. |
-| [reference/](reference/) | Reference | Terse reference docs the spine links to for detail: [glossary.md](reference/glossary.md), [policy-mcp.md](reference/policy-mcp.md), [profile-compilation.md](reference/profile-compilation.md) (**deferred**), [schema.md](reference/schema.md), [command-palette.md](reference/command-palette.md), [linking-patterns.md](reference/linking-patterns.md), [design-system.md](reference/design-system.md), [computational-toolbox.md](reference/computational-toolbox.md). |
-| [rationale/](rationale/) | Explanation | The WHY behind load-bearing design choices: [computational-methods.md](rationale/computational-methods.md) (LLM-vs-deterministic boundary), [pattern-provenance.md](rationale/pattern-provenance.md) (borrow / adapt / ignore table), [coder-external-agent.md](rationale/coder-external-agent.md) (two-agent boundary). |
-| [operations/](operations/) | How-to | Operational concerns: [failure-modes.md](operations/failure-modes.md) (Detect/Fix/Verify recipes), [obsidian-plugins/](operations/obsidian-plugins/) (per-plugin configuration, 20+ files). |
-| **(runtime, in [memoria-vault](https://github.com/eranroseman/memoria-vault))** | Runtime artifact | The 11 dashboards live at `00-meta/05-dashboards/` in the starter vault. The 15 note templates live at `00-meta/01-templates/`. The runtime SOUL.md prompts for the seven profiles live at `.memoria/profiles/memoria-<name>/SOUL.md`; the linter's structural detectors live at `.memoria/profiles/memoria-linter/M-detectors.md` alongside its SOUL.md. |
-| [01-architecture/](01-architecture/) | Explanation | Spillover from the architecture spine: [on-disk-layout.md](01-architecture/on-disk-layout.md), [memory-tiers.md](01-architecture/memory-tiers.md), [control-plane.md](01-architecture/control-plane.md), [capability-stack.md](01-architecture/capability-stack.md), [why-no-autonomous-synthesis.md](01-architecture/why-no-autonomous-synthesis.md). |
-| [04-workflows/](04-workflows/) | How-to | One file per workflow (18 total). The spine has the narrative + role-matrix + inventory; each file has the steps + owners + commands. |
-| [06-surfaces/](06-surfaces/) | Reference + How-to | Per-surface-type detail: [persistent.md](06-surfaces/persistent.md) (dashboards), [modal.md](06-surfaces/modal.md) (workspaces), [inline.md](06-surfaces/inline.md) (callouts), [ambient.md](06-surfaces/ambient.md) (status bar). |
-| [07-roadmap/](07-roadmap/) | How-to + Explanation | Phased plan detail: [timeline.md](07-roadmap/timeline.md), [deployment-options.md](07-roadmap/deployment-options.md), [secret-management.md](07-roadmap/secret-management.md), [sync-and-coordination.md](07-roadmap/sync-and-coordination.md), [skill-governance.md](07-roadmap/skill-governance.md), [standard-cron-tasks.md](07-roadmap/standard-cron-tasks.md), [future-directions.md](07-roadmap/future-directions.md), [autonomy-progression.md](07-roadmap/autonomy-progression.md), [success-metrics.md](07-roadmap/success-metrics.md), [design-tensions.md](07-roadmap/design-tensions.md), plus [decisions/](07-roadmap/decisions/) (18 ADRs) and [pilots/](07-roadmap/pilots/). |
-| [tutorials/](tutorials/) | Tutorial | Step-by-step walkthroughs that take you from zero to a working setup. Currently: [01-set-up-from-zero.md](tutorials/01-set-up-from-zero.md). |
+## Reading by mode — if you have a specific need
+
+The Diátaxis modes ([explanation, reference, how-to, tutorial][diataxis]) describe what *kind* of writing a doc contains. Every doc declares its mode in front-matter; use this when you want a particular kind of content.
+
+- **Want to try Memoria from scratch?** → [tutorials/](tutorials/).
+- **Need a recipe to do something?** → [workflows/](workflows/), [operations/](operations/), [plugins/](plugins/).
+- **Looking something up?** → [glossary.md](glossary.md), and the precise reference files inside each topic folder ([board/states.md](board/states.md), [board/card-schema.md](board/card-schema.md), [vault/frontmatter-schema.md](vault/frontmatter-schema.md), [vault/templates.md](vault/templates.md), [vault/linking-patterns.md](vault/linking-patterns.md), [profiles/profile-commands.md](profiles/profile-commands.md), [surfaces/command-palette.md](surfaces/command-palette.md), [architecture/policy-mcp.md](architecture/policy-mcp.md), [architecture/computational-toolbox.md](architecture/computational-toolbox.md), `surfaces/*.md`, `dashboards/*.md`).
+- **Want to understand the why?** → each topic's `README.md`, plus [decisions/](decisions/) (ADRs) and the topic-local `why-*.md` files ([architecture/why-no-autonomous-synthesis.md](architecture/why-no-autonomous-synthesis.md), [architecture/why-computational-methods.md](architecture/why-computational-methods.md), [architecture/why-pattern-provenance.md](architecture/why-pattern-provenance.md), [profiles/why-coder-external-agent.md](profiles/why-coder-external-agent.md)).
+
+## The map — what lives where
+
+| Folder | What it holds |
+| --- | --- |
+| [vision.md](vision.md) | Single-doc top-level explanation. Purpose, naming, what Memoria is and is not. |
+| [glossary.md](glossary.md) | ~40 cross-cutting terms grouped by domain. Cross-cutting; lives at root. |
+| [architecture/](architecture/) | Three-layer model, capability stack, on-disk layout, control plane, memory tiers. Includes `why-*.md` rationale docs (computational methods, pattern provenance, no autonomous synthesis). |
+| [board/](board/) | `README.md` (concept) + `states.md` (state machine, lanes, review gate) + `card-schema.md` (card fields, task packet, handoff). |
+| [profiles/](profiles/) | `README.md` (the seven, lane permissions, delegation, anti-patterns) + `profile-commands.md` (operational command catalog) + per-profile design summaries + `why-coder-external-agent.md`. |
+| [vault/](vault/) | `README.md` (folder taxonomy, promotion map, pitfalls) + `templates.md` (15 note types + lifecycles) + `frontmatter-schema.md` (frontmatter, controlled vocab) + `linking-patterns.md`. |
+| [workflows/](workflows/) | `README.md` (the two pipelines, role matrix) + `upstream/`, `downstream/`, `maintenance/` (one how-to per workflow, 18 total). |
+| [surfaces/](surfaces/) | `README.md` (four surface types) + per-type detail (`persistent`, `modal`, `inline`, `ambient`) + `design-system.md` (visual-style template) + `command-palette.md`. |
+| [dashboards/](dashboards/) | `README.md` (the dashboard set) + 10 per-dashboard design summaries. Runtime Dataview queries live at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault). |
+| [operations/](operations/) | `README.md` + [failure-modes.md](operations/failure-modes.md) (Detect / Fix / Verify recipes). |
+| [plugins/](plugins/) | `README.md` (priority-ordered overview) + per-plugin configuration split by lifecycle into `required/` (8), `recommended/` (5), `optional/` (6, includes deployment-conditional and future-migration), plus top-level `plugin-configs-lifecycle.md` and `ui-discipline.md` (Obsidian UI conventions). |
+| [decisions/](decisions/) | 18 architecture decision records (ADRs) + `_template.md` + `by-topic.md` (secondary index grouping ADRs by topic folder). Cross-cuts all topics, so it sits at the top level. |
+| [roadmap/](roadmap/) | `README.md` (phased plan) + per-section detail (`timeline`, `deployment-options`, `autonomy-progression`, `success-metrics`, `design-tensions`, `future-directions`, `profile-compilation` (deferred), etc.) + `pilots/`. |
+| *(cross-cutting reference is distributed)* | Each cross-cutting reference doc lives next to what it explains: [surfaces/command-palette.md](surfaces/command-palette.md), [architecture/policy-mcp.md](architecture/policy-mcp.md), [architecture/computational-toolbox.md](architecture/computational-toolbox.md), [roadmap/profile-compilation.md](roadmap/profile-compilation.md) (**deferred**), [board/card-schema.md](board/card-schema.md), [vault/frontmatter-schema.md](vault/frontmatter-schema.md), [vault/linking-patterns.md](vault/linking-patterns.md), [profiles/profile-commands.md](profiles/profile-commands.md). |
+| [tutorials/](tutorials/) | Step-by-step walkthroughs. Currently: [`01-set-up-from-zero.md`](tutorials/01-set-up-from-zero.md). |
+| **(runtime, in [memoria-vault](https://github.com/eranroseman/memoria-vault))** | 10 dashboards at `00-meta/01-dashboards/`; 15 note templates at `00-meta/03-templates/`; 10 human-facing reference notes at `00-meta/04-reference/`; SOUL.md prompts at `.memoria/profiles/memoria-<name>/SOUL.md`; Linter detectors at `.memoria/profiles/memoria-linter/M-detectors.md`. |
 
 ## Core idea, in one paragraph
 
 The board (Kanban) is the control plane. The workers (Hermes profiles) are the execution layer. The vault (Obsidian folders) is the durable knowledge store. Cards on the board carry state; profiles claim cards within their lane and execute work; outputs land in the vault only after the human review state changes to `approved`. This keeps workflow state, execution, and final knowledge separate but connected through explicit handoffs.
 
+## Front-matter convention
+
+Every `.md` file in this folder carries a YAML header declaring its Diátaxis mode and intended audience:
+
+```yaml
+---
+mode: explanation        # one of: explanation | reference | how-to | tutorial
+audience: operator       # anyone | operator | human | system-designer | implementer | contributor
+topic: workflows         # the topic folder this file belongs to
+---
+```
+
+Mode is what kind of writing this is. Audience is who it's for. Topic mirrors the folder (cross-cutting files at root use `general`). ADRs in [decisions/](decisions/) also carry `id`, `title`, `status`, `date_proposed` per the ADR template.
+
 ## Glossary
 
-If you hit an unfamiliar term mid-document — *task packet, lane-override file, verdict band, trust score, hybrid pattern, method class, restrictive skill, …* — look it up in [reference/glossary.md](reference/glossary.md). About 40 terms grouped by domain (system, board, policy MCP, deployment, computational methods, pipeline stages, note types, future-direction terms). The most-linked-from terms also have inline glossary references at their first-mention site in the spine docs.
+If you hit an unfamiliar term mid-document — *task packet, lane-override file, verdict band, trust score, hybrid pattern, method class, restrictive skill, …* — look it up in [glossary.md](glossary.md). About 40 terms grouped by domain (system, board, policy MCP, deployment, computational methods, pipeline stages, note types, future-direction terms). The most-linked-from terms also have inline glossary references at their first-mention site in the topic READMEs.
+
+<!-- memoria-nav -->
+
+---
+
+[Next: Vision →](vision.md)
