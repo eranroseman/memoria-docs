@@ -12,7 +12,7 @@ topic: workflows
 ## Steps
 
 1. Human asks a question in Obsidian or terminal.
-2. The Writer or Librarian searches literature, claim notes, and reference notes.
+2. The Writer or Librarian searches literature, claim notes, and reference notes — with **query rewrite/decomposition** before retrieval over a **hybrid keyword + dense** retriever (reasoning-relevant questions defeat plain embeddings). **Superseded claim notes (`superseded_by`) are excluded by default**, so the synthesis reflects current belief.
 3. Synthesizes an answer with citekeys and links.
 4. Proposes filing as an answer note in `10-inbox/`.
 5. Human verifies, edits, and either promotes or discards.
@@ -29,3 +29,4 @@ The human asks "what predicts JITAI receptivity?" in the ACP pane → the Writer
 
 - **Answer-draft retention:** [ADR-3 answer-draft retention](../../decisions/03-answer-draft-retention.md) — 90-day surfacing.
 - **Profile:** [profiles/librarian.md](../../profiles/librarian.md), [profiles/writer.md](../../profiles/writer.md)
+- **Reasoning-augmented retrieval + superseded-claim exclusion:** [roadmap/evaluation.md](../../roadmap/evaluation.md) (Refinement 3) and [ADR-22](../../decisions/22-claim-supersession.md).

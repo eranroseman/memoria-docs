@@ -72,7 +72,7 @@ The standard external rendering agent is **[open-design](https://github.com/nexu
 | Shared filesystem read | Vault read-only via `external_directory` (existing pattern) | Same — open-design reads the vault for paper-notes, claim-notes, design-system.md |
 | Shared filesystem write | `40-workbench/01-projects/*/code/` only | `50-deliverables/<project>/` only |
 | Handoff artifact | `code-note` markdown with `repo:` frontmatter | `deliverable` note with `export_path:`, `design_system:`, and `render_command:` frontmatter (see `00-meta/03-templates/deliverable.md` (in the starter vault)) |
-| Design source | (none — code is its own spec) | [`00-meta/04-reference/design-system.md`](../surfaces/design-system.md) — the portable DESIGN.md that defines palette, typography, spacing, layout, etc. |
+| Design source | (none — code is its own spec) | [`00-meta/04-reference/design-system.md`](../obsidian-ui/design-system.md) — the portable DESIGN.md that defines palette, typography, spacing, layout, etc. |
 | Review gate | Human reviews `code-note` updates and commits | Human reviews the rendered artifact (HTML preview, PDF) and accepts |
 
 ### Why the boundary stays clean
@@ -133,4 +133,4 @@ A journal manuscript goes through Pandoc; a conference poster goes through open-
 
 ### AI image generation: gate it explicitly
 
-Open-design's image generation capabilities (gpt-image-2, Seedance, HyperFrames) are powerful but raise reproducibility concerns for research outputs. **Default to disabled in Memoria contexts.** A research deliverable should use the design system's deterministic side (typography, layout, color, spacing) but render real figures, real diagrams, real photos. AI-generated illustrations belong only in contexts where the human has explicitly opted in (e.g., a popular-science blog post, a teaching slide). The design-system template's anti-patterns section names this explicitly — see [surfaces/design-system.md](../surfaces/design-system.md).
+Open-design's image generation capabilities (gpt-image-2, Seedance, HyperFrames) are powerful but raise reproducibility concerns for research outputs. **Default to disabled in Memoria contexts.** A research deliverable should use the design system's deterministic side (typography, layout, color, spacing) but render real figures, real diagrams, real photos. AI-generated illustrations belong only in contexts where the human has explicitly opted in (e.g., a popular-science blog post, a teaching slide). The design-system template's anti-patterns section names this explicitly — see [obsidian-ui/design-system.md](../obsidian-ui/design-system.md).

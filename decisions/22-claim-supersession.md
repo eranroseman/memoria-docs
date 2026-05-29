@@ -4,9 +4,9 @@ audience: system-designer
 topic: decisions
 id: 22
 title: Claim supersession relation
-status: proposed
+status: accepted
 date_proposed: 2026-05-29
-date_resolved:
+date_resolved: 2026-05-29
 supersedes: []
 superseded_by: []
 ---

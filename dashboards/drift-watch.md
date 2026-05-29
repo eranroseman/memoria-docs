@@ -17,6 +17,7 @@ Surface the Linter's eight structural-detector findings as one consolidated view
 - **Not [`audit-log`](audit-log.md).** Audit-log shows policy MCP write decisions (per attempted write); drift-watch shows structural-detector findings (per lint pass). Different cadence, different abstraction layer.
 - **Not actionable on its own.** Every finding links back to the [Linter SOUL.md and M-detectors.md](../profiles/linter.md) in the starter vault; the remediation lives there, not here. This dashboard surfaces *which* drift, not *how to fix*.
 - **Not for data-hygiene checks.** Orphan notes, stale enrichment, broken wikilinks are surfaced by [`weekly-review`](weekly-review.md) and the lint report itself, not here. M-detectors are reserved for structural drift between vault source, deployed Hermes profiles, and the human's working vault state.
+- **Not claim-staleness / FAMA exposure.** Drift-watch is *structural / config* drift (source vs. deployed profile vs. working vault), not *claim validity*. A current claim a newer one superseded (`superseded_by`) is a correctness signal tracked separately — see [success-metrics.md](../roadmap/success-metrics.md) (FAMA exposure) and [ADR-22](../decisions/22-claim-supersession.md) — not on this dashboard.
 
 ## Design decisions
 

@@ -31,6 +31,7 @@ Two of these scopes are **provided by [Hermes Agent](https://hermes-agent.nousre
 - **Board memory is per-card, not per-profile.** When a card moves from Library to Writer, the handoff payload travels with it (see [kanban-board/card-schema.md](../kanban-board/card-schema.md#structured-payload)). The Writer does not inherit the Librarian's working context — only the payload.
 - **Vault project memory is the cross-lane channel.** Anything that must survive across lanes within a project belongs here — not in profile memory (too local, capped) and not in vault audit memory (too distant). `research-directions.md` is the definitive example.
 - **Vault audit memory is append-only.** Profiles read it; only the Linter writes to it. `00-meta/02-logs/audit.jsonl` is part of it today; `00-meta/08-metrics/` joins when [fleet observability](../roadmap/future-directions.md#fleet-observability) ships (Post-MVS).
+- **The audit event records outcomes, not just diffs.** Beyond *what changed* (path, `before_hash` / `after_hash`), each run's event carries **disposition** (the `review_status` outcome), **cost** (tokens / $), **tool-call outcome**, and **verify result**. This one substrate is what the observability metrics aggregate from (see [roadmap/success-metrics.md](../roadmap/success-metrics.md) and [roadmap/evaluation.md](../roadmap/evaluation.md)); capture it from day one, because human-loop and cost trends cannot be reconstructed retroactively.
 
 ## Why the substrate split matters
 

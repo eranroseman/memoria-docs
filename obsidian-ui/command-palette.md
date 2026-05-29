@@ -1,10 +1,10 @@
 ---
 mode: reference
 audience: operator
-topic: surfaces
+topic: obsidian-ui
 ---
 
-# Command palette — Memoria's keyboard surface
+# Command palette — Memoria's keyboard component
 
 The single biggest UX move in Memoria is binding every common operation to an Obsidian command, then driving the system from `Cmd-P` (`Ctrl-P` on Windows/Linux) instead of clicking through menus. Within a few weeks of consistent use, muscle memory replaces every UI click.
 
@@ -16,7 +16,7 @@ Every command begins with the prefix **`Memoria:`** so the human can type `Cmd-P
 
 Two-tier discipline:
 
-- The **core commands** below are the operational surface. They cover capture, processing, interactive retrieval, projects, maintenance, and lens-based reading.
+- The **core commands** below are the operational set. They cover capture, processing, interactive retrieval, projects, maintenance, and lens-based reading.
 - Anything beyond these is a *human addition*, not part of the standard Memoria UX. Humans add their own custom commands freely — but the standard set is what every Memoria install ships with, what cross-machine portability assumes, and what the [Commander](../obsidian-plugins/recommended/cmdr.md) recommendation set is drawn from.
 
 ## The standard commands
@@ -39,7 +39,7 @@ Two-tier discipline:
 
 ### Interactive retrieval (3 commands — transient ACP)
 
-These commands invoke a profile via a *transient* ACP session: the agent-client plugin opens a fresh chat session, the agent returns results, the session closes. No session-persistent pane, no `savedSessions[]` entry. They're for "ask one specific question and get an answer" — distinct from the session-persistent Socratic processing chat above (*persistent* here means the chat session outlives one exchange — unrelated to the persistent *surface type*, the dashboards), and distinct from the substantive card-based work in the Project section below (which produces durable artifacts via the Kanban).
+These commands invoke a profile via a *transient* ACP session: the agent-client plugin opens a fresh chat session, the agent returns results, the session closes. No session-persistent pane, no `savedSessions[]` entry. They're for "ask one specific question and get an answer" — distinct from the session-persistent Socratic processing chat above (*persistent* here means the chat session outlives one exchange — unrelated to the persistent dashboards component), and distinct from the substantive card-based work in the Project section below (which produces durable artifacts via the Kanban).
 
 One transient command per ACP-suitable profile in the picker (Mapper / Writer / Verifier), each pointed at the kind of question the profile is shaped to answer.
 
@@ -51,7 +51,7 @@ One transient command per ACP-suitable profile in the picker (Mapper / Writer / 
 
 See [`agent-client.md`](../obsidian-plugins/required/agent-client.md) for the per-profile rationale behind which profiles get session-persistent versus transient ACP sessions.
 
-**The transient commands don't replace their card-based counterparts.** Each profile has both surfaces:
+**The transient commands don't replace their card-based counterparts.** Each profile has both entry points:
 
 | Profile | Transient ACP (this section) | Substantive card-based |
 | --- | --- | --- |
@@ -111,14 +111,14 @@ The `Cmd-P → "M"` filter convention works from the moment the first three comm
 
 ## What's deliberately NOT in this catalog
 
-- **Card state management.** Approving, denying, rejecting individual cards happens through inline callout buttons (see [`surfaces/inline.md`](inline.md)) or through the Kanban directly. There's no `Memoria: approve this card` command because card state changes need card context the palette doesn't provide.
+- **Card state management.** Approving, denying, rejecting individual cards happens through inline callout buttons (see [`obsidian-ui/inline.md`](inline.md)) or through the Kanban directly. There's no `Memoria: approve this card` command because card state changes need card context the palette doesn't provide. (Card buttons live in the [`obsidian-ui/inline.md`](inline.md) callouts.)
 - **Profile administration.** Reloading a profile, editing a lane-override, editing a profile source in `.memoria/profiles/memoria-<name>/` and redeploying with `install.ps1` — these are CLI operations, not palette operations. The palette is for *daily ops*; profile config is a *deployment concern*.
 - **Search and retrieval (search-engine-style).** The vault's native search, Dataview queries, and `qmd` search are richer than any palette command could be. Memoria doesn't try to substitute its own search. The Interactive retrieval commands above are a different category — *conversational* retrieval where the human asks a profile a question and gets a curated response, not full-text / vector / property search that returns ranked results from an index.
-- **Composing custom workflows.** Humans add their own commands for their own workflows; this catalog is the *standard Memoria set*, not an exhaustive human surface.
+- **Composing custom workflows.** Humans add their own commands for their own workflows; this catalog is the *standard Memoria set*, not an exhaustive catalog of human additions.
 
 ## Related
 
 - [`obsidian-plugins.md`](../obsidian-plugins/required/quickadd.md) — QuickAdd and Templater plugin details.
 - [`obsidian-plugins.md`](../obsidian-plugins/recommended/cmdr.md) — Commander plugin for putting top commands on buttons.
-- [`surfaces/README.md`](README.md) — the four Obsidian surface types (dashboards, workspaces, callouts, status line) that this command palette sits alongside. The palette itself is one of Memoria's five human-facing channels; see the [glossary](../glossary.md#surfaces-and-channels) for how *types* and *channels* relate.
+- [`obsidian-ui/README.md`](README.md) — the Obsidian UI components (dashboards, workspaces, callouts, status line, Agent Client pane) that this command palette sits alongside. The palette is itself one of those components — Obsidian's keyboard component; see the [glossary](../glossary.md#the-obsidian-ui-and-channels) for components vs. the CLI / Telegram channels.
 - [`workflows/README.md`](../workflows/README.md) — workflows the commands trigger (workflow Discuss, Assess, Frame, Verify).

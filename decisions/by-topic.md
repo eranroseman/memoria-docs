@@ -42,7 +42,7 @@ The seven Hermes workers — missions, attachment, cross-run memory.
 - [14-cross-run-skill-insights.md](14-cross-run-skill-insights.md) — Cross-run skill-insights memory · proposed
 - [17-retriever-scout-profile.md](17-retriever-scout-profile.md) — Retriever / Scout as a separate profile · proposed
 
-## Dashboards & surfaces
+## Dashboards & UI
 
 Persistent dashboards and how the human sees board / vault state.
 

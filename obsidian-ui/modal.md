@@ -1,10 +1,10 @@
 ---
 mode: reference
 audience: operator
-topic: surfaces
+topic: obsidian-ui
 ---
 
-# Modal surfaces: workspaces
+# Workspaces
 
 Dashboards alone aren't the UX. *Where* they sit on the screen is. Memoria uses three Obsidian workspaces (saved via the core Workspaces plugin), one per cognitive mode, bound to keyboard shortcuts so switching is muscle-memory.
 

@@ -10,7 +10,7 @@ Plugin choice is only half the UX. The other half is restraint about how the vau
 
 ## Typography and structure
 
-- **One accent color for callouts.** Pick a single accent (Memoria's default is a muted blue) and use it for all three inline-surface callout types: `[!brief]`, `[!suggestions]`, `[!verification]`. Differentiate by icon, not by color. Rainbow callouts train the eye to ignore them all.
+- **One accent color for callouts.** Pick a single accent (Memoria's default is a muted blue) and use it for all three callout types: `[!brief]`, `[!suggestions]`, `[!verification]`. Differentiate by icon, not by color. Rainbow callouts train the eye to ignore them all.
 - **Monospace for code blocks and identifiers; system font for prose.** Don't get clever with custom font picks — Obsidian's defaults are already legible. Configure once in Settings → Appearance, then leave it.
 - **Heading hierarchy enforced.** The Memoria Linter (the structural one, not the Obsidian Linter) flags notes with no H1, H4 used without H3, or jumps of more than one heading level. This isn't pedantry — Dataview queries that filter on heading content break when the hierarchy is inconsistent.
 - **No emoji in note titles.** They break filename portability across operating systems and look like noise after a year. Emoji in note *bodies* is fine; titles are filenames.
@@ -23,8 +23,8 @@ Plugin choice is only half the UX. The other half is restraint about how the vau
 
 ## Workspace layout discipline
 
-Workspace design rules (one mode per workspace, three is the working set, no topic-binding) are defined in [surfaces/modal.md](../surfaces/modal.md#design-rules-for-workspaces). The visual-style angle: those rules *are* visual restraint — a fourth workspace is visual proliferation by another name, and a topic-bound workspace conflates cognitive mode with project context. Trust the modal-surfaces rules; don't reintroduce the proliferation they prevent.
+Workspace design rules (one mode per workspace, three is the working set, no topic-binding) are defined in [obsidian-ui/modal.md](../obsidian-ui/modal.md#design-rules-for-workspaces). The visual-style angle: those rules *are* visual restraint — a fourth workspace is visual proliferation by another name, and a topic-bound workspace conflates cognitive mode with project context. Trust the workspace rules; don't reintroduce the proliferation they prevent.
 
 ## The deeper rule
 
-The architecture is invisible during normal use, legible when something goes wrong (see [surfaces/README.md cross-surface rules](../surfaces/README.md#cross-surface-design-rules)). Visual-style discipline supports this: the vault looks like a writing environment most of the time, and indicators light up only when something specific demands attention. Three months in, the human's mouse hand barely moves and they've stopped consciously tracking which workspace they're in. That's the success condition.
+The architecture is invisible during normal use, legible when something goes wrong (see [obsidian-ui/README.md cross-component rules](../obsidian-ui/README.md#cross-component-rules)). Visual-style discipline supports this: the vault looks like a writing environment most of the time, and indicators light up only when something specific demands attention. Three months in, the human's mouse hand barely moves and they've stopped consciously tracking which workspace they're in. That's the success condition.

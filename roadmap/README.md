@@ -6,7 +6,7 @@ topic: roadmap
 
 # Implementation roadmap
 
-This document is the phased plan for taking Memoria from design to running system. It assumes the design choices in [vision.md](../vision.md) through [surfaces/README.md](../surfaces/README.md) are settled.
+This document is the phased plan for taking Memoria from design to running system. It assumes the design choices in [vision.md](../vision.md) through [obsidian-ui/README.md](../obsidian-ui/README.md) are settled.
 
 The roadmap is ordered so each phase produces a working, useful slice. You should not need to complete phase 4 before phase 1 is paying off.
 

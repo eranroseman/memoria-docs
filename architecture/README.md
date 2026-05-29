@@ -12,7 +12,7 @@ Memoria has three layers — a Kanban board that orchestrates work, seven Hermes
 
 **The three-layer model** — [Three layers](#three-layers) (the diagram), [Why three layers, not one](#why-three-layers-not-one) (the rationale + the *Thin control over thick state* finding), [Layer 1: Board](#layer-1-board-kanban), [Layer 2: Workers](#layer-2-workers-hermes-profiles), [Layer 3: Vault](#layer-3-vault-obsidian-folders).
 
-**Human-facing channels** — [Human channels](#human-channels) (CLI / palette / Telegram / API / dashboards).
+**Human-facing channels** — [Human channels](#human-channels) (Obsidian UI · CLI · Telegram · API).
 
 **Filesystem and runtime** — [On-disk layout](#on-disk-layout), [Profile management](#profile-management).
 
@@ -123,19 +123,18 @@ See [vault/README.md](../vault/README.md) for the full layout, note types, templ
 
 ## Human channels
 
-Memoria exposes five human-facing channels, each owning one cognitive mode. The rule that keeps the design coherent: **each channel owns one mode**; using a channel for the wrong mode (Telegram for desktop work, CLI for daily ops) produces drift.
+Memoria's primary UI is **Obsidian** (focused desktop work). Beyond it are two secondary channels — **CLI** and **Telegram** — and one non-human integration path, the **API server**. The rule that keeps the design coherent: **each access path owns one mode**; using one for the wrong mode (Telegram for desktop work, CLI for daily ops) produces drift.
 
-| Channel | Mode | Use it for |
+| Access path | Mode | Use it for |
 | --- | --- | --- |
-| **Obsidian dashboards + ACP panes** | Desktop, focused, deliberate | Daily triage, reading, authoring, agent conversations on the active note. |
-| **Command palette** (Obsidian) | Desktop, instant, frequent | The five-to-ten most-used actions. |
+| **Obsidian** (primary UI) | Desktop, focused, deliberate | Daily triage, reading, authoring, agent conversations on the active note. Its components — dashboards, workspaces, callouts, status line, command palette, the Agent Client pane — are in [obsidian-ui/README.md](../obsidian-ui/README.md). |
 | **CLI** (`hermes …`) | Desktop, occasional, precise | Forensic queries, profile administration, manual dispatch. |
 | **Telegram** | Mobile, async, lightweight | Fleeting capture, source-URL capture, urgent push notifications, on-the-go Socratic. |
-| **API server** (port 8642) | Programmatic, integration | File-system watchers, Zotero hooks, git post-commit, cross-machine dispatch. |
+| **API server** (port 8642) | Programmatic, integration (not human) | File-system watchers, Zotero hooks, git post-commit, cross-machine dispatch. |
 
-Inside Obsidian, the four-type surface taxonomy (persistent dashboards, modal workspaces, inline callouts, ambient status line) is the human-facing companion to this table. See [surfaces/README.md](../surfaces/README.md) for "what kind of thing appears where, inside Obsidian."
+Inside Obsidian, the UI breaks into components (dashboards, workspaces, callouts, the status line, the command palette, the Agent Client pane, and other plugin UI). See [obsidian-ui/README.md](../obsidian-ui/README.md) for what each is for and the render discipline behind them.
 
-**For per-channel detail** — when to use CLI vs dashboards, the two distinct uses of Telegram (notifications vs mobile capture), the deliberately-narrowed Telegram toolset, what the API is and isn't for, and the channel failure modes — see [channels-overview.md](channels-overview.md).
+**For per-path detail** — when to use CLI vs dashboards, the two distinct uses of Telegram (notifications vs mobile capture), the deliberately-narrowed Telegram toolset, what the API is and isn't for, and the access-path failure modes — see [channels-overview.md](channels-overview.md).
 
 ## On-disk layout
 

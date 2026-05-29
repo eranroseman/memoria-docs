@@ -1,16 +1,16 @@
 ---
 mode: reference
 audience: operator
-topic: surfaces
+topic: obsidian-ui
 ---
 
-# Ambient surfaces: the status line
+# Status line — the ambient indicator
 
-Memoria's ambient surface is a single glanceable **status line** — two producers sharing one line, separated by a `·`. It is rendered as a **Dataview widget pinned in a note** (e.g., `00-meta/index.md`), *not* the Obsidian/OS status bar, which Dataview cannot write to; the effect is the same peripheral, always-in-view indicator (a true status-bar item would require a small custom plugin — deliberately avoided, see **Why no custom plugin** below):
+Memoria's **status line** is a single glanceable indicator — two producers sharing one line, separated by a `·`. It is rendered as a **Dataview widget pinned in a note** (e.g., `00-meta/index.md`), *not* the Obsidian/OS status bar, which Dataview cannot write to; the effect is the same peripheral, always-in-view indicator (a true status-bar item would require a small custom plugin — deliberately avoided, see **Why no custom plugin** below):
 
 ## 1. Linter findings (lightweight)
 
-The Linter's lightweight findings appear here, not in a callout or dashboard — a one-line "✓ Schema valid · ⚠ 2 broken links · ⚠ Note >800 words" that lets the human act on or dismiss issues without opening a separate report. Heavy lint findings (schema migrations, structural drift) escalate to the persistent surface (the [`audit-log` dashboard](../dashboards/audit-log.md) or the [`drift-watch` dashboard](../dashboards/drift-watch.md)).
+The Linter's lightweight findings appear here, not in a callout or dashboard — a one-line "✓ Schema valid · ⚠ 2 broken links · ⚠ Note >800 words" that lets the human act on or dismiss issues without opening a separate report. Heavy lint findings (schema migrations, structural drift) escalate to a dashboard (the [`audit-log` dashboard](../dashboards/audit-log.md) or the [`drift-watch` dashboard](../dashboards/drift-watch.md)).
 
 ## 2. Kanban queue counts
 
@@ -25,7 +25,7 @@ Active: 3 · Waiting: 2 · Review: 7 · Retries: 0
 - **Review** — `done` cards awaiting review (`review_status: requested`)
 - **Retries** — cards re-dispatched after a recoverable failure (back in `ready`)
 
-Click anywhere in the four counts → opens [`board-state.md`](../dashboards/board-state.md). The indicator is glanceable; the drill-down lives in the persistent surface.
+Click anywhere in the four counts → opens [`board-state.md`](../dashboards/board-state.md). The indicator is glanceable; the drill-down lives in the dashboard.
 
 **Implementation.** A Dataview inline query in the human's daily note (or a pinned `00-meta/index.md`-resident widget), not a custom plugin. The Dataview query reads the Hermes Kanban state — either from a periodically-refreshed `board-state.jsonl` snapshot the dispatcher writes, or via a small wrapper that polls the Hermes API on port 8642. Memoria doesn't ship a standard implementation here; human setups vary too much.
 
@@ -47,11 +47,11 @@ When everything is quiet, the line is reassuringly short:
 
 When something spikes, only the spike draws the eye — the rest stays minimal.
 
-## Design rules for ambient surfaces
+## Design rules for the status line
 
 - **Show state, never decisions to make.** A red dot meaning "issue here, click to investigate" is ambient. A list of 12 issues to triage is persistent — it doesn't belong in the status line. Crossing the line floods the ambient channel and trains the human to ignore it.
 - **Glance-readable in under one second.** If the human has to parse the indicator to understand it, it's the wrong shape. Use icons + counts, not prose.
-- **No interruptive transitions.** Status indicators may change as state changes, but they don't animate, blink, or pop up modals. Ambient = peripheral; interruption is the persistent surface's job.
+- **No interruptive transitions.** Status indicators may change as state changes, but they don't animate, blink, or pop up modals. Ambient = peripheral; interruption is a dashboard's job.
 - **Two producers is the working set.** Linter + Kanban counts. A third ambient producer is one too many — the line stops being glanceable when there are more than four to six tokens to parse. New "I want this always visible" requests get evaluated against the existing two, not added alongside.
 
-The ambient surface is the smallest of the four by design. Anything that needs more than one line earns its way into one of the other three types.
+The status line is the smallest of the UI components by design. Anything that needs more than one line earns its way into one of the others.

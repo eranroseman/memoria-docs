@@ -84,7 +84,7 @@ The migration path always points the same direction: **start narrow, expand when
 1. Confirm the folder structure matches [vault/README.md](../vault/README.md). Create any missing folders.
 2. Drop the 15 templates into `00-meta/03-templates/` (see [vault/templates.md](../vault/templates.md) for the full list).
 3. Migrate any existing notes whose folder no longer matches their type.
-4. Set up `00-meta/index.md` and `00-meta/weekly-review.md` with the queries from [surfaces/README.md](../surfaces/README.md).
+4. Set up `00-meta/index.md` and `00-meta/weekly-review.md` with the queries from [obsidian-ui/README.md](../obsidian-ui/README.md).
 5. Confirm Zotero + Better BibTeX exports to `.memoria/library.bib`.
 
 **Exit criteria.** A new note created from a template lands in the right folder with the right frontmatter. Dashboards open and show real data.

@@ -26,12 +26,12 @@ The on-disk folders are three — `required/`, `recommended/`, `reference/`:
 | --- | --- |
 | [obsidian-local-rest-api](required/obsidian-local-rest-api.md) | Exposes the vault to Hermes for read/write via HTTP. Required for the [control plane](../architecture/control-plane.md). **Its `data.json` contains secrets — gitignore it.** |
 | [agent-client](required/agent-client.md) | Implements ACP (Agent Client Protocol) inside Obsidian. Routes human conversations with Hermes (and optionally Claude Code, Codex, Gemini CLI, Kilo Code) through a chat pane attached to the active note. Makes the Socratic profile invocable from a reading session. |
-| [dataview](required/dataview.md) | Powers every dashboard. Without it, the persistent-surfaces layer in [surfaces/README.md](../surfaces/README.md) is non-functional. |
+| [dataview](required/dataview.md) | Powers every dashboard. Without it, the dashboard layer in [obsidian-ui/README.md](../obsidian-ui/README.md) is non-functional. |
 | [templater-obsidian](required/templater.md) | Runs the safe-and-unambiguous frontmatter scripts the Memoria Linter relies on (see [linter.md](../profiles/linter.md#implementing-safe-and-unambiguous-fixes-via-templater)). |
-| [quickadd](required/quickadd.md) | Registers Memoria's command palette entries (see [command-palette.md](../surfaces/command-palette.md)). |
+| [quickadd](required/quickadd.md) | Registers Memoria's command palette entries (see [command-palette.md](../obsidian-ui/command-palette.md)). |
 | [obsidian-citation-plugin](required/obsidian-citation-plugin.md) | Inserts citations from the BibTeX/BibLaTeX file Better BibTeX exports, and creates paper notes from a configured template. Memoria's primary Zotero-to-vault path for note creation today. |
 | [pdf-plus (PDF++)](required/pdf-plus.md) | Deep-linking from notes to specific PDF passages. Foundational for claim-level citation. |
-| [callout-manager](required/callout-manager.md) | Defines the `[!brief]`, `[!suggestions]`, and `[!verification]` callout types used by the [inline agent surfaces](../surfaces/inline.md). |
+| [callout-manager](required/callout-manager.md) | Defines the `[!brief]`, `[!suggestions]`, and `[!verification]` callout types used by the [inline agent callouts](../obsidian-ui/inline.md). |
 
 ### Recommended (10) — install when the friction is felt
 

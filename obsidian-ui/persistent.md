@@ -1,10 +1,10 @@
 ---
 mode: reference
 audience: operator
-topic: surfaces
+topic: obsidian-ui
 ---
 
-# Persistent surfaces: dashboards
+# Dashboards
 
 Dashboards are the operational view layer — Dataview-rendered notes that surface what is in flight on the board, what is overdue in the vault, and what needs human judgment.
 

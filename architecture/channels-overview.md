@@ -6,19 +6,18 @@ topic: architecture
 
 # Human channels
 
-This document covers Memoria's five human-facing channels — Obsidian dashboards + ACP panes, command palette, CLI, Telegram, API server — and the per-channel discipline that keeps the system from feeling like a control panel. The architecture overview that names these channels lives in [README.md §"Human channels"](README.md#human-channels); this doc carries the per-channel detail.
+Memoria's primary UI is **Obsidian** — the focused desktop surface where nearly all daily work happens. Beyond it are two **secondary channels** for reaching the system when Obsidian isn't the right place — the **CLI** (precise, occasional, forensic) and **Telegram** (mobile, async) — plus one **non-human integration path**, the **API server**, which programs use and humans never touch directly. This document carries the per-path detail; the architecture overview that names them lives in [README.md §"Human channels"](README.md#human-channels).
 
-The three layers ([board](../kanban-board/README.md), [workers/profiles](../profiles/README.md), [vault](../vault/README.md)) are *what the system is*. **Channels** are *where the human sees it and acts on it* — five of them, each owning one cognitive mode. (Inside the Obsidian channel, state is rendered further as one of four **surfaces** — persistent, modal, inline, ambient; that's a distinct taxonomy, covered in [surfaces/README.md](../surfaces/README.md). See the [glossary](../glossary.md#surfaces-and-channels) for how the two terms relate.) The defining discipline: **each channel owns one cognitive mode.** Using a channel for the wrong mode (Telegram for desktop work, CLI for daily ops) produces the "every operation feels slightly off" drift that erodes a workflow.
+The three layers ([board](../kanban-board/README.md), [workers/profiles](../profiles/README.md), [vault](../vault/README.md)) are *what the system is*. The access paths below are *where the human sees it and acts on it*. The defining discipline: **each access path owns one mode.** Using one for the wrong mode (Telegram for desktop work, CLI for daily ops, the API for something a command already does) produces the "every operation feels slightly off" drift that erodes a workflow.
 
-| Channel | Mode | Use it for |
+| Access path | Mode | Use it for |
 | --- | --- | --- |
-| **Obsidian dashboards + ACP panes** | Desktop, focused, deliberate | Daily triage, reading, authoring, agent conversations on the active note. |
-| **Command palette** (Obsidian) | Desktop, instant, frequent | The five-to-ten most-used actions: capture fleeting, ask about this note, lint current note, new project. |
+| **Obsidian** (the primary UI) | Desktop, focused, deliberate | Daily triage, reading, authoring, agent conversations on the active note. Its internal components — dashboards, workspaces, callouts, status line, command palette, the Agent Client pane — are detailed in [obsidian-ui/README.md](../obsidian-ui/README.md). |
 | **CLI** (`hermes …`) | Desktop, occasional, precise | Forensic queries against the audit log, profile administration, manual dispatch, anything benefiting from precision over discoverability. |
 | **Telegram** | Mobile, async, lightweight | Fleeting capture on the go, source-URL capture, urgent push notifications (retry threshold hit, drift alarm, cron failure). Not for drafting or review. |
-| **API server** (port 8642) | Programmatic, integration | File-system watchers, Zotero hooks, git post-commit, cross-machine dispatch. Never the channel for direct human action. |
+| **API server** (port 8642) | Programmatic, integration (not human) | File-system watchers, Zotero hooks, git post-commit, cross-machine dispatch. Never the path for direct human action. |
 
-Inside Obsidian, the four-type surface taxonomy (persistent dashboards, modal workspaces, inline callouts, ambient status line) is the human-facing companion to this table. The two views are complementary: this table answers "which channel," and [surfaces/README.md](../surfaces/README.md) answers "what kind of thing appears where, inside Obsidian."
+The command palette and the Agent Client pane are **components of Obsidian**, not separate access paths — they live inside the primary UI, alongside dashboards, workspaces, callouts, and the status line. That inside-Obsidian breakdown is the companion to this table: this table answers "which access path," and [obsidian-ui/README.md](../obsidian-ui/README.md) answers "which part of the Obsidian UI."
 
 ## Channel failure modes
 
@@ -34,7 +33,7 @@ The corrective is one question per operation: "what channel is this *kind* of wo
 Two principles:
 
 - **Notifications must change what the human would do in the next 30 minutes**, or they shouldn't be notifications. Routine approvals wait for the dashboard; only hard blockers and drift alarms page Telegram.
-- **An admin GUI, if ever built, is an Obsidian plugin — not a separate web app.** Extending Obsidian-as-interface composes cleanly with the existing five channels; adopting a peer system (e.g., a hackathon-grade Hermes-admin web UI) would create a sixth channel competing for the same modes, and a chat tab that bypasses the policy MCP entirely. The recommended shape — a read-only sidebar pane reaching the API on loopback — lives in [roadmap/future-directions.md](../roadmap/future-directions.md#memoria-inspector-obsidian-plugin).
+- **An admin GUI, if ever built, is an Obsidian plugin — not a separate web app.** Extending Obsidian-as-interface composes cleanly with the existing access paths; adopting a peer system (e.g., a hackathon-grade Hermes-admin web UI) would create a competing channel vying for the same modes, and a chat tab that bypasses the policy MCP entirely. The recommended shape — a read-only sidebar pane reaching the API on loopback — lives in [roadmap/future-directions.md](../roadmap/future-directions.md#memoria-inspector-obsidian-plugin).
 
 ## CLI is the forensic channel
 
@@ -80,7 +79,7 @@ hermes audit export --since 2026-01-01 --to logs/2026-archive.jsonl
 
 These are examples, not an authoritative catalog. The full Hermes CLI surface is upstream of Memoria (documented at [hermes-agent.nousresearch.com](https://hermes-agent.nousresearch.com/)); Memoria pins specific commands only as illustrations. When the Hermes CLI changes between versions, Memoria docs may lag — the principle (CLI for forensic work) stays true even when the specific flag names shift.
 
-**What CLI is NOT for.** Daily operations (capture, processing, drafting) go through the command palette inside Obsidian — see [`surfaces/command-palette.md`](../surfaces/command-palette.md). Triage of approval queues belongs in the dashboards plus inline callout buttons, not the terminal. Reading content belongs in Obsidian; opening files in a terminal is hostile.
+**What CLI is NOT for.** Daily operations (capture, processing, drafting) go through the command palette inside Obsidian — see [`obsidian-ui/command-palette.md`](../obsidian-ui/command-palette.md). Triage of approval queues belongs in the dashboards plus inline callout buttons, not the terminal. Reading content belongs in Obsidian; opening files in a terminal is hostile.
 
 **Mental model.** CLI is the surgical tool. Sharp, precise, occasional. If the human finds themselves using the CLI more than a few times a week, something else (the dashboards, inline UI, or command palette) needs improving — the friction of dropping to a terminal is a signal that a more frequent operation lacks its proper channel.
 

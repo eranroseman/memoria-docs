@@ -4,9 +4,9 @@ audience: system-designer
 topic: decisions
 id: 23
 title: vault-eval as a maintenance capability
-status: proposed
+status: accepted
 date_proposed: 2026-05-29
-date_resolved:
+date_resolved: 2026-05-29
 supersedes: []
 superseded_by: []
 ---

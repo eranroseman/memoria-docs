@@ -1,10 +1,10 @@
 ---
 mode: reference
 audience: operator
-topic: surfaces
+topic: obsidian-ui
 ---
 
-# Inline surfaces: callouts in notes
+# Callouts
 
 Not every agent output belongs in a dashboard. Some context is only useful while looking at a specific note — the comparative read on a paper note matters when the human opens that note to read the source, not in a daily roll-up. Dashboards surface *decisions across notes*; inline callouts surface *context inside one note*.
 
@@ -26,10 +26,10 @@ Example shape for `[!brief]`:
 > 5 candidate links queued for review.
 ```
 
-## Design rules for inline surfaces
+## Design rules for callouts
 
 - **Producer-owned, human-curated.** The agent writes the callout once; the human accepts/rejects or rewrites. The callout is not edited by the agent on subsequent runs unless explicitly re-requested.
-- **Collapsed by default for suggestions, expanded for briefs and verifications.** Volume-prone surfaces collapse; one-shot context surfaces expand.
+- **Collapsed by default for suggestions, expanded for briefs and verifications.** Volume-prone callouts collapse; one-shot context callouts expand.
 - **Never overwrite human content in the same callout.** If a human has edited a `[!brief]`, the next ingest run appends a new `[!brief] (updated YYYY-MM-DD)` callout below it rather than rewriting.
 
 ## How the callout content is produced (deterministic narrowing + LLM enrichment)
@@ -42,6 +42,6 @@ All three callouts use the **hybrid pattern** described in [architecture/why-com
 | `[!suggestions]` | Top-10 link candidates ranked by weighted scoring: embedding similarity (0.4) + shared citations (0.3) + topic-tag overlap (0.2) + recency boost (0.1). Then truncated to 5 forward + 5 backward per the cap. | Optional one-line explanation per candidate ("suggested because of shared citation to [[veinot2018good]]"). |
 | `[!verification]` | Per-claim trace via regex citation extraction + embedding similarity against claim notes. Auto-clean above similarity threshold (~0.75), auto-fail below (~0.4). | LLM judges only the middle ambiguous band (similarity 0.4–0.75) — the claim-source semantic match where deterministic signals are equivocal. |
 
-The audit trail for each callout is the **deterministic step's output** (which candidates ranked where, by what score, against what citations). The LLM's prose is the surface presentation but the candidate selection is what dashboards and the [fleet-health accept/reject ratios](../dashboards/fleet-health.md) measure. This is what makes the rubber-stamping signal (accept rate > 90%) meaningful — if the scoring function is over-suggesting, tune the weights; if under-suggesting, lower the threshold. With pure LLM ranking those ratios would be noise.
+The audit trail for each callout is the **deterministic step's output** (which candidates ranked where, by what score, against what citations). The LLM's prose is the visible presentation but the candidate selection is what dashboards and the [fleet-health accept/reject ratios](../dashboards/fleet-health.md) measure. This is what makes the rubber-stamping signal (accept rate > 90%) meaningful — if the scoring function is over-suggesting, tune the weights; if under-suggesting, lower the threshold. With pure LLM ranking those ratios would be noise.
 
 Callouts are policy-MCP writes like any other — when Mapper attaches a `[!brief]` to a paper note, the write is gated by the lane policy, logged with SHA-256 hashes, and reversible from the audit log.

@@ -112,9 +112,9 @@ Memoria's components, classified by method:
 | Bib watcher, git hooks, cron triggers | Shell scripts | [architecture/README.md](README.md) |
 | Audit-log analysis and verdict band rollup | Aggregation stats | [profiles/linter.md](../profiles/linter.md) |
 | `cluster-map`, `scope-project` density, `gap-report` topic identification | HDBSCAN / BERTopic / LDA over embeddings | [profiles/mapper.md](../profiles/mapper.md) |
-| `[!suggestions]` candidate ranking | Weighted scoring (embedding + citation + topic) | [surfaces/README.md inline surfaces](../surfaces/README.md) |
-| `[!brief]` candidate selection | Shared-citation + embedding similarity | [surfaces/README.md inline surfaces](../surfaces/README.md) |
-| Dataview dashboards | SQL-like queries over frontmatter | [surfaces/README.md](../surfaces/README.md) |
+| `[!suggestions]` candidate ranking | Weighted scoring (embedding + citation + topic) | [obsidian-ui/inline.md callouts](../obsidian-ui/inline.md) |
+| `[!brief]` candidate selection | Shared-citation + embedding similarity | [obsidian-ui/inline.md callouts](../obsidian-ui/inline.md) |
+| Dataview dashboards | SQL-like queries over frontmatter | [obsidian-ui/README.md](../obsidian-ui/README.md) |
 | MOC hub identification | PageRank / centrality over the wikilink graph | [profiles/linter.md](../profiles/linter.md) (graph-analyze) |
 | Drift propagation enumeration (future) | Graph walk over wikilinks | [roadmap/README.md propagation debts](../roadmap/README.md) |
 
@@ -124,7 +124,7 @@ Memoria's components, classified by method:
 |---|---|---|---|
 | `_proposed_classification` proposal | Multi-label classifier produces calibrated proposal | LLM fallback for low-confidence cases (probability < 0.85) | [profiles/librarian.md](../profiles/librarian.md) |
 | `cite-check` claim-source match | Embedding similarity per (claim, source) pair | LLM judges only middle band (0.4–0.75); above is auto-clean, below is auto-fail | [profiles/verifier.md](../profiles/verifier.md) |
-| Inline callouts (`[!brief]`, `[!suggestions]`, `[!verification]`) | Candidate selection via weighted scoring (similarity + shared-citations + topic-tag) | Per-callout prose composition or explanation | [surfaces/inline.md](../surfaces/inline.md#how-the-callout-content-is-produced-deterministic-narrowing--llm-enrichment) — authoritative site for per-callout deterministic/LLM split, including weights |
+| Inline callouts (`[!brief]`, `[!suggestions]`, `[!verification]`) | Candidate selection via weighted scoring (similarity + shared-citations + topic-tag) | Per-callout prose composition or explanation | [obsidian-ui/inline.md](../obsidian-ui/inline.md#how-the-callout-content-is-produced-deterministic-narrowing--llm-enrichment) — authoritative site for per-callout deterministic/LLM split, including weights |
 
 ### Generative (LLM-required)
 
@@ -170,6 +170,6 @@ For the practical details — embedding model selection (`bge-small-en` vs `all-
 - [profiles/writer.md](../profiles/writer.md) — generative, LLM-required.
 - [profiles/socratic.md](../profiles/socratic.md) — generative, LLM-required.
 - [profiles/linter.md](../profiles/linter.md) — fully deterministic.
-- [surfaces/inline.md](../surfaces/inline.md) — hybrid pattern for `[!suggestions]` and `[!brief]`.
+- [obsidian-ui/inline.md](../obsidian-ui/inline.md) — hybrid pattern for `[!suggestions]` and `[!brief]`.
 - [profiles/librarian.md](../profiles/librarian.md) — the classifier-with-LLM-fallback approach for `_proposed_classification` confidence scoring.
 - [architecture/capability-stack.md model routing](../architecture/capability-stack.md) — when LLM calls are needed, route synthesis to Claude and cheap tasks (embed, classify, summarize) to cheaper models or local inference.

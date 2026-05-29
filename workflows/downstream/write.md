@@ -15,7 +15,7 @@ topic: workflows
 2. **Frame.** Run [Frame](frame.md) to generate 2–3 competing framings; commit to one in `framing/CHOSEN.md`.
 3. **Arrange** *(optional)*. For chapter-sized work (8–15 claim notes), use Canvas to arrange the claims spatially. See Canvas → Draft sub-workflow below.
 4. **Outline.** Derive heading scaffold from `framing/CHOSEN.md` (and Canvas groupings if used).
-5. **Draft.** Write prose in `40-workbench/01-projects/<project>/drafts/` with citekeys. Commit triggers the verify hook ([Verify](verify.md)).
+5. **Draft.** Write prose in `40-workbench/01-projects/<project>/drafts/` with citekeys. Superseded claim notes (`superseded_by`) are excluded from the drafting context by default, and [Verify](verify.md) flags any that slip into a draft — see [ADR-22](../../decisions/22-claim-supersession.md). Commit triggers the verify hook ([Verify](verify.md)).
 6. **Verify.** [Verify](verify.md) fires automatically on draft commit. Read the `[!verification]` callout at the top of the draft.
 7. **Revise.** [Revise](revise.md) closes the gap-loop. Loop back to step 5 until verify returns clean (or remaining gaps are accepted-soft).
 8. **Export.** Run [Export](export.md) — Pandoc produces the deliverable in `50-deliverables/`.
@@ -56,4 +56,4 @@ hermes run draft "outline the argument on {canvas topic}" \
 
 - **Stages owned elsewhere:** [Assess](assess.md), [Frame](frame.md), [Verify](verify.md), [Revise](revise.md), [Export](export.md)
 - **Profile:** [profiles/writer.md](../../profiles/writer.md)
-- **Workspace layout:** [surfaces/modal.md — Drafting workspace](../../surfaces/modal.md)
+- **Workspace layout:** [obsidian-ui/modal.md — Drafting workspace](../../obsidian-ui/modal.md)

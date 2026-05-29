@@ -29,4 +29,5 @@ Human owns the promotion decision and the file move. Hermes flags candidates and
 
 - **Previous workflow:** [Distill](distill.md) (claim must reach `maturity: evergreen` first)
 - **Auto-promotion policy:** [ADR-2 auto-promotion threshold](../../decisions/02-auto-promotion-threshold.md) — manual only, surfaced via dashboard.
+- **Superseded claims don't promote:** a claim carrying `superseded_by` is excluded from the promotion queue and from reference notes — see [ADR-22](../../decisions/22-claim-supersession.md).
 - **MOC creation thresholds:** [vault/linking-patterns.md](../../vault/linking-patterns.md#moc-creation-thresholds)

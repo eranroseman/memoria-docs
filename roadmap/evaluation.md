@@ -75,7 +75,7 @@ The benchmark corpus is autonomous-agent-centric, so the signals that most deter
 - **Cost per run.** Tokens / $ per card-run, rolled up to cost-per-promoted-claim and the nightly discovery-loop trend. ScienceAgentBench shows capability gains can cost 10×, and unattended loops compound.
 - **Claim-staleness / FAMA exposure** (with [ADR-22](../decisions/22-claim-supersession.md)). Count current claims carrying `superseded_by`, and — the real signal — drafts or answers that cite a superseded claim. This has no home today: [drift-watch](../dashboards/drift-watch.md) is *structural* drift and [ADR-16](../decisions/16-contradictions-dashboard.md) is deferred. Grounded in Memora (FAMA) and ClawArena.
 
-**Refine existing surfaces:**
+**Refine existing dashboards:**
 
 - **[fleet-health](../dashboards/fleet-health.md) trust score → shape it like ClawArena's CRS** (completion × robustness, with success-cohesion / failure-dispersion) and track **pass^k** consistency rather than single-shot success — τ-bench shows reliability collapses across repeated runs (pass^1 ~61% → pass^8 ~25%) in a way a flat average hides.
 - **[audit-log](../dashboards/audit-log.md) → treat Policy-MCP denials / out-of-lane writes as a security signal**, with spike alerting. Memoria ingests untrusted PDFs (an indirect-prompt-injection surface — AgentDojo / InjecAgent ~24% success; ToolEmu: even "safe" agents act riskily ~24%), so a denial spike is an injection indicator, not just forensics.

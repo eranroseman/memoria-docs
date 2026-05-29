@@ -22,6 +22,7 @@ The forensic trail for every vault write the policy MCP touched. Spot decisions 
 
 - **Reads directly from `00-meta/02-logs/audit.jsonl`** via Dataview's `dv.io.load`. No intermediate aggregation; the dashboard always reflects the latest log state.
 - **Recent denies and dry-runs is the action queue.** Sorted newest-first, capped at 30. Anything sitting here for more than a day without a corresponding board card is an unhandled escalation.
+- **A deny / out-of-lane-write spike is a security signal, not just forensics.** Memoria ingests untrusted PDFs — an indirect-prompt-injection surface (AgentDojo / InjecAgent show ~24% attack success; ToolEmu shows even "safe" agents act riskily ~24% of the time) — so a sudden rise in policy-MCP denials can indicate an injection attempt, not just operator error. Spike alerting on the deny rate (beyond the newest-first queue) is the intended treatment. See [roadmap/evaluation.md](../roadmap/evaluation.md) (Observability).
 - **Review-gated-zone writes are called out explicitly.** Writes to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, `50-deliverables/` are operationally significant — even when `allow`'d, they should be reviewable. The dashboard's "Writes to review-gated zones" section lists them for periodic audit.
 - **The Linter owns rotation.** Weekly rotation of `audit.jsonl` to `00-meta/02-logs/archive/audit-YYYY-WW.jsonl` is the Linter's responsibility; the dashboard queries the current week's file. Archive files are visible to the human but not queried by default.
 

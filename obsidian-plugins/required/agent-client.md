@@ -6,7 +6,7 @@ topic: plugins
 
 # agent-client
 
-Implements ACP — the Agent Client Protocol — inside Obsidian. ACP is what makes [architecture/README.md's channel](../../architecture/README.md#human-channels) "Obsidian dashboards + ACP panes" actually exist. The plugin runs configured agents as subprocesses (Hermes, Claude Code, Codex, Gemini CLI, and custom commands like Kilo Code) and exchanges messages with them over stdio, attaching the conversation to a side pane keyed off the currently active note.
+Implements ACP — the Agent Client Protocol — inside Obsidian. ACP is what makes the **Agent Client pane** — one of [Obsidian's UI components](../../obsidian-ui/README.md) — actually exist. The plugin runs configured agents as subprocesses (Hermes, Claude Code, Codex, Gemini CLI, and custom commands like Kilo Code) and exchanges messages with them over stdio, attaching the conversation to a side pane keyed off the currently active note.
 
 **Example with placeholder paths:** shipped at `.obsidian/plugins/agent-client/data.json.example` in the starter vault. The example uses `{{HOME}}` placeholders the human must replace with absolute paths before saving as the working `.obsidian/plugins/agent-client/data.json`. After the first launch the plugin will append a `savedSessions[]` array to the file — that's normal human-generated state.
 
@@ -15,10 +15,10 @@ Implements ACP — the Agent Client Protocol — inside Obsidian. ACP is what ma
 Load-bearing settings:
 
 - **`customAgents` — configure four Memoria profiles, labelled by identity.** The picker entries name the *agent* (Socratic, Mapper, Writer, Verifier), each followed by a one-sentence description of what it does — distinct profiles with fixed permission contracts, not modes of one assistant. See the [picker labels table](#picker-labels-and-descriptions) below for the rationale and the full text per entry.
-- `defaultAgentId: "memoria-socratic"` — Memoria's ACP default is **Socratic**. The human falls into it without choosing; the other three are reached via [mode-switching hotkeys](#mode-switching-hotkeys) or via the [transient palette verbs](../../surfaces/command-palette.md#interactive-retrieval-3-commands--transient-acp).
+- `defaultAgentId: "memoria-socratic"` — Memoria's ACP default is **Socratic**. The human falls into it without choosing; the other three are reached via [mode-switching hotkeys](#mode-switching-hotkeys) or via the [transient palette verbs](../../obsidian-ui/command-palette.md#interactive-retrieval-3-commands--transient-acp).
 - `autoAllowPermissions: false` — **never set to `true`.** When `false`, every tool call the ACP agent makes prompts the human for approval before executing. Setting this to `true` bypasses human approval on every ACP write, which is exactly the failure mode the policy MCP exists to prevent at the Hermes side. The two layers (ACP approval + policy MCP enforcement) compose; turning either off breaks the composition.
 - `autoMentionActiveNote: true` — automatically passes the active note's path and frontmatter to the agent as context. This is what makes "ask about the current note" work from one keystroke.
-- `chatViewLocation: "right-tab"` — places the ACP pane on the right, matching the [Reading & Processing workspace](../../surfaces/modal.md) assumption.
+- `chatViewLocation: "right-tab"` — places the ACP pane on the right, matching the [Reading & Processing workspace](../../obsidian-ui/modal.md) assumption.
 - `windowsWslMode: true` — required when the agent commands live inside WSL (the typical Memoria deployment on Windows). The plugin translates Windows paths to `/mnt/c/...` style paths for the subprocess.
 
 ## Picker labels and descriptions
@@ -45,7 +45,7 @@ Skip from the picker:
 The picker contains four agents but they're used in two architecturally distinct ways:
 
 - **Persistent ACP pane.** Socratic. The human opens the ACP pane in the Reading & Processing workspace and has a long conversation while working in adjacent panes. The session has its own lifecycle, persists in `savedSessions[]`, can be resumed later. This is the standard setup for [workflow Discuss](../../workflows/README.md).
-- **Transient ACP session.** Mapper, Writer, Verifier. The human invokes the profile via the command palette for one specific question. The agent-client plugin opens a fresh session, the agent responds, the session closes. No persistent pane to manage; no savedSessions entry to accumulate. See [command-palette.md](../../surfaces/command-palette.md) for the specific commands.
+- **Transient ACP session.** Mapper, Writer, Verifier. The human invokes the profile via the command palette for one specific question. The agent-client plugin opens a fresh session, the agent responds, the session closes. No persistent pane to manage; no savedSessions entry to accumulate. See [command-palette.md](../../obsidian-ui/command-palette.md) for the specific commands.
 
 The distinction matters for `savedSessions[]` hygiene: persistent Socratic sessions accumulate (the closing note covers pruning); transient sessions auto-close and don't build up.
 
@@ -62,9 +62,9 @@ The agent-client plugin registers a `switch-agent-to-{agentId}` command for ever
 
 Direct-jump (each mode on its own key) beats a cycle hotkey on two counts: one keystroke reaches any mode regardless of starting point, and there's no cross-invocation state to track. The numeric ordering mirrors the [picker labels table](#picker-labels-and-descriptions) — Socratic is `1` (the default), Verifier is `4` (closest-to-promotion). After a week of use, the human picks the agent without looking at the picker.
 
-The hotkeys operate on the **active chat view** — they switch its agent in place. Opening a *new* chat without a hotkey uses `defaultAgentId` (Socratic). To open a new chat already in a non-default agent, the [transient palette verbs](../../surfaces/command-palette.md#interactive-retrieval-3-commands--transient-acp) (`Memoria: find related notes`, `Memoria: counter-outline this section`, `Memoria: similarity-check this claim`) remain the right path — they open a transient session pre-bound to the right profile and close after the response.
+The hotkeys operate on the **active chat view** — they switch its agent in place. Opening a *new* chat without a hotkey uses `defaultAgentId` (Socratic). To open a new chat already in a non-default agent, the [transient palette verbs](../../obsidian-ui/command-palette.md#interactive-retrieval-3-commands--transient-acp) (`Memoria: find related notes`, `Memoria: counter-outline this section`, `Memoria: similarity-check this claim`) remain the right path — they open a transient session pre-bound to the right profile and close after the response.
 
-Setup: in QuickAdd, register four entries of type **Command**, each pointing at one of the `switch-agent-to-memoria-*` commands above; then bind hotkeys in Obsidian's Settings → Hotkeys page. The hotkeys are human-side configuration like the [command-palette](../../surfaces/command-palette.md) verbs — they ship as Memoria conventions, not as plugin settings, so devices using non-default modifier conventions can rebind freely.
+Setup: in QuickAdd, register four entries of type **Command**, each pointing at one of the `switch-agent-to-memoria-*` commands above; then bind hotkeys in Obsidian's Settings → Hotkeys page. The hotkeys are human-side configuration like the [command-palette](../../obsidian-ui/command-palette.md) verbs — they ship as Memoria conventions, not as plugin settings, so devices using non-default modifier conventions can rebind freely.
 
 ## Per-device install discipline
 
@@ -80,7 +80,7 @@ Humans editing the example for their device should *delete* entries for profiles
 
 The default secondary-device configuration (Socratic only) covers most human needs — persistent processing chat and lens-based reading. But three scenarios call for *persistent* chat with non-Socratic profiles: Mapper for deep corpus exploration (multi-turn drilling into clusters, density, methodological breadth), Writer for sustained drafting dialog (paragraph diagnostics, voice calibration, transition-finding), and Verifier for systematic auditing (pre-submission claim-by-claim review). These are *override* patterns — the [picker labels table](#picker-labels-and-descriptions) names transient session as the default for these three profiles, and humans should treat persistent chat as a deliberate exception, invoked when one-shot retrieval isn't enough.
 
-Try the [transient command-palette commands](../../surfaces/command-palette.md#interactive-retrieval-3-commands--transient-acp) first — they cover the one-question, one-answer cases that are most laptop-appropriate. If those don't suffice and the human needs sustained dialog, choose the path that matches the deployment.
+Try the [transient command-palette commands](../../obsidian-ui/command-palette.md#interactive-retrieval-3-commands--transient-acp) first — they cover the one-question, one-answer cases that are most laptop-appropriate. If those don't suffice and the human needs sustained dialog, choose the path that matches the deployment.
 
 ### Path 1 — Local install with discipline (the local-mesh option default)
 

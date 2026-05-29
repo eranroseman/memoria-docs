@@ -27,6 +27,8 @@ Numbered-prefix subdirectories (e.g., `01-templates`, `02-csl`, `01-papers`) are
 │   ├── 02-logs/                        # audit.jsonl, board-state.jsonl, lint-findings.jsonl, cron-history.jsonl
 │   ├── 03-templates/                   # 15 note templates (claim-note, paper-note, …)
 │   ├── 04-reference/                   # human-facing reference notes (design-system, schema-reference, …)
+│   ├── 05-eval/                        # vault-eval gold tasks (per-workflow gold sets) — ADR-23
+│   ├── 08-metrics/                     # fleet + eval metrics (telemetry rollups, eval/ run results) — Post-MVS
 │   ├── index.md                        # vault landing page (pinned in sidebar)
 │   ├── research-directions.md          # Librarian's session-start input
 │   └── system-status.md                # runtime health snapshot

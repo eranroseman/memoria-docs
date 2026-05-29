@@ -103,7 +103,7 @@ See [Lint](maintenance/lint.md) for the operational details and weekly ritual; t
 Workflows are not scripted procedures; they are **event sequences on the Kanban**. Each workflow describes which cards open, which profiles claim them, and which state transitions advance them. The board isn't storage that workflows happen to write to — it's the substrate workflows are *made of*. Three properties fall out of this:
 
 - **Profiles don't call each other.** When Librarian finishes an ingest, it doesn't invoke Verifier; it sets the card's exit state. Verifier picks up cards in that state through the dispatcher (see [kanban-board/README.md dispatch interval](../kanban-board/README.md#dispatch-interval)). The handoff is the state change, not a message.
-- **The human is one event source among several.** Human action via the [command palette](../surfaces/command-palette.md) creates cards. So do cron triggers (scheduled tasks), file-system watchers (PDF drops), and git hooks (draft commits). Each one is a card creation; the dispatcher routes them identically.
+- **The human is one event source among several.** Human action via the [command palette](../obsidian-ui/command-palette.md) creates cards. So do cron triggers (scheduled tasks), file-system watchers (PDF drops), and git hooks (draft commits). Each one is a card creation; the dispatcher routes them identically.
 - **Workflows can be paused, resumed, or retried because the state is on the board.** A worker that fails mid-task leaves the card to be re-dispatched (returned to `ready`); the next dispatch picks it back up. A worker that succeeds completes the card to its exit state; the next workflow's trigger fires on that state change.
 
 This is why the per-workflow `Card lifecycle` lines in each workflow file name explicit state transitions rather than function calls — workflows ARE state-machine paths, and reading them as paths makes the architecture's failure modes legible (a stuck card is a stuck workflow).
@@ -196,7 +196,7 @@ Most workflows share a name with the pipeline stage they implement — Find, Ing
 
 The board state machine, profile contracts, and lane policies are all *passive* — they describe what *can* happen. Workflows still need a *trigger*. For the daily human, that trigger is the Obsidian Command Palette.
 
-The authoritative catalog of `Memoria:` commands (capture, processing, interactive retrieval, project, maintenance, lens-reading) and their implementation lives in [surfaces/command-palette.md](../surfaces/command-palette.md). This section describes the control flow that fires whenever any command is invoked.
+The authoritative catalog of `Memoria:` commands (capture, processing, interactive retrieval, project, maintenance, lens-reading) and their implementation lives in [obsidian-ui/command-palette.md](../obsidian-ui/command-palette.md). This section describes the control flow that fires whenever any command is invoked.
 
 ### Control flow
 
@@ -209,13 +209,13 @@ Every command follows the same six-step shape:
 5. **MCP servers** validate, record, and dispatch. Policy MCP checks permissions; tasks MCP updates the board.
 6. **Audit log is appended.** The decision and result are durable.
 
-See [architecture/control-plane.md](../architecture/control-plane.md) for the layer architecture, and [surfaces/command-palette.md](../surfaces/command-palette.md) for per-command implementation (QuickAdd / Templater / Hermes API / agent-client).
+See [architecture/control-plane.md](../architecture/control-plane.md) for the layer architecture, and [obsidian-ui/command-palette.md](../obsidian-ui/command-palette.md) for per-command implementation (QuickAdd / Templater / Hermes API / agent-client).
 
 If a step fails, the failure is visible at exactly one layer — the plugin shows a status notice, the Hermes API returns an HTTP error, or the MCP returns a `deny` / `dry_run` payload. There is no place for a silent failure to hide.
 
 ### Hotkey discipline
 
-Most commands are palette-only — `Cmd-P → M → <2–3 letters>` is the primary input mode. A small set of high-frequency commands earn dedicated hotkeys or [Commander](../obsidian-plugins/recommended/cmdr.md) buttons; see the [recommended Commander set in command-palette.md](../surfaces/command-palette.md#setting-up-the-bindings) for the recommended top five. Hotkey real estate is scarce; everything outside that set stays palette-only.
+Most commands are palette-only — `Cmd-P → M → <2–3 letters>` is the primary input mode. A small set of high-frequency commands earn dedicated hotkeys or [Commander](../obsidian-plugins/recommended/cmdr.md) buttons; see the [recommended Commander set in command-palette.md](../obsidian-ui/command-palette.md#setting-up-the-bindings) for the recommended top five. Hotkey real estate is scarce; everything outside that set stays palette-only.
 
 ### What this section is not
 
@@ -282,7 +282,7 @@ Memoria runs on rhythms layered by frequency. The skeleton cadence: **daily** ca
 
 **Pre-morning, on phone over coffee (optional).** If overnight cron produced anything worth pushing — a retry threshold hit, a drift alarm, a substantive ingest summary — Telegram pushed a notification before the human opened the vault. Example: *"Overnight: 3 sources ingested, 12 link suggestions ready, 1 retry threshold hit on card-2026-05-26-042 (Librarian timeout fetching DOI for Tanaka 2024)."* The human glances, notes anything blocking, deals with it at the desk. If nothing pushed, nothing demands attention before opening the vault — that's the design.
 
-**Morning glance (5–10 minutes).** Open the vault. The Human workspace appears by default (`Cmd-1`). Glance at [Daily Health](../dashboards/daily-health.md): is any section red? Today's queue, drift signals, lane health, cron status. Most days nothing is red, and Daily Health closes again. If link suggestions accumulated overnight from Librarian's enrichment work, bulk-approve the ones that look right via `Memoria: approve all link suggestions` (see [command-palette.md](../surfaces/command-palette.md#maintenance-3-commands)). For retries flagged in the Telegram push, drop to CLI: `hermes kanban show <card-id>` to inspect, fix the underlying issue, `hermes kanban unblock <card-id>` to release it back to `ready` (re-dispatch resets the retry count). Total time: under ten minutes unless something demands attention.
+**Morning glance (5–10 minutes).** Open the vault. The Human workspace appears by default (`Cmd-1`). Glance at [Daily Health](../dashboards/daily-health.md): is any section red? Today's queue, drift signals, lane health, cron status. Most days nothing is red, and Daily Health closes again. If link suggestions accumulated overnight from Librarian's enrichment work, bulk-approve the ones that look right via `Memoria: approve all link suggestions` (see [command-palette.md](../obsidian-ui/command-palette.md#maintenance-3-commands)). For retries flagged in the Telegram push, drop to CLI: `hermes kanban show <card-id>` to inspect, fix the underlying issue, `hermes kanban unblock <card-id>` to release it back to `ready` (re-dispatch resets the retry count). Total time: under ten minutes unless something demands attention.
 
 **Reading session (1–2 hours, when scheduled).** Switch to the Reading & Processing workspace (`Cmd-2`). Open [`discuss-queue.md`](../dashboards/discuss-queue.md): which paper note is ripest for processing? Read the source with the `[!brief]` callout in mind. When ready to process, ask Socratic about the active note (`Cmd-P → Memoria: ask about this note`) — the ACP pane opens on the right with the Socratic profile, which is architecturally write-denied. The conversation runs; the human writes the claim note themselves in `30-synthesis/01-claims/` (in their own words, in the left pane) as the conversation progresses. Save. The git hook fires; Librarian's enrichment runs overnight; the link suggestions appear in tomorrow's morning glance.
 

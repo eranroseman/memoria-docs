@@ -1,12 +1,12 @@
 ---
 mode: reference
 audience: operator
-topic: surfaces
+topic: obsidian-ui
 ---
 
 # `design-system` template
 
-Unlike the rest of this folder, the design system is not a surface — it's the authoritative visual-style source the surfaces render *against*. It lives here because it governs how every surface looks. Copies into `00-meta/04-reference/design-system.md`. Read by Memoria's CSS snippet generator, by exports (Pandoc, open-design), and by anything else that needs to render Memoria content with a consistent look.
+Unlike the rest of this folder, the design system is not a UI component — it's the authoritative visual-style source the components render *against*. It lives here because it governs how every component looks. Copies into `00-meta/04-reference/design-system.md`. Read by Memoria's CSS snippet generator, by exports (Pandoc, open-design), and by anything else that needs to render Memoria content with a consistent look.
 
 Format follows [open-design](https://github.com/nexu-io/open-design)'s 9-section DESIGN.md schema so the same file can drive open-design's render pipeline directly. Humans who already use open-design can import any of its 150 built-in design systems by replacing this file.
 
@@ -163,7 +163,7 @@ Things the design system explicitly does NOT do:
 - **No AI-generated illustrations of methodology or results.** Use real diagrams. AI imagery in research contexts raises reproducibility and authenticity concerns.
 - **No decorative typography for primary content.** Display fonts are reserved for titles only; body and citations use stable readable fonts.
 - **No saturated palettes for evidence-heavy documents.** Verification reports, citation tables, and similar should use restrained color — color cues should mean something, not decorate.
-- **No motion in printed or PDF exports.** Motion is for interactive surfaces only.
+- **No motion in printed or PDF exports.** Motion is for interactive on-screen UI only.
 - **No design-system overrides per-deliverable without a recorded reason.** If a poster needs a different palette, record the rationale in the deliverable's note body, not by editing this file inline.
 ```
 

@@ -16,8 +16,8 @@ Between draft (inside [Write](write.md)) and [Revise](revise.md). Fires automati
 ## Steps
 
 1. The human commits to `40-workbench/01-projects/<project>/drafts/<chapter>.md`. A git post-commit hook creates a `verify` card targeting Verifier.
-2. Verifier runs `cite-check`: parses the draft into discrete claims (one per sentence containing a `[@citekey]` or a substantive factual assertion), traces each to claim notes via citekey lookup and similarity search.
-3. The output lands as a `[!verification]` callout at the top of the draft (see [surfaces/inline.md](../../surfaces/inline.md)), summarizing total claims / traced / failed. The detailed per-claim report writes to `40-workbench/01-projects/<project>/verification/<chapter>-<date>.md`.
+2. Verifier runs `cite-check`: parses the draft into discrete claims (one per sentence containing a `[@citekey]` or a substantive factual assertion), traces each to claim notes via citekey lookup and similarity search, then runs an **entailment check** on each candidate — a *similar* claim note is not necessarily a *supporting* one, so a match counts only if the claim note entails the draft claim. Superseded claim notes (those with `superseded_by`) are excluded as supports.
+3. The output lands as a `[!verification]` callout at the top of the draft (see [obsidian-ui/inline.md](../../obsidian-ui/inline.md)), summarizing total claims / traced / failed. The detailed per-claim report writes to `40-workbench/01-projects/<project>/verification/<chapter>-<date>.md`.
 4. For each failed trace, Verifier spawns a `gap:<claim-text>` card in the upstream queue (`10-inbox/03-candidates/` with `type: gap-candidate`). This is the feedback loop that closes downstream back to upstream — see [Find](../upstream/find.md) for what happens to gap cards.
 5. The `verify` card moves to one of three exit states (`verify-clean`, `verify-needs-revision`, `verify-needs-attention`). The human decides per claim whether the gap is substantive (needs to be filled) or the claim should be softened.
 6. Card moves to [Revise](revise.md) if any claim needs human action, or `accepted` if everything traced cleanly.
@@ -42,5 +42,6 @@ Auto-fired by git hook; manual trigger via `hermes -p memoria-verifier run cite-
 
 - **Profile:** [profiles/verifier.md](../../profiles/verifier.md)
 - **Hybrid pattern** (deterministic claim extraction + LLM judgment on ambiguous middle band): [architecture/why-computational-methods.md](../../architecture/why-computational-methods.md)
+- **Entailment over similarity + superseded-claim exclusion:** [roadmap/evaluation.md](../../roadmap/evaluation.md) (Refinement 2) and [ADR-22](../../decisions/22-claim-supersession.md).
 - **Previous step:** draft (inside [Write](write.md))
 - **Next workflow:** [Revise](revise.md)

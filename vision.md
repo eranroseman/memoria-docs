@@ -155,7 +155,7 @@ This document set assumes a reader who:
 - Has at least passing familiarity with multi-agent systems (Claude Code, Hermes, MCP-style tooling).
 - Wants to build, not just read about, a research system.
 
-If any of those is unfamiliar, [vault/README.md](vault/README.md) and [surfaces/README.md](surfaces/README.md) will give the most concrete grounding; [architecture/README.md](architecture/README.md) and [profiles/README.md](profiles/README.md) require more background.
+If any of those is unfamiliar, [vault/README.md](vault/README.md) and [obsidian-ui/README.md](obsidian-ui/README.md) will give the most concrete grounding; [architecture/README.md](architecture/README.md) and [profiles/README.md](profiles/README.md) require more background.
 
 ## Next
 

@@ -40,7 +40,7 @@ A practical weekly cadence that exercises this workflow end-to-end. Approximate 
 | 7 | Inspect **stale literature and items** | Refresh enrichment or archive. | 5 min |
 | 8 | Run lint dry-run | Catch structural issues. | 1 min + review |
 
-The ritual isn't a separate workflow — it's the operating cadence that drives this workflow (and touches [Classify](../upstream/classify.md), [Promote](../upstream/promote.md), [Refactor](refactor.md)). The dashboards in [surfaces/README.md](../../surfaces/README.md) are the surfaces; this is the schedule.
+The ritual isn't a separate workflow — it's the operating cadence that drives this workflow (and touches [Classify](../upstream/classify.md), [Promote](../upstream/promote.md), [Refactor](refactor.md)). The dashboards in [obsidian-ui/README.md](../../obsidian-ui/README.md) are the surfaces; this is the schedule.
 
 ## Operating rhythm
 
