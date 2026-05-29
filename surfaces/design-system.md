@@ -200,4 +200,4 @@ The Linter's structural detectors do not currently check design-system conforman
 
 [← Previous: Command palette — Memoria's keyboard surface](command-palette.md)
 
-[Next: Daily Health — design summary →](../dashboards/README.md)
+[Next: Daily Health — design summary →](../dashboards/daily-health.md)

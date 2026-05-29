@@ -22,7 +22,7 @@ List every fully-classified (`lifecycle: current`) paper note that hasn't yet ha
 
 - **Five-or-fewer rows = healthy. Ten or more = schedule a reading session.** These are human-facing health thresholds called out in the dashboard, not enforced by any system. The point is to make the queue's depth read at a glance.
 - **`lifecycle: current` AND no `processed:` tag is the gate.** A paper note is on the queue when classification is complete and Socratic hasn't happened yet. Adding a `processed:` task line removes it from the queue.
-- **A reading-session cadence, not a daily glance.** Unlike [Daily Health](README.md)'s morning health check, discuss-queue is consulted only at reading time — a deliberate cadence choice that keeps it from becoming another daily alarm.
+- **A reading-session cadence, not a daily glance.** Unlike [Daily Health](daily-health.md)'s morning health check, discuss-queue is consulted only at reading time — a deliberate cadence choice that keeps it from becoming another daily alarm.
 - **The Reading & Processing workspace includes this dashboard.** Per [surfaces/modal.md](../surfaces/modal.md), discuss-queue is the left pane of the Cmd-2 workspace alongside [`reading-pipeline`](reading-pipeline.md). The workspace exists specifically to protect this discipline.
 
 ## Related

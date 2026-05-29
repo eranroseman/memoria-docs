@@ -49,7 +49,7 @@ This weekly ritual is the maintenance slice of a larger day-to-day rhythm — mo
 ## Related
 
 - **Profile:** [profiles/linter.md](../../profiles/linter.md)
-- **Dashboards:** [drift-watch.md](../../dashboards/drift-watch.md), [weekly-review.md](../../dashboards/weekly-review.md), [Daily Health](../../dashboards/README.md)
+- **Dashboards:** [drift-watch.md](../../dashboards/drift-watch.md), [weekly-review.md](../../dashboards/weekly-review.md), [Daily Health](../../dashboards/daily-health.md)
 - **Standard cron tasks:** [roadmap/standard-cron-tasks.md](../../roadmap/standard-cron-tasks.md)
 
 <!-- memoria-nav -->

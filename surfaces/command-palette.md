@@ -76,7 +76,7 @@ The distinction is *output discipline*: transient commands produce chat output t
 | --- | --- | --- |
 | `Memoria: approve all link suggestions` | Bulk-approves every link-suggestion card awaiting review (`review_status: requested`). The human should glance through the [`weekly-review`](../dashboards/weekly-review.md) first; this is the "if they all look right" shortcut. | QuickAdd → POST to Hermes API (bulk approve filtered cards) |
 | `Memoria: lint this note` | Runs the Linter (dry-run) on the current note, displays the report inline. The Linter is otherwise scheduled (see [`roadmap/README.md` Standard cron tasks](../roadmap/standard-cron-tasks.md)); this is the manual on-demand check. | QuickAdd → POST to Hermes API (lane: linter, task: lint, payload: note path) |
-| `Memoria: show lane status` | Opens [Daily Health](../dashboards/README.md) in the right sidebar. Useful when the human wants to glance at lane health mid-task without leaving their current note. | QuickAdd → Workspace pane manipulation |
+| `Memoria: show lane status` | Opens [Daily Health](../dashboards/daily-health.md) in the right sidebar. Useful when the human wants to glance at lane health mid-task without leaving their current note. | QuickAdd → Workspace pane manipulation |
 
 ### Lens-based reading (parameterized; 4 examples)
 

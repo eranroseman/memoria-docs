@@ -15,7 +15,7 @@ A Dataview view of cards on the Hermes Kanban board: active cards, review queue,
 ## What this dashboard is not
 
 - **Not the authoritative board.** The authoritative board lives in Hermes (or in `00-meta/board/` as markdown cards, depending on configuration). This dashboard is a *read view*; state changes happen through Hermes commands or by editing the card files directly, not from inside this dashboard.
-- **Not [Daily Health](README.md)'s "today's queue" section.** Daily Health filters to `blocked` cards and those awaiting review (`review_status: requested`) only, capped at 10. `board-state` shows the full board across all states.
+- **Not [Daily Health](daily-health.md)'s "today's queue" section.** Daily Health filters to `blocked` cards and those awaiting review (`review_status: requested`) only, capped at 10. `board-state` shows the full board across all states.
 - **Not [`discuss-queue`](discuss-queue.md).** Discuss-queue is upstream-cognitive-discipline (paper notes classified but not Socratically processed); board-state is workflow-execution (cards moving through states regardless of content type).
 
 ## Design decisions
@@ -30,7 +30,7 @@ A Dataview view of cards on the Hermes Kanban board: active cards, review queue,
 - [glossary.md](../glossary.md#board-and-cards) — disambiguates the overloaded "review": `review_status`, `verdict`, and the Linter's verdict band
 - [vault/README.md](../vault/README.md) — claim-note `maturity` stages (seedling → budding → evergreen) shown in the histogram
 - [`discuss-queue`](discuss-queue.md) — upstream-discipline view (paper notes awaiting Socratic processing)
-- [Daily Health](README.md) — daily health glance, includes today's queue (filtered subset of board-state)
+- [Daily Health](daily-health.md) — daily health glance, includes today's queue (filtered subset of board-state)
 - [`audit-log`](audit-log.md) — per-decision forensics complementing board-level state
 
 <!-- memoria-nav -->

@@ -14,7 +14,7 @@ The Friday-ritual entry point. Open at the start of each weekly session and work
 
 ## What this dashboard is not
 
-- **Not [Daily Health](README.md).** Daily Health is the daily glance (open every morning, 30 seconds). Weekly is knowledge ritual (open Friday afternoon, 90 minutes). Different rhythm, different scope.
+- **Not [Daily Health](daily-health.md).** Daily Health is the daily glance (open every morning, 30 seconds). Weekly is knowledge ritual (open Friday afternoon, 90 minutes). Different rhythm, different scope.
 - **Not the only weekly view.** [`reading-pipeline`](reading-pipeline.md), [`loose-ends`](loose-ends.md), and [`drift-watch`](drift-watch.md) are also "weekly" by recommended cadence — but weekly-review is the ritual *entry point* that links to them and orchestrates the order.
 - **Not auto-actioned.** Every section requires human decisions (promote / archive / discard / triage). Nothing in this dashboard happens by cron.
 

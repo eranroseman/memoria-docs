@@ -12,7 +12,7 @@ Dashboards alone aren't the UX. *Where* they sit on the screen is. Memoria uses 
 
 | Workspace | Hotkey | What's on screen | When to use it |
 | --- | --- | --- | --- |
-| **Human** | `Cmd-1` | Left: [Daily Health](../dashboards/README.md). Main: empty / scratch. Right: [`board-state`](../dashboards/board-state.md). | Default. Open the vault, glance at health, close. Used 30 seconds at a time, multiple times per day. |
+| **Human** | `Cmd-1` | Left: [Daily Health](../dashboards/daily-health.md). Main: empty / scratch. Right: [`board-state`](../dashboards/board-state.md). | Default. Open the vault, glance at health, close. Used 30 seconds at a time, multiple times per day. |
 | **Reading & Processing** | `Cmd-2` | Left: [`discuss-queue`](../dashboards/discuss-queue.md) (primary) and [`reading-pipeline`](../dashboards/reading-pipeline.md). Main (split): source PDF on the left, paper note on the right. Right sidebar: Backlinks + Outgoing links + (optional) Socratic profile ACP pane for `socratic-processing` conversations. | Reading sessions. The single most important workspace for protecting upstream discipline — this is where literature → claim-note transformation happens. |
 | **Drafting** | `Cmd-3` | Left: project folder tree (`40-workbench/01-projects/<project>/`). Main (large): the draft. Right: linked claim notes via Backlinks. Bottom pane: latest verification report. | Project work. Single-focus on the draft, with supporting material on the edges. |
 

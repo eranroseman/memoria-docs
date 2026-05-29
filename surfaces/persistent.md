@@ -16,7 +16,7 @@ Every dashboard exists in the vault. The question is how often it's opened.
 
 | Frequency | Dashboard | Purpose |
 | --- | --- | --- |
-| **Daily** | [Daily Health](../dashboards/README.md) | Always-on health monitor. Open before any large operation. |
+| **Daily** | [Daily Health](../dashboards/daily-health.md) | Always-on health monitor. Open before any large operation. |
 | **Reading session** | [`discuss-queue`](../dashboards/discuss-queue.md) | "What should I think about today?" — paper notes classified but not yet processed via Socratic. The upstream-discipline dashboard. |
 | **Weekly** | [`weekly-review`](../dashboards/weekly-review.md) | Weekly ritual entry point (see [workflows/README.md](../workflows/README.md) workflow Lint). |
 | **Weekly** | [`reading-pipeline`](../dashboards/reading-pipeline.md) | "What to read next?" — papers by processing stage. |

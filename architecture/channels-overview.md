@@ -101,7 +101,7 @@ The dashboards tell the human what needs attention when they open them. Telegram
 
 **Do not wire notifications for:**
 
-- Anything that surfaces in the morning [Daily Health](../dashboards/README.md) glance.
+- Anything that surfaces in the morning [Daily Health](../dashboards/daily-health.md) glance.
 - Per-card events ("new card created", "card moved to active"). Volume kills signal.
 - Routine approvals. Those wait until the human chooses to do them; the queue surfaces them in the daily/weekly dashboards.
 

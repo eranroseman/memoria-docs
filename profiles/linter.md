@@ -47,7 +47,7 @@ Every Linter finding carries a severity. The scale drives dashboard surfacing, n
 | --- | --- | --- |
 | `LOW` | Cosmetic or eventually-fixable. Doesn't block; aggregated weekly. | Trailing whitespace, missing optional field, slightly stale `enriched_date`. |
 | `MEDIUM` | Real drift that hasn't yet caused breakage. Surfaced in [`weekly-review`](../dashboards/weekly-review.md); reviewed during the Friday ritual. | `data.json` plugin config diverged from committed version (`plugin-config-drift`), unused MOC entry, broken non-canonical link. |
-| `HIGH` | Active breakage or imminent breakage. Surfaced in [Daily Health](../dashboards/README.md) and [`drift-watch`](../dashboards/drift-watch.md); pushed to Telegram. | Broken `extract_path` (`extract-path-broken`), schema version mismatch on a recently-edited note, audit-log SHA-chain break (`vault-hash-drift`). |
+| `HIGH` | Active breakage or imminent breakage. Surfaced in [Daily Health](../dashboards/daily-health.md) and [`drift-watch`](../dashboards/drift-watch.md); pushed to Telegram. | Broken `extract_path` (`extract-path-broken`), schema version mismatch on a recently-edited note, audit-log SHA-chain break (`vault-hash-drift`). |
 | `CRITICAL` | System integrity at risk. Always pushes to Telegram, blocks dispatch until acknowledged. | Audit-log tamper detection failure, policy MCP startup failure, lane-override file invalid. |
 
 The verdict band rolls up by counting findings: `PASS` if no HIGH/CRITICAL; `REVIEW` if any MEDIUM but no HIGH; `FAIL` if any HIGH or CRITICAL.

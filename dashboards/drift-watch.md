@@ -31,7 +31,7 @@ Surface the Linter's eight structural-detector findings as one consolidated view
 - [`audit-log`](audit-log.md) — per-decision forensics layer below this one
 - [`fleet-health`](fleet-health.md) — operational health complement to structural verdict band
 - [glossary.md](../glossary.md#observability-and-verdicts) — verdict-band (PASS / REVIEW / FAIL) and drift definitions
-- [Daily Health](README.md) — daily glance shows last-24h HIGH/CRITICAL findings (filtered subset of this dashboard)
+- [Daily Health](daily-health.md) — daily glance shows last-24h HIGH/CRITICAL findings (filtered subset of this dashboard)
 
 <!-- memoria-nav -->
 

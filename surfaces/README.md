@@ -31,7 +31,7 @@ Each surface type carries design rules specific to it, detailed in its own sub-f
 Two rules apply to every surface, not just to one type.
 
 - **The surface is read; the work is elsewhere.** No surface contains fix logic. Surfaces reveal issues; action happens in notes (for content) or through the command palette (for state changes). This is what keeps state transitions deliberate — a clicked dashboard row, a typed command, an accepted callout suggestion all converge on the policy MCP, never bypass it.
-- **Invisible during normal use, legible on failure.** A healthy day is a 30-second glance at [Daily Health](../dashboards/README.md) that shows nothing red and gets closed. Surfaces earn their keep only when something goes wrong — and at that moment they must make the breakage immediately legible. A surface visited for reassurance is friction; a surface visited for diagnosis is the architecture working as designed.
+- **Invisible during normal use, legible on failure.** A healthy day is a 30-second glance at [Daily Health](../dashboards/daily-health.md) that shows nothing red and gets closed. Surfaces earn their keep only when something goes wrong — and at that moment they must make the breakage immediately legible. A surface visited for reassurance is friction; a surface visited for diagnosis is the architecture working as designed.
 
 ## What each sub-file covers
 

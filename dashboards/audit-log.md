@@ -36,6 +36,6 @@ The forensic trail for every vault write the policy MCP touched. Spot decisions 
 
 ---
 
-[← Previous: Daily Health — design summary](README.md)
+[← Previous: Daily Health — design summary](daily-health.md)
 
 [Next: board-state — design summary →](board-state.md)

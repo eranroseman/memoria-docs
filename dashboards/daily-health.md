@@ -6,7 +6,7 @@ topic: dashboards
 
 # Daily Health — design summary
 
-**Runtime artifact.** Ships at `00-meta/01-dashboards/index.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview; the runtime queries live there. This summary covers the design role — it carries the docs-folder `README.md` name, while the runtime file is the vault's `index.md` landing page.
+**Runtime artifact.** Ships at `00-meta/01-dashboards/index.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview; the runtime queries live there. This summary covers the design role.
 
 ## Mission
 
@@ -46,7 +46,7 @@ This page doubles as the folder index. The eleven dashboards fall into an entry 
 | [`reading-pipeline`](reading-pipeline.md) | upstream flow | the inbox feels full | paper notes `lifecycle: proposed` + claim maturity | [`discuss-queue`](discuss-queue.md) — narrower |
 | [`loose-ends`](loose-ends.md) | naming hygiene | after ingest batches | filename keywords, whole vault | Linter `orphan-working-files` — automation, not human |
 | [`skill-lifecycle`](skill-lifecycle.md) *(deferred)* | skill governance | adding or auditing skills, once stood up | `skill-note` files | — |
-| [`weekly-review`](weekly-review.md) | knowledge ritual | Friday, ~90 min | orchestrates the dashboards above | [Daily Health](README.md) — weekly, not daily |
+| [`weekly-review`](weekly-review.md) | knowledge ritual | Friday, ~90 min | orchestrates the dashboards above | [Daily Health](daily-health.md) — weekly, not daily |
 
 ## Related
 
