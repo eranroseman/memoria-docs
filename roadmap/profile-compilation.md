@@ -110,11 +110,3 @@ Each profile's `build-info.json` records the SHA-256 hashes of (a) every base fi
 5. Optionally commit the regenerated outputs to a `memoria-profiles/` sibling repo or `dist/` subtree if the human wants the audit trail of effective changes alongside the source diff.
 
 The compilation is one-way: source → compiled output. Never hand-edit anything under `~/.hermes/profiles/memoria-*/` — the next rebuild will overwrite it, and the Linter's drift check will flag it as a hash mismatch in the meantime.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Evaluation and benchmark-informed design](evaluation.md)
-
-[Next: Pilot E1 — Open Notebook as comparative-brief LLM back-end →](pilots/01-open-notebook.md)

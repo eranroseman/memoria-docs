@@ -33,11 +33,3 @@ Reading a paper on JITAI design by Mamykina et al. → save PDF and metadata to 
 
 - **Next workflow:** [Ingest](ingest.md)
 - **Citekey discipline:** [ADR-4 citekey naming convention](../../decisions/04-citekey-naming-convention.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Workflows](../README.md)
-
-[Next: Find →](find.md)

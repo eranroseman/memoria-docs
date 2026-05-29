@@ -32,14 +32,6 @@ Folder permission matrix lives in [profiles/README.md](README.md#folder-permissi
 ## Related
 
 - Workflows: [discuss](../workflows/upstream/discuss.md) — the standard Socratic-in-the-loop pattern.
-- Operations: [obsidian-plugins/required/agent-client.md](../plugins/required/agent-client.md) — Socratic is the default ACP agent, the persistent-pane case in the agent-client picker.
+- Operations: [obsidian-plugins/required/agent-client.md](../obsidian-plugins/required/agent-client.md) — Socratic is the default ACP agent, the persistent-pane case in the agent-client picker.
 - Method class: [architecture/why-computational-methods.md](../architecture/why-computational-methods.md) — Socratic sits at the corner of "generative + write-denied," the architectural pattern that makes LLM nondeterminism safe.
 - Architecture: [architecture/why-no-autonomous-synthesis.md](../architecture/why-no-autonomous-synthesis.md) — the same principle (humans write canonical content, agents help them think) applied profile-wide.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Mapper — design summary](mapper.md)
-
-[Next: Writer — design summary →](writer.md)

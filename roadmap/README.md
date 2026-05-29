@@ -85,11 +85,3 @@ Things that *sound* useful but should not be in the initial build:
 - Real-time multi-user collaboration — Memoria is single-user by design.
 
 If any of these become genuinely needed, they belong in a future major version, not in the initial roadmap.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADRs grouped by topic](../decisions/by-topic.md)
-
-[Next: Timeline and phases →](timeline.md)

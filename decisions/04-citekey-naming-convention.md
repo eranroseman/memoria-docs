@@ -43,11 +43,3 @@ This produces `mamykina2010sense` from a Mamykina 2010 paper titled "Sense and s
 
 - **Workflows affected:** [Zotero capture](../workflows/upstream/zotero-capture.md), [Ingest](../workflows/upstream/ingest.md)
 - **Files affected:** [vault/README.md](../vault/README.md), `00-meta/03-templates/paper-note.md` (in the starter vault)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-3: Answer-draft retention](03-answer-draft-retention.md)
-
-[Next: ADR-5: MOC depth →](05-moc-depth.md)

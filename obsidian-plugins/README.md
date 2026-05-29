@@ -12,9 +12,13 @@ This folder documents which plugins Memoria uses, what their `data.json` should 
 
 ## Plugins Memoria depends on
 
-The filesystem sorts these alphabetically, but **the priority order is what matters when setting up the vault**. Install plugins in the order below; skip optional ones until their absence is felt.
+The filesystem sorts these alphabetically, but **the priority order is what matters when setting up the vault**. Install plugins in the order below; skip the lower-priority ones until their absence is felt.
 
-The on-disk folders are only three — `required/`, `recommended/`, `optional/`. The finer tiers below (deployment-conditional, optional, future-migration) are editorial groupings: **`obsidian-git` and `zotlit` live under `optional/`** even though they're called out separately here.
+The on-disk folders are three — `required/`, `recommended/`, `reference/`:
+
+- **`required/`** — Memoria breaks without these.
+- **`recommended/`** — quality-of-life installs the human adds when the friction is felt. The finer labels below (core, deployment-conditional, niche) are editorial groupings *within* this folder, not separate directories.
+- **`reference/`** — plugins documented for the record but **not** part of the install set (evaluated alternatives, future-migration targets).
 
 ### Required (8) — Memoria breaks without these
 
@@ -29,7 +33,9 @@ The on-disk folders are only three — `required/`, `recommended/`, `optional/`.
 | [pdf-plus (PDF++)](required/pdf-plus.md) | Deep-linking from notes to specific PDF passages. Foundational for claim-level citation. |
 | [callout-manager](required/callout-manager.md) | Defines the `[!brief]`, `[!suggestions]`, and `[!verification]` callout types used by the [inline agent surfaces](../surfaces/inline.md). |
 
-### Recommended (5) — install when the friction is felt
+### Recommended (10) — install when the friction is felt
+
+The **core five** — most humans want these early:
 
 | Plugin | Purpose |
 | --- | --- |
@@ -39,26 +45,23 @@ The on-disk folders are only three — `required/`, `recommended/`, `optional/`.
 | [hover-editor](recommended/hover-editor.md) | Preview wikilinked notes in a popup without leaving the current note. |
 | [tag-wrangler](recommended/tag-wrangler.md) | Bulk-rename, merge, and inspect tags across the vault. Useful given Memoria's controlled-vocabulary discipline. |
 
-### Deployment-conditional (1) — install if the deployment option calls for it
+The **narrower five** — also `recommended/`, but install only when the specific use case lands (one is deployment-conditional):
 
 | Plugin | Purpose |
 | --- | --- |
-| [obsidian-git](optional/obsidian-git.md) | Auto-commits vault changes and pushes to a **GitHub** remote — Git is the version-history and offsite-backup layer (not device sync, which Syncthing or Obsidian Sync handle). Listed here because its `autoPush`/backup settings vary by deployment option. |
+| [obsidian-git](recommended/obsidian-git.md) | Auto-commits vault changes and pushes to a **GitHub** remote — Git is the version-history and offsite-backup layer (not device sync, which Syncthing or Obsidian Sync handle). **Deployment-conditional:** its `autoPush`/backup settings vary by deployment option. |
+| [obsidian-kanban](recommended/obsidian-kanban.md) | Visual Kanban rendering for `board-state` dashboard. |
+| [cmdr (Commander)](recommended/cmdr.md) | Bind frequently-used Memoria commands to physical buttons in the ribbon or status bar. |
+| [obsidian-outliner](recommended/obsidian-outliner.md) | Outline-aware editing for nested lists. |
+| [obsidian-excalidraw](recommended/obsidian-excalidraw.md) | Hand-drawn diagrams stored as `.excalidraw` files. |
 
-### Optional (4) — install only if a specific use case justifies it
+### Reference (1) — held knowledge, not in the install set
 
-| Plugin | Purpose |
-| --- | --- |
-| [obsidian-kanban](optional/obsidian-kanban.md) | Visual Kanban rendering for `board-state` dashboard. |
-| [cmdr (Commander)](optional/cmdr.md) | Bind frequently-used Memoria commands to physical buttons in the ribbon or status bar. |
-| [obsidian-outliner](optional/obsidian-outliner.md) | Outline-aware editing for nested lists. |
-| [obsidian-excalidraw](optional/obsidian-excalidraw.md) | Hand-drawn diagrams stored as `.excalidraw` files. |
-
-### Future migration (1) — held in reserve
+Plugins Memoria documents but does **not** install or recommend for daily use — evaluated alternatives and future-migration targets kept on record so the reasoning isn't lost.
 
 | Plugin | Purpose |
 | --- | --- |
-| [zotlit](optional/zotlit.md) | Reads Zotero's SQLite database directly — faster for bulk imports. **Held as a future migration target, not currently used.** |
+| [zotlit](reference/zotlit.md) | Reads Zotero's SQLite database directly — faster for bulk imports. **Held as a future migration target, not currently used.** |
 
 Plus [visual style discipline](ui-discipline.md) — restraint about how the vault *looks*, independent of any specific plugin.
 
@@ -88,11 +91,3 @@ Add new entries here whenever a plugin update introduces secret storage. The fir
 ## When this doc is wrong
 
 Plugin behavior changes across versions. If a setting documented here doesn't exist in the installed version, the plugin has either added it (the doc is behind) or removed it (the doc is stale). Update the doc the same session the mismatch is noticed — see the same discipline in [failure-modes.md](../operations/failure-modes.md).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Session logging](../operations/session-logging.md)
-
-[Next: obsidian-local-rest-api →](required/obsidian-local-rest-api.md)

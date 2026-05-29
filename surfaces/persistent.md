@@ -78,11 +78,3 @@ The cheatsheet is the operational complement to this section. This document says
 ## Frontmatter compatibility note
 
 The queries in each dashboard assume the frontmatter conventions in [vault/README.md](../vault/README.md). If type names or folder paths migrate, update the queries to match — aliases (e.g., keeping `research-wiki` as a deprecated name) help during transition but the queries themselves must reflect the authoritative structure.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Human surfaces](README.md)
-
-[Next: Modal surfaces: workspaces →](modal.md)

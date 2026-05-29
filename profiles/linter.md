@@ -66,7 +66,7 @@ Rotation is classed as `authorized-targeted` in the [auto-fix table](#auto-fix-p
 
 ## Implementing safe-and-unambiguous fixes via Templater
 
-Linter delegates `safe-and-unambiguous` auto-fixes to [Templater](../plugins/required/templater.md) rather than writing them directly. Templater already handles frontmatter parsing, atomic file updates, and Obsidian's open-buffer reconciliation — all of which Linter would otherwise have to re-implement carefully and risk getting wrong.
+Linter delegates `safe-and-unambiguous` auto-fixes to [Templater](../obsidian-plugins/required/templater.md) rather than writing them directly. Templater already handles frontmatter parsing, atomic file updates, and Obsidian's open-buffer reconciliation — all of which Linter would otherwise have to re-implement carefully and risk getting wrong.
 
 The pattern:
 
@@ -88,11 +88,3 @@ Folder permission matrix lives in [profiles/README.md](README.md#folder-permissi
 - Reference: [roadmap/profile-compilation.md](../roadmap/profile-compilation.md) — **deferred design.** `profile-install-drift` was originally specified against this compiler; under direct profile management `profile-install-drift` is the install-drift check (vault source vs deployed copy), not build drift.
 - Method class: [architecture/why-computational-methods.md](../architecture/why-computational-methods.md) — Linter is the definitive example of a fully deterministic profile.
 - ADRs: [16 contradictions dashboard](../decisions/16-contradictions-dashboard.md) — adjacent concept; Linter is structural, the contradictions surface is content.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Coder — design summary](coder.md)
-
-[Next: Coder profile and the external coding agent →](why-coder-external-agent.md)

@@ -70,11 +70,3 @@ When a `proposed` decision is acted on:
 3. Update the index table's status column.
 
 If a later ADR replaces this one, set the old ADR's `status` to `superseded` and link to the replacement via `superseded_by`. Both files stay — superseded ADRs are valuable history.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Visual style discipline](../plugins/ui-discipline.md)
-
-[Next: ADR-2: Auto-promotion threshold →](02-auto-promotion-threshold.md)

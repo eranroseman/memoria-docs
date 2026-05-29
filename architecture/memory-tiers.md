@@ -28,7 +28,7 @@ Two of these scopes are **provided by [Hermes Agent](https://hermes-agent.nousre
 - **Working context is not shared and does not persist.** The Librarian's in-session reasoning does not bleed into the Writer's session, and `/clear` discards it. Anything worth keeping must be written to one of the durable substrates below.
 - **Profile memory is per-profile, frozen at session start.** Because `MEMORY.md` / `USER.md` are injected as a snapshot, a mid-session write isn't seen until the next session. Keep them small (the token caps are load-bearing) and reserve them for *stable* facts — not in-flight task state, which belongs in board memory. Per-machine by default; under multi-machine deployment it can follow the human between devices via the [`memories/` junction](../roadmap/sync-and-coordination.md#syncing-profile-memory-across-machines-the-memories-junction).
 - **Session search is the cross-session recall channel, not a planning store.** Use it to answer "did we discuss X before?" cheaply. It is read-only history; it never gates promotion and is never authoritative over the vault.
-- **Board memory is per-card, not per-profile.** When a card moves from Library to Writer, the handoff payload travels with it (see [board/card-schema.md](../board/card-schema.md#structured-payload)). The Writer does not inherit the Librarian's working context — only the payload.
+- **Board memory is per-card, not per-profile.** When a card moves from Library to Writer, the handoff payload travels with it (see [kanban-board/card-schema.md](../kanban-board/card-schema.md#structured-payload)). The Writer does not inherit the Librarian's working context — only the payload.
 - **Vault project memory is the cross-lane channel.** Anything that must survive across lanes within a project belongs here — not in profile memory (too local, capped) and not in vault audit memory (too distant). `research-directions.md` is the definitive example.
 - **Vault audit memory is append-only.** Profiles read it; only the Linter writes to it. `00-meta/02-logs/audit.jsonl` is part of it today; `00-meta/08-metrics/` joins when [fleet observability](../roadmap/future-directions.md#fleet-observability) ships (Post-MVS).
 
@@ -41,15 +41,7 @@ Without the split, every cross-session question collapses into "store it in memo
 ## Related
 
 - Hermes Agent's native memory model: [hermes-agent.nousresearch.com/docs/user-guide/features/memory](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory)
-- Task packet (how board memory travels between profiles): [board/card-schema.md](../board/card-schema.md#structured-task-packet)
+- Task packet (how board memory travels between profiles): [kanban-board/card-schema.md](../kanban-board/card-schema.md#structured-task-packet)
 - Vault project-memory pattern: [workflows/README.md](../workflows/README.md)
 - Audit log location: `00-meta/02-logs/audit.jsonl` (see [architecture/policy-mcp.md](../architecture/policy-mcp.md))
 - Thin control over thick state: [architecture/README.md](README.md#thin-control-over-thick-state)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: On-disk layout: starter vault and Hermes runtime](on-disk-layout.md)
-
-[Next: Policy MCP →](policy-mcp.md)

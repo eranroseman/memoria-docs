@@ -37,11 +37,3 @@ Allowing `autopilot: true` on a `code-note` would let Hermes run scripted analys
 
 - **Workflows affected:** [Code](../workflows/downstream/code.md)
 - **Files affected:** [profiles/coder.md](../profiles/coder.md), `00-meta/03-templates/code-note.md` (in the starter vault)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-9: Typed relations: frontmatter](09-typed-relations-frontmatter.md)
-
-[Next: ADR-12: Systematic-review mode →](12-systematic-review-mode.md)

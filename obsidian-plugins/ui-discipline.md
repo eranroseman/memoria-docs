@@ -28,11 +28,3 @@ Workspace design rules (one mode per workspace, three is the working set, no top
 ## The deeper rule
 
 The architecture is invisible during normal use, legible when something goes wrong (see [surfaces/README.md cross-surface rules](../surfaces/README.md#cross-surface-design-rules)). Visual-style discipline supports this: the vault looks like a writing environment most of the time, and indicators light up only when something specific demands attention. Three months in, the human's mouse hand barely moves and they've stopped consciously tracking which workspace they're in. That's the success condition.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Plugin config lifecycle](plugin-configs-lifecycle.md)
-
-[Next: Architecture Decision Records →](../decisions/README.md)

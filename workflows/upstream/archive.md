@@ -27,11 +27,3 @@ A 2019 reference page on JITAI timing is superseded by a fresher synthesis → t
 ## Related
 
 - **Anti-pattern:** treating archive as delete. Archived notes are preserved for traceability — see [Anti-patterns in workflows/README.md](../README.md#anti-patterns).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Promote](promote.md)
-
-[Next: Assess →](../downstream/assess.md)

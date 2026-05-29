@@ -8,7 +8,7 @@ topic: surfaces
 
 The single biggest UX move in Memoria is binding every common operation to an Obsidian command, then driving the system from `Cmd-P` (`Ctrl-P` on Windows/Linux) instead of clicking through menus. Within a few weeks of consistent use, muscle memory replaces every UI click.
 
-This document is the authoritative catalog of Memoria commands, what each invokes, and where they're implemented. It's the reference the human consults when configuring [QuickAdd](../plugins/required/quickadd.md) (which registers the commands) and [Commander](../plugins/optional/cmdr.md) (which puts the top five on physical buttons).
+This document is the authoritative catalog of Memoria commands, what each invokes, and where they're implemented. It's the reference the human consults when configuring [QuickAdd](../obsidian-plugins/required/quickadd.md) (which registers the commands) and [Commander](../obsidian-plugins/recommended/cmdr.md) (which puts the top five on physical buttons).
 
 ## Naming convention
 
@@ -17,7 +17,7 @@ Every command begins with the prefix **`Memoria:`** so the human can type `Cmd-P
 Two-tier discipline:
 
 - The **core commands** below are the operational surface. They cover capture, processing, interactive retrieval, projects, maintenance, and lens-based reading.
-- Anything beyond these is a *human addition*, not part of the standard Memoria UX. Humans add their own custom commands freely — but the standard set is what every Memoria install ships with, what cross-machine portability assumes, and what the [Commander](../plugins/optional/cmdr.md) recommendation set is drawn from.
+- Anything beyond these is a *human addition*, not part of the standard Memoria UX. Humans add their own custom commands freely — but the standard set is what every Memoria install ships with, what cross-machine portability assumes, and what the [Commander](../obsidian-plugins/recommended/cmdr.md) recommendation set is drawn from.
 
 ## The standard commands
 
@@ -33,7 +33,7 @@ Two-tier discipline:
 
 | Command | What it does | Implementation |
 | --- | --- | --- |
-| `Memoria: ask about this note` | Opens the [ACP pane](../plugins/required/agent-client.md) in **Ask** mode (Socratic profile), passing the active note path as context. The conversation never modifies the note (Socratic's lane policy is `policy.allow.write: []`). **Persistent pane** — the conversation has its own lifecycle and can be resumed via `savedSessions[]`. | QuickAdd → `open-chat-view` (uses `defaultAgentId: memoria-socratic`; active note auto-attached via `autoMentionActiveNote: true`) |
+| `Memoria: ask about this note` | Opens the [ACP pane](../obsidian-plugins/required/agent-client.md) in **Ask** mode (Socratic profile), passing the active note path as context. The conversation never modifies the note (Socratic's lane policy is `policy.allow.write: []`). **Persistent pane** — the conversation has its own lifecycle and can be resumed via `savedSessions[]`. | QuickAdd → `open-chat-view` (uses `defaultAgentId: memoria-socratic`; active note auto-attached via `autoMentionActiveNote: true`) |
 | `Memoria: discuss this fleeting note` | Moves the current fleeting note to the discuss queue: creates a `discuss` card targeting the human, and opens the Socratic ACP pane. Combines the previous two commands for the fleeting → claim transition. | QuickAdd composing two prior commands |
 | `Memoria: write claim note` | Opens a new note with the claim-note template, prompts for the source citekey, and pre-populates the frontmatter. Lands in `30-synthesis/01-claims/` with `maturity: seedling`. | QuickAdd → Templater (claim-note template) |
 
@@ -49,7 +49,7 @@ One transient command per ACP-suitable profile in the picker (Mapper / Writer / 
 | `Memoria: counter-outline this section` | Invokes Writer with the `counter-outline` skill loaded in transient ACP mode. Returns 2–3 competing outlines for the current section directly in chat — no file artifact, no project-scratch write. Useful for quick brainstorming before committing to a framing direction. For the substantive *committed* counter-outline (which writes to `40-workbench/01-projects/<project>/framing/`), use `Memoria: frame this section` in the Project section below. | QuickAdd Macro → `open-new-chat-view` → `switch-agent-to-memoria-writer` (active selection auto-attached). The first message — pre-filled by the macro template — invokes the `counter-outline` skill via Hermes slash command. Human closes the view after the response. |
 | `Memoria: similarity-check this claim` | Invokes Verifier in transient ACP mode with the current selection (or active note's body if no selection) as the query. Returns the top 3 most-similar existing claim-notes by cosine similarity over the embedding index, with the similarity score per result. No card created; no `near-duplicate-candidate` flag written. Useful before filing a new claim note to check for duplicates; if the human decides to file anyway, the card-time `similarity-check` runs separately and produces the audit-trail entry. See [profiles/verifier.md `similarity-check`](../profiles/profile-commands.md) for the substantive card-based version. | QuickAdd Macro → `open-new-chat-view` → `switch-agent-to-memoria-verifier` (active selection or note auto-attached). The first message — pre-filled by the macro template — requests top-N similars via Hermes slash command. Human closes the view after the response. |
 
-See [`agent-client.md`](../plugins/required/agent-client.md) for the per-profile rationale behind which profiles get session-persistent versus transient ACP sessions.
+See [`agent-client.md`](../obsidian-plugins/required/agent-client.md) for the per-profile rationale behind which profiles get session-persistent versus transient ACP sessions.
 
 **The transient commands don't replace their card-based counterparts.** Each profile has both surfaces:
 
@@ -97,10 +97,10 @@ Implementation pattern (same for all): QuickAdd → `open-chat-view` (defaultAge
 
 The bindings are human-side configuration, not part of Memoria's shipped vault. The convention:
 
-1. **Install [QuickAdd](../plugins/required/quickadd.md)**.
+1. **Install [QuickAdd](../obsidian-plugins/required/quickadd.md)**.
 2. **For each command above, create a QuickAdd entry** with the same name (preserving the `Memoria:` prefix).
 3. **Configure the underlying mechanism** per the Implementation column — Templater templates for capture commands, Hermes API calls for Kanban interactions, agent-client commands for ACP invocations.
-4. **Optionally pin the top 5 to Commander** for physical-button access. The recommended Commander set (see [`obsidian-plugins.md`](../plugins/optional/cmdr.md)):
+4. **Optionally pin the top 5 to Commander** for physical-button access. The recommended Commander set (see [`obsidian-plugins.md`](../obsidian-plugins/recommended/cmdr.md)):
    - `Memoria: capture fleeting`
    - `Memoria: ask about this note`
    - `Memoria: new project`
@@ -118,15 +118,7 @@ The `Cmd-P → "M"` filter convention works from the moment the first three comm
 
 ## Related
 
-- [`obsidian-plugins.md`](../plugins/required/quickadd.md) — QuickAdd and Templater plugin details.
-- [`obsidian-plugins.md`](../plugins/optional/cmdr.md) — Commander plugin for putting top commands on buttons.
+- [`obsidian-plugins.md`](../obsidian-plugins/required/quickadd.md) — QuickAdd and Templater plugin details.
+- [`obsidian-plugins.md`](../obsidian-plugins/recommended/cmdr.md) — Commander plugin for putting top commands on buttons.
 - [`surfaces/README.md`](README.md) — the four Obsidian surface types (dashboards, workspaces, callouts, status line) that this command palette sits alongside. The palette itself is one of Memoria's five human-facing channels; see the [glossary](../glossary.md#surfaces-and-channels) for how *types* and *channels* relate.
 - [`workflows/README.md`](../workflows/README.md) — workflows the commands trigger (workflow Discuss, Assess, Frame, Verify).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Ambient surfaces: the status line](ambient.md)
-
-[Next: design-system template →](design-system.md)

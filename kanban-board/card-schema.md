@@ -174,11 +174,3 @@ The `summary` and `metadata` together form the durable trail. The conversation d
 ### Why both forms
 
 The prose `summary` is for humans scanning the board; the structured `metadata` is for the next worker (and tools that read the card). Trying to use one for both produces payloads too verbose to scan and prose too vague to act on programmatically. Keep them separate.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Board states and review gate (reference)](states.md)
-
-[Next: Hermes profiles →](../profiles/README.md)

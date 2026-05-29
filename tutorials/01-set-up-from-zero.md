@@ -194,7 +194,7 @@ The most common first-time failures are:
 - **`install.ps1` errors** — check that `.memoria/profiles/memoria-librarian/` exists in the cloned vault and contains `SOUL.md`, `config.yaml`, `mcp.json`. If any are missing the vault checkout is incomplete; re-clone or `git pull`.
 - **`hermes profile install` fails** — confirm `hermes profile list` works at all (Hermes is installed) and that `~/.hermes/profiles/` is writable.
 - **Obsidian REST API connection refused** — confirm Obsidian is running and the plugin is enabled. The plugin binds to `127.0.0.1` by default; if Hermes is on a different machine, you'll hit this.
-- **`[!brief]` callout doesn't render** — install the **Callout Manager** plugin and import the Memoria callout set ([plugins/required/callout-manager.md](../plugins/required/callout-manager.md)).
+- **`[!brief]` callout doesn't render** — install the **Callout Manager** plugin and import the Memoria callout set ([obsidian-plugins/required/callout-manager.md](../obsidian-plugins/required/callout-manager.md)).
 - **Anything else** — check [operations/failure-modes.md](../operations/failure-modes.md) for known Detect/Fix/Verify recipes.
 
 ## Where to go from here
@@ -206,11 +206,3 @@ The most common first-time failures are:
 | See the full daily / weekly workflow rhythms | [workflows/README.md](../workflows/README.md) |
 | Add deployment options (laptop + desktop, VPS) | [roadmap/deployment-options.md](../roadmap/deployment-options.md) |
 | Understand why the policy MCP is structured this way | [architecture/policy-mcp.md](../architecture/policy-mcp.md) |
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Pilot E1 — Open Notebook as comparative-brief LLM back-end](../roadmap/pilots/01-open-notebook.md)
-
-[Next: Glossary →](../glossary.md)

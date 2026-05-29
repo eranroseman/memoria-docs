@@ -29,11 +29,3 @@ The human asks "what predicts JITAI receptivity?" in the ACP pane → the Writer
 
 - **Answer-draft retention:** [ADR-3 answer-draft retention](../../decisions/03-answer-draft-retention.md) — 90-day surfacing.
 - **Profile:** [profiles/librarian.md](../../profiles/librarian.md), [profiles/writer.md](../../profiles/writer.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Export](export.md)
-
-[Next: Code →](code.md)

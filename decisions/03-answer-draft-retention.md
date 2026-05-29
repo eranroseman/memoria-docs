@@ -37,11 +37,3 @@ Surface unreviewed answer drafts in the weekly dashboard. After a configurable t
 
 - **Workflows affected:** [Distill](../workflows/upstream/distill.md), [Lint](../workflows/maintenance/lint.md)
 - **Files affected:** [profiles/linter.md](../profiles/linter.md), [weekly-review.md](../dashboards/weekly-review.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-2: Auto-promotion threshold](02-auto-promotion-threshold.md)
-
-[Next: ADR-4: Citekey naming convention →](04-citekey-naming-convention.md)

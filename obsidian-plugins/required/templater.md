@@ -28,11 +28,3 @@ Inline `data.json`:
   "startup_templates": []
 }
 ```
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: dataview](dataview.md)
-
-[Next: quickadd →](quickadd.md)

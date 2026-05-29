@@ -161,11 +161,3 @@ If any of those is unfamiliar, [vault/README.md](vault/README.md) and [surfaces/
 
 - For the architecture: [architecture/README.md](architecture/README.md).
 - For day-one operational workflows: [workflows/README.md](workflows/README.md).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Memoria design documents](README.md)
-
-[Next: Architecture →](architecture/README.md)

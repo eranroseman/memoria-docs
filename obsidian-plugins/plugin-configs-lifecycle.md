@@ -113,11 +113,3 @@ The detector never auto-fixes. Two paths the human chooses between:
 - **The drift is deliberate.** Stage and commit: `git add .obsidian/plugins/<plugin>/data.json && git commit -m "update <plugin> config: <reason>"`. HEAD now reflects the new authoritative setting; the next lint pass is clean.
 
 The detector's contract: it reports the *fact* of drift, not which side is right. That decision is the human's. The `.example` variant has the same remediation paths applied to the working `data.json` derived from the example — either copy the example again (revert) or update the `.example` to reflect the new authoritative shape (commit).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: zotlit — future migration target (not currently used)](optional/zotlit.md)
-
-[Next: Visual style discipline →](ui-discipline.md)

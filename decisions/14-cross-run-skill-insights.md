@@ -36,11 +36,3 @@ Have Hermes maintain a `00-meta/skill-insights/` log of patterns learned across 
 ## Related
 
 - **Files affected:** none currently
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-13: Method-unit vocabulary](13-method-unit-vocabulary.md)
-
-[Next: ADR-15: Dedicated review-note type →](15-dedicated-review-note-type.md)

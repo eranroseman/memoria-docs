@@ -25,11 +25,3 @@ The mode shifts are deliberate. Trying to do reading, drafting, and human classi
 - **Workspaces travel with the vault.** Memoria ships pre-configured `.obsidian/workspaces.json` definitions; if the human changes a layout, save it back to the workspace so the configuration survives `git pull` on another machine.
 
 The three `Cmd-1/2/3` bindings are configured under Settings → Hotkeys (the Workspaces core plugin must be enabled first — see the prerequisite callout above).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Persistent surfaces: dashboards](persistent.md)
-
-[Next: Inline surfaces: callouts in notes →](inline.md)

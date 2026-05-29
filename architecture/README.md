@@ -84,7 +84,7 @@ The review overlay (`metadata.review_status`) rides on `done`: `requested` → `
 
 The key rule: a `done` card awaiting review is a real state, not a label. A card can be worked on, blocked, reviewed, rejected, and retried without losing history or confusing completion with approval.
 
-See [board/README.md](../board/README.md) for the conceptual model and [board/states.md](../board/states.md) for the full state machine, the crosswalk from Memoria's older state names, and the review gate rules.
+See [kanban-board/README.md](../kanban-board/README.md) for the conceptual model and [kanban-board/states.md](../kanban-board/states.md) for the full state machine, the crosswalk from Memoria's older state names, and the review gate rules.
 
 ## Layer 2: Workers (Hermes profiles)
 
@@ -158,7 +158,7 @@ The recommended interaction pattern is:
 3. The worker executes the task, writes any provisional outputs (e.g., paper notes, answer drafts) into the lane's declared write scope, and completes the card to `done` with `review_status: requested`.
 4. The **human** examines the work, then sets `review_status` to `approved` or `rejected`. Some review decisions are partially automated — Verifier produces a `[!verification]` callout the human reads — but the approval is always human-driven.
 5. If `approved`, the worker (or the next workflow trigger) archives the card and the output remains in its current location (or is moved to a canonical layer if promotion is part of the task).
-6. If `rejected`, the human chooses between two follow-ups: spawn a revision card on the same lane (carrying a `metadata.supersedes` link back to the original; original archived with `metadata.archive_reason: superseded`) or archive the original entirely with `metadata.archive_reason: discarded`. See [board/README.md Post-rejection paths](../board/README.md#post-rejection-paths).
+6. If `rejected`, the human chooses between two follow-ups: spawn a revision card on the same lane (carrying a `metadata.supersedes` link back to the original; original archived with `metadata.archive_reason: superseded`) or archive the original entirely with `metadata.archive_reason: discarded`. See [kanban-board/README.md Post-rejection paths](../kanban-board/README.md#post-rejection-paths).
 7. **Linter** can act on any card structurally — usually before review — to flag schema, link, or orphan issues. It only ever produces reports, never silent fixes.
 
 Cards never close on a worker's say-so. The card lives until the human changes the review state.
@@ -238,11 +238,3 @@ On top of that base, **pre-built skills** (K-Dense `paper-lookup` / `pyzotero` /
 ## Operating model
 
 The architecture implies a bounded, stage-gated, human-in-the-loop cadence: daily capture and ingest, a weekly dashboard ritual, per-project drafting, and continuous Linter / cron / git-hook activity at the edges — autonomy added at the edges (scheduled discovery, automatic enrichment) without ever weakening the review gate. The full daily / weekly / per-project / continuous breakdown is the [Default operating model in workflows/README.md](../workflows/README.md#default-operating-model); it isn't duplicated here.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Vision](../vision.md)
-
-[Next: Human channels →](channels-overview.md)

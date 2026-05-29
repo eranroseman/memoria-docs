@@ -70,7 +70,7 @@ Jupyter notebooks (`.ipynb`) are treated as a `code-note` with `format: notebook
 
 ## Lifecycle
 
-Every note carries one universal field, **`lifecycle`** — its durability phase. (`status` is reserved for board cards; see [board/states.md](../board/states.md).) Types that need finer state within a phase carry a **refinement** field.
+Every note carries one universal field, **`lifecycle`** — its durability phase. (`status` is reserved for board cards; see [kanban-board/states.md](../kanban-board/states.md).) Types that need finer state within a phase carry a **refinement** field.
 
 | `lifecycle` | Meaning |
 | --- | --- |
@@ -120,11 +120,3 @@ One additional template ships for a *config* artifact rather than a content note
 | `design-system` | [surfaces/design-system.md](../surfaces/design-system.md) | `00-meta/04-reference/design-system.md` |
 
 The design-system file isn't one of the 15 note types — it's a single-instance config artifact that drives the vault's visual style, and the template follows [open-design](https://github.com/nexu-io/open-design)'s portable DESIGN.md format so the same file can drive open-design's render pipeline directly. For what consumes the rendered file, see [README.md](README.md#vault-skeleton-human-facing-notes).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Notes, folders, and linking](README.md)
-
-[Next: Frontmatter schema (reference) →](frontmatter-schema.md)

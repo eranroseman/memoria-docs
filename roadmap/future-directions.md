@@ -178,7 +178,7 @@ A bounded LLM-judge gate would close that gap: at export time only, a `prose-che
 
 ## Execution-trace reflection on retry
 
-Today's retry pattern (see [board/README.md](../board/README.md#retry-pattern)) re-dispatches a failed card with the same handoff payload (`metadata`) — same prompt, same context, same expectations. Two retries on a flaky API succeed where one didn't. But two retries on a structurally broken prompt fail identically — the lane burns through retries and the card escalates to `blocked` with three identical failure traces stacked in the comments.
+Today's retry pattern (see [kanban-board/README.md](../kanban-board/README.md#retry-pattern)) re-dispatches a failed card with the same handoff payload (`metadata`) — same prompt, same context, same expectations. Two retries on a flaky API succeed where one didn't. But two retries on a structurally broken prompt fail identically — the lane burns through retries and the card escalates to `blocked` with three identical failure traces stacked in the comments.
 
 The pattern, borrowed from [NousResearch/hermes-agent-self-evolution](https://github.com/NousResearch/hermes-agent-self-evolution): on a retry, a **reflection skill** (loadable by the lane's primary worker) reads the *failure trace* — what tool was called, what arguments, what error came back, what the agent said next — and synthesizes a *modified* handoff payload for the next attempt. Not a model evaluating the work; a model reading the trace and adjusting the inputs. The next attempt may swap a tool, narrow a search, drop an irrelevant constraint, or escalate immediately if the trace shows the task is infeasible as written.
 
@@ -610,11 +610,3 @@ Ideas with enough shape to remember but not enough design to ship as full propos
 - An *evidence-strength assessor* that ranks claim notes by how well-supported they are.
 
 These additions all preserve the central rule: agents propose, humans decide.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Design tensions to watch](design-tensions.md)
-
-[Next: Autonomy progression →](autonomy-progression.md)

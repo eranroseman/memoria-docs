@@ -60,7 +60,7 @@ Hermes for type detection, routing, creation, enrichment, content extraction, ca
 
 ## Card lifecycle
 
-`ready` (file-system watcher or `.bib` change creates `intake:source` card; watcher-triggered cards skip `triage`) → `running` (Librarian claims within 60s) → `done` with `review_status: requested` (Librarian exits with `_proposed_classification` proposed) → human advances to [Classify](classify.md). A failed metadata fetch is retried on the same card; after `max_retries` it moves to `blocked` per [board/README.md retry pattern](../../board/README.md#retry-pattern).
+`ready` (file-system watcher or `.bib` change creates `intake:source` card; watcher-triggered cards skip `triage`) → `running` (Librarian claims within 60s) → `done` with `review_status: requested` (Librarian exits with `_proposed_classification` proposed) → human advances to [Classify](classify.md). A failed metadata fetch is retried on the same card; after `max_retries` it moves to `blocked` per [kanban-board/README.md retry pattern](../../kanban-board/README.md#retry-pattern).
 
 ## Command
 
@@ -75,11 +75,3 @@ Citekey `mamykina2010sense` now exists in `library.bib`. The Librarian runs `her
 - **Previous workflow:** [Zotero capture](zotero-capture.md)
 - **Next workflow:** [Classify](classify.md)
 - **Profile:** [profiles/librarian.md](../../profiles/librarian.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Find](find.md)
-
-[Next: Classify →](classify.md)

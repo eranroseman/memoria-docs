@@ -43,11 +43,3 @@ Drafts get revised continuously and informally already. The stage isn't about *w
 
 - **Previous workflow:** [Verify](verify.md)
 - **Next workflow:** [Export](export.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Verify](verify.md)
-
-[Next: Export →](export.md)

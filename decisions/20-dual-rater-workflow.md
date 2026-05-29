@@ -37,11 +37,3 @@ Formal scoping reviews and systematic reviews often require inter-rater reliabil
 
 - **Part of:** [Adopt-on-demand: systematic-review tooling](adopt-on-demand-for-reviews.md) — the shared rationale, plus the other three members (ADR-12, ADR-18, ADR-19).
 - **Files affected:** `00-meta/03-templates/paper-note.md` (in the starter vault)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-19: Pre-ingest screening layer (PRISMA + ASReview)](19-pre-ingest-screening.md)
-
-[Next: ADR-21: Shared candidate frontmatter format →](21-shared-candidate-frontmatter.md)

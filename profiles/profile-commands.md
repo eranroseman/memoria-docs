@@ -49,11 +49,3 @@ Rule: any command that writes to review-gated folders (`30-synthesis/01-claims/`
 
 - [profiles/README.md](README.md) — profile overview and the Lane permissions matrix
 - [workflows/README.md](../workflows/README.md) — workflows that orchestrate these commands
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Hermes profiles](README.md)
-
-[Next: Librarian — design summary →](librarian.md)

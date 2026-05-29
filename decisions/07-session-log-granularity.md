@@ -35,11 +35,3 @@ Per-action logs were considered for debugging precision but rejected because the
 ## Related
 
 - **Files affected:** [roadmap/deployment-options.md](../roadmap/deployment-options.md), [architecture/README.md](../architecture/README.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-6: Code agent attachment](06-code-agent-attachment.md)
-
-[Next: ADR-9: Typed relations: frontmatter →](09-typed-relations-frontmatter.md)

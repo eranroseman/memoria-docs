@@ -18,11 +18,3 @@ Load-bearing settings:
 
 - `targetTags` or `targetAttributes` — must include the `type` frontmatter field (Memoria's standard type discriminator). If it points at something else (e.g., a tag), the styling won't apply to agent-created notes whose `type` is set but tags aren't.
 - The CSS snippet itself ships at `.obsidian/snippets/memoria-link-colors.css` in the starter vault — installed as-is when the human clones the vault. Enable it under Settings → Appearance → CSS snippets. The snippet uses Style Settings' `@settings` block to expose all five lifecycle-folder colors as human-tunable variables.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: smart-connections + markdb-connect](smart-connections.md)
-
-[Next: hover-editor →](hover-editor.md)

@@ -10,7 +10,7 @@ Profile permissions and lane scopes are not just documentation — they are enfo
 
 ## Why a runtime gate
 
-Prompts are advisory. A profile that *should* only write to `10-inbox/` can be coaxed by a malformed task, a hallucinated path, or an overreaching delegation into writing somewhere it shouldn't. The review gate (see [board/README.md](../board/README.md)) catches this at the human-decision level, but the policy MCP catches it at the file-system level — before the write happens, not after.
+Prompts are advisory. A profile that *should* only write to `10-inbox/` can be coaxed by a malformed task, a hallucinated path, or an overreaching delegation into writing somewhere it shouldn't. The review gate (see [kanban-board/README.md](../kanban-board/README.md)) catches this at the human-decision level, but the policy MCP catches it at the file-system level — before the write happens, not after.
 
 This is what makes the lane-override files (see [profiles/README.md](../profiles/README.md#lane-override-files)) executable rather than aspirational.
 
@@ -232,11 +232,3 @@ The policy MCP's contract — action vocabulary, four-decision protocol, SHA-256
 - [profiles/README.md](../profiles/README.md#lane-override-files) — the lane-override YAML files the MCP reads
 - [linter.md](../profiles/linter.md) — the Linter's auto-fix policy classes the MCP enforces; vault hash drift detection
 - [audit-log dashboard](../dashboards/audit-log.md) — human view of decisions
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Memory tiers](memory-tiers.md)
-
-[Next: Control plane: how a human request reaches Hermes →](control-plane.md)

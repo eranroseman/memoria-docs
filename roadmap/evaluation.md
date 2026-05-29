@@ -22,6 +22,14 @@ A review of ~51 agent / research / memory benchmarks (full workspace and per-pap
 
 Roughly half are `run`, about a third `borrow`, the rest `validate` — i.e. most of this corpus is to be **learned from**, not run.
 
+## Integrating vault-eval into the runtime
+
+`vault-eval` graduates from the `benchmarks/` workspace into the runtime rather than staying an external script, reusing existing machinery (decision recorded in [ADR-23](../decisions/23-vault-eval-integration.md)):
+
+- **Vault:** gold tasks live in `00-meta/05-eval/`; results append to `00-meta/08-metrics/eval/`; the Linter's broken-link detector guards gold-item target paths.
+- **Workers:** the board dispatches a scheduled `eval` card (quarterly + on-demand, like the discovery loop); workflow profiles execute each gold task via their real commands (`verify`-eval reuses the Verifier's `cite-check`); eval-context writes are non-committing, Policy-MCP-scoped to a scratch path; the Linter scores and records the verdict.
+- **Observability:** per-workflow scores trend in `00-meta/08-metrics/` and surface on a dashboard — **diagnostic, not gating** (unlike `drift-watch`'s structural FAIL).
+
 ## Design implications
 
 ### Confirmed by the research — no change
@@ -80,17 +88,10 @@ The benchmark corpus is autonomous-agent-centric, so the signals that most deter
 
 - [success-metrics.md](success-metrics.md) — the diagnostic metrics this program feeds.
 - [ADR-9 typed relations](../decisions/09-typed-relations-frontmatter.md), [ADR-16 contradictions dashboard](../decisions/16-contradictions-dashboard.md) — the deferred decisions Change 1 re-weights.
+- [ADR-23 vault-eval as a maintenance capability](../decisions/23-vault-eval-integration.md) — how the harness lives in the runtime (Linter-owned, non-gating).
 - [vault/frontmatter-schema.md](../vault/frontmatter-schema.md) — where the supersession relation + validity flag would live.
 - [workflows/downstream/verify.md](../workflows/downstream/verify.md), [workflows/upstream/find.md](../workflows/upstream/find.md) — targets of the two refinements.
 - [architecture/why-no-autonomous-synthesis.md](../architecture/why-no-autonomous-synthesis.md), [vision.md](../vision.md) — the posture the research validates.
 - [dashboards/drift-watch.md](../dashboards/drift-watch.md), [dashboards/fleet-health.md](../dashboards/fleet-health.md), [dashboards/audit-log.md](../dashboards/audit-log.md), [dashboards/weekly-review.md](../dashboards/weekly-review.md) — the surfaces the observability additions touch.
 - [architecture/memory-tiers.md](../architecture/memory-tiers.md) — the append-only vault audit memory (`00-meta/02-logs/`, `00-meta/08-metrics/`) the new telemetry extends.
 - `benchmarks/` (vault root) — the benchmark taxonomy, per-paper findings, and the `vault-eval` harness this synthesizes.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Success metrics](success-metrics.md)
-
-[Next: Profile compilation: memoria-base and per-profile overrides →](profile-compilation.md)

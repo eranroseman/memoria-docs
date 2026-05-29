@@ -46,11 +46,3 @@ The recommended enablement order, by safety:
 5. **Socratic doesn't apply.** Socratic is `routing.invocation: interactive_only` — the Kanban dispatcher won't queue-dispatch it regardless of `cron_mode`.
 
 The convention: each cron-enable is a deliberate decision recorded in the human's deployment notes. "Linter cron enabled 2026-06-12 after 4 weeks of stable dry-run reports" is the kind of provenance that makes the system auditable when something goes wrong.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Skill governance and lifecycle](skill-governance.md)
-
-[Next: Design tensions to watch →](design-tensions.md)

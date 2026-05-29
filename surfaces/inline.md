@@ -8,7 +8,7 @@ topic: surfaces
 
 Not every agent output belongs in a dashboard. Some context is only useful while looking at a specific note — the comparative read on a paper note matters when the human opens that note to read the source, not in a daily roll-up. Dashboards surface *decisions across notes*; inline callouts surface *context inside one note*.
 
-Memoria uses three callout types, defined via [Callout Manager](../plugins/required/callout-manager.md) and rendered consistently across the vault:
+Memoria uses three callout types, defined via [Callout Manager](../obsidian-plugins/required/callout-manager.md) and rendered consistently across the vault:
 
 | Callout | Where | Producer | Purpose |
 | --- | --- | --- | --- |
@@ -45,11 +45,3 @@ All three callouts use the **hybrid pattern** described in [architecture/why-com
 The audit trail for each callout is the **deterministic step's output** (which candidates ranked where, by what score, against what citations). The LLM's prose is the surface presentation but the candidate selection is what dashboards and the [fleet-health accept/reject ratios](../dashboards/fleet-health.md) measure. This is what makes the rubber-stamping signal (accept rate > 90%) meaningful — if the scoring function is over-suggesting, tune the weights; if under-suggesting, lower the threshold. With pure LLM ranking those ratios would be noise.
 
 Callouts are policy-MCP writes like any other — when Mapper attaches a `[!brief]` to a paper note, the write is gated by the lane policy, logged with SHA-256 hashes, and reversible from the audit log.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Modal surfaces: workspaces](modal.md)
-
-[Next: Ambient surfaces: the status line →](ambient.md)

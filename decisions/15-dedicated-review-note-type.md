@@ -35,13 +35,5 @@ Add a `review-note` type for storing reviewer judgments with provenance, separat
 
 ## Related
 
-- **See also:** [board/README.md](../board/README.md) for the existing review_status semantics
+- **See also:** [kanban-board/README.md](../kanban-board/README.md) for the existing review_status semantics
 - **Files affected:** none currently
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-14: Cross-run skill-insights memory](14-cross-run-skill-insights.md)
-
-[Next: ADR-16: Contradictions / tensions dashboard →](16-contradictions-dashboard.md)

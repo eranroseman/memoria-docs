@@ -47,6 +47,7 @@ The seven Hermes workers — missions, attachment, cross-run memory.
 Persistent dashboards and how the human sees board / vault state.
 
 - [16-contradictions-dashboard.md](16-contradictions-dashboard.md) — Contradictions / tensions dashboard · proposed
+- [23-vault-eval-integration.md](23-vault-eval-integration.md) — vault-eval as a maintenance capability · proposed
 
 ## Retired
 
@@ -59,11 +60,3 @@ Kept for historical context; withdrawn without replacement (the problem dissolve
 ## Gaps
 
 ADR numbers 01, 08, and 11 have no file because they were resolved **index-only** — `accepted`, but small enough to record in the [README index](README.md#numbering-gaps-and-the-graveyard) without a standalone file. Nothing was rejected outright. The numbering is append-only; new ADRs take the next unused number (see [`_template.md`](_template.md)).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-NN: \<title>](_template.md)
-
-[Next: Implementation roadmap →](../roadmap/README.md)

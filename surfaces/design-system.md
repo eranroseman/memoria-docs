@@ -193,11 +193,3 @@ The anti-patterns section is the most underrated. A design system tells the rend
 ### Linter relationship
 
 The Linter's structural detectors do not currently check design-system conformance. The schema-version-mismatch check ([profiles/linter.md](../profiles/linter.md)) applies normally — if this file's `schema_version` is `1` and the authoritative schema bumps to `2`, the human gets a migration prompt. Deeper conformance checks (rendered artifact uses the declared palette, exported PDF respects the declared margins) are deferred until the render pipeline is mature enough to produce checkable artifacts.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Command palette — Memoria's keyboard surface](command-palette.md)
-
-[Next: Daily Health — design summary →](../dashboards/daily-health.md)

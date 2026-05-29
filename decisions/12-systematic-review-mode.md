@@ -37,11 +37,3 @@ Adding a `review_mode: systematic-review` flag plus PRISMA-style fields (inclusi
 
 - **Part of:** [Adopt-on-demand: systematic-review tooling](adopt-on-demand-for-reviews.md) — the shared rationale, plus the other three members (ADR-18, ADR-19, ADR-20).
 - **Files affected:** [vault/README.md](../vault/README.md), `00-meta/03-templates/paper-note.md` (in the starter vault)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-10: Code-artifact autopilot](10-code-artifact-autopilot.md)
-
-[Next: ADR-13: Method-unit vocabulary →](13-method-unit-vocabulary.md)

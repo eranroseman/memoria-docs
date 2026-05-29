@@ -147,11 +147,3 @@ This pattern also works under local-mesh as a fallback when the desktop happens 
 On `local-mesh`, frequently wanting non-Socratic ACP from the laptop is a signal worth taking seriously: the discipline cost compounds, and the per-laptop profile installs accumulate maintenance overhead. The architectural answer is **migrate to `always-on`** — the VPS's always-on availability is exactly what makes SSH-spawn work, and it eliminates the install-and-discipline overhead entirely on every secondary device. Memoria's design explicitly names this trajectory: *"Start with `local-only`; migrate to `local-mesh` when a second device enters the workflow; graduate to `always-on` when you need unattended automation."* Frequent non-Socratic laptop ACP is one of the workflows that pulls humans toward `always-on`.
 
 The plugin also persists `savedSessions` (an array of past ACP conversations with title and timestamp) in its `data.json`. These are useful for resuming a Socratic session, but they grow without bound — humans on long-running vaults should periodically prune them via the plugin's session-manager UI to keep `data.json` small. Unlike [obsidian-local-rest-api](obsidian-local-rest-api.md), this `data.json` contains no secrets and **is** safe to commit (sessions are conversation pointers, not credentials).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: obsidian-local-rest-api](obsidian-local-rest-api.md)
-
-[Next: dataview →](dataview.md)

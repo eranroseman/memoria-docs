@@ -25,15 +25,7 @@ The template is the source of truth for what a freshly-ingested paper note looks
 
 ## Alternative: zotero-integration (Zotero Integration by mgmeyers)
 
-A third option, not in current use but worth naming. Lives between citation plugin (BibTeX-file based) and [ZotLit](../optional/zotlit.md) (SQLite-direct): connects to Zotero's local HTTP API while Zotero is running, supporting color-coded annotation imports and Nunjucks templates.
+A third option, not in current use but worth naming. Lives between citation plugin (BibTeX-file based) and [ZotLit](../reference/zotlit.md) (SQLite-direct): connects to Zotero's local HTTP API while Zotero is running, supporting color-coded annotation imports and Nunjucks templates.
 
 - **Switch to this** if the annotation workflow ever moves from Obsidian (via PDF++) into Zotero itself. Color-coded highlights pulled from Zotero into structured paper notes is the use case it wins on.
 - **Don't switch yet** because Memoria's design assumes PDF annotation happens in Obsidian, not Zotero — see [pdf-plus](pdf-plus.md). The decision to flip annotation workflow direction is bigger than a plugin choice; it changes the human's daily rhythm.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: quickadd](quickadd.md)
-
-[Next: pdf-plus (PDF++) →](pdf-plus.md)

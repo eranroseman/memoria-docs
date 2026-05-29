@@ -54,13 +54,5 @@ Not every profile gets every tool from every server — `tools.include` filters 
 ## Related
 
 - Policy MCP (the rules being enforced): [architecture/policy-mcp.md](../architecture/policy-mcp.md)
-- Board state machine (the cards being dispatched): [board/README.md](../board/README.md)
+- Board state machine (the cards being dispatched): [kanban-board/README.md](../kanban-board/README.md)
 - Deployment options (when non-loopback binding becomes relevant): [roadmap/deployment-options.md](../roadmap/deployment-options.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Policy MCP](policy-mcp.md)
-
-[Next: Why Memoria refuses to autonomize synthesis →](why-no-autonomous-synthesis.md)

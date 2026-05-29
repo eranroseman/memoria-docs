@@ -124,11 +124,3 @@ foreach ($n in $names) {
 | | The compiled profile (`SOUL.md`, `config.yaml`, `skills/`) — rebuilt per machine by `install.ps1` |
 
 **Concurrency note.** Under non-concurrent use there is no contention. Under [the always-on option](deployment-options.md) (or local-mesh with both machines active), two devices writing learned notes can produce a git merge conflict on `MEMORY.md` — recoverable because it is plain text, but a reason this pattern is aimed at the non-concurrent case. For real-time cross-machine memory under genuine concurrency, a cloud [Hermes memory provider](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers) is the better tool — see [Hermes memory server](future-directions.md#hermes-memory-server-shared-memory-provider) on the roadmap. Carrying `state.db` chat history (which the junction omits) between machines is the [scripted session-history sync](future-directions.md#scripted-session-history-sync) roadmap item.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Secret management](secret-management.md)
-
-[Next: Skill governance and lifecycle →](skill-governance.md)

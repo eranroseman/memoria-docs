@@ -104,11 +104,3 @@ The naming conventions are designed so collisions are rare. When they do occur:
 | Repo and person collide | Repos always have `{owner}-` prefix; no collision possible by construction |
 
 When a new note triggers a collision, the Linter flags it for human disambiguation — never silently merges or renames.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Frontmatter schema (reference)](frontmatter-schema.md)
-
-[Next: Workflows →](../workflows/README.md)

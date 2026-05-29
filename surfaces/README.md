@@ -44,11 +44,3 @@ Each surface has its own sub-file with the rules, catalogs, and layouts specific
 - **[Command palette — the keyboard channel](command-palette.md):** the standard command catalog, the `Memoria:` naming convention, and the session-persistent-vs-transient invocation discipline.
 
 The [design system](design-system.md) sub-file is the exception: it isn't a surface, but the visual-style source every surface renders against.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Refactor](../workflows/maintenance/refactor.md)
-
-[Next: Persistent surfaces: dashboards →](persistent.md)

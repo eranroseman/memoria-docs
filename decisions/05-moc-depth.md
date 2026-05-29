@@ -40,11 +40,3 @@ Keeping this as an open decision was considered briefly but rejected — the thr
 ## Related
 
 - **Files affected:** [vault/linking-patterns.md](../vault/linking-patterns.md#moc-creation-thresholds)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-4: Citekey naming convention](04-citekey-naming-convention.md)
-
-[Next: ADR-6: Code agent attachment →](06-code-agent-attachment.md)

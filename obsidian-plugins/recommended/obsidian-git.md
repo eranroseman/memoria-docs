@@ -53,11 +53,3 @@ Inline `data.json` — desktop instance, the always-on option:
 ```
 
 For local-only / local-mesh / obsidian-sync desktop or the VPS-side instance, change `autoPush` to `false` and (on the VPS) set `disablePush: true`. No separate shipped template — the variation is small enough that one inline snippet plus the conditional table above is clearer than four parallel files.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: tag-wrangler](../recommended/tag-wrangler.md)
-
-[Next: obsidian-kanban →](obsidian-kanban.md)

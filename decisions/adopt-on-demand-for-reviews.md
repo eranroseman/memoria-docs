@@ -34,11 +34,3 @@ The reasoning is identical across all four:
 ## See also
 
 - Glossary: **Review** — the systematic-review sense versus the board review gate and the weekly-review ritual ([glossary.md](../glossary.md#disambiguations)).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Architecture Decision Records](README.md)
-
-[Next: ADR-12: Systematic-review mode →](12-systematic-review-mode.md)

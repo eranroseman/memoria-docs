@@ -34,11 +34,3 @@ hermes run find-duplicates --folder 30-synthesis/01-claims --threshold 0.85
 
 - **Profile:** [profiles/verifier.md](../../profiles/verifier.md) (runs `similarity-check` and `find-duplicates`)
 - **Pre-filing similarity check** also fires during [Distill](../upstream/distill.md#pre-filing-similarity-check) as a point-of-action duplicate guard.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Lint](lint.md)
-
-[Next: Human surfaces →](../../surfaces/README.md)

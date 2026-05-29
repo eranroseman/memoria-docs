@@ -12,11 +12,3 @@ ZotLit is faster than [obsidian-citation-plugin](../required/obsidian-citation-p
 - **Do not adopt to:** speed up the daily one-paper-at-a-time flow. The `obsidian-citation-plugin` path is fast enough for that, and the migration cost (re-aligning the paper-note template, re-validating the schema) is not worth it.
 
 If migration ever happens, the load-bearing settings on the ZotLit side will be `databaseDir` (path to Zotero data), `citationLibrary` (must match the same Better BibTeX export the citation plugin used so citekey vocabulary stays stable), and a `noteTemplate` that re-creates the citation-plugin's `_proposed_classification` and `_enrichment` block discipline.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: obsidian-excalidraw](obsidian-excalidraw.md)
-
-[Next: Plugin config lifecycle →](../plugin-configs-lifecycle.md)

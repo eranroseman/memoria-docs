@@ -81,7 +81,7 @@ The same architectural reason that keeps Memoria's Coder narrow applies here: op
 
 - **Memoria owns content.** Drafts, claim notes, paper notes, verification reports, design-system.md.
 - **Open-design owns rendering.** Reads Memoria's content + design-system.md as input, produces the polished artifact.
-- **The human owns the gate.** Reviews the rendered artifact; accepts to `50-deliverables/` or rejects (with the standard [post-rejection paths](../board/README.md#post-rejection-paths) — spawn a revision render with a different design system, or discard).
+- **The human owns the gate.** Reviews the rendered artifact; accepts to `50-deliverables/` or rejects (with the standard [post-rejection paths](../kanban-board/README.md#post-rejection-paths) — spawn a revision render with a different design system, or discard).
 
 ### Workspace pattern
 
@@ -134,11 +134,3 @@ A journal manuscript goes through Pandoc; a conference poster goes through open-
 ### AI image generation: gate it explicitly
 
 Open-design's image generation capabilities (gpt-image-2, Seedance, HyperFrames) are powerful but raise reproducibility concerns for research outputs. **Default to disabled in Memoria contexts.** A research deliverable should use the design system's deterministic side (typography, layout, color, spacing) but render real figures, real diagrams, real photos. AI-generated illustrations belong only in contexts where the human has explicitly opted in (e.g., a popular-science blog post, a teaching slide). The design-system template's anti-patterns section names this explicitly — see [surfaces/design-system.md](../surfaces/design-system.md).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Linter — design summary](linter.md)
-
-[Next: Notes, folders, and linking →](../vault/README.md)

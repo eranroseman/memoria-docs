@@ -20,11 +20,3 @@ The standard Memoria commands and their implementation patterns are in [command-
 Load-bearing settings:
 
 - `macros[*].name` must use the `Memoria:` prefix exactly. The `Cmd-P → "M"` filter convention depends on it. A macro named `memoria: capture` instead of `Memoria: capture` won't appear in the filter.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: templater-obsidian](templater.md)
-
-[Next: obsidian-citation-plugin →](obsidian-citation-plugin.md)

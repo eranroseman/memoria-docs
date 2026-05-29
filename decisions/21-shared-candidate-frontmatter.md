@@ -50,11 +50,3 @@ These are the candidate-specific fields; every note also carries the global requ
 
 - **Consumed by:** [ADR-19 pre-ingest screening](19-pre-ingest-screening.md) — reads this schema for bulk screening.
 - **Files affected:** [vault/README.md](../vault/README.md), `00-meta/03-templates/candidate-note.md` (to be created), [dashboards/weekly-review.md](../dashboards/weekly-review.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-20: Dual-rater workflow for inter-rater reliability](20-dual-rater-workflow.md)
-
-[Next: ADR-22: Claim supersession relation →](22-claim-supersession.md)

@@ -115,8 +115,8 @@ The principle: **install only what the device's role can safely run** (structura
 
 **Steps.**
 
-1. Stand up the **Hermes built-in Kanban** (see [board/README.md](../board/README.md) for the mandated choice and the alternatives that were considered).
-2. Adopt the Hermes Kanban's fixed `status` enum — `triage`, `todo`, `ready`, `running`, `blocked`, `done`, `archived`. These are not configurable; map Memoria's lifecycle onto them (see [board/states.md](../board/states.md) for the crosswalk).
+1. Stand up the **Hermes built-in Kanban** (see [kanban-board/README.md](../kanban-board/README.md) for the mandated choice and the alternatives that were considered).
+2. Adopt the Hermes Kanban's fixed `status` enum — `triage`, `todo`, `ready`, `running`, `blocked`, `done`, `archived`. These are not configurable; map Memoria's lifecycle onto them (see [kanban-board/states.md](../kanban-board/states.md) for the crosswalk).
 3. Define the review overlay in card `metadata`: `review_status`, `agent_verdict`, `review_owner`, `review_requested_at`, `reviewed_at`, `promote_target`, `supersedes`. (The execution fields — `status`, `assignee`, `reason`, `max_retries` — are Hermes built-ins, not Memoria's to define.)
 4. Configure dispatch logic so cards in `triage`, `done` (awaiting review), or `blocked` are not claimable by non-review workers.
 5. Configure retry behavior so recoverable failures reuse the same card (returned to `ready`) within `max_retries`.
@@ -153,11 +153,3 @@ The principle: **install only what the device's role can safely run** (structura
 5. Configure session logging to write to `00-meta/02-logs/` and commit weekly.
 
 **Exit criteria.** The system runs without daily babysitting. The human shows up for review and synthesis; everything else flows.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Implementation roadmap](README.md)
-
-[Next: Deployment options →](deployment-options.md)

@@ -34,7 +34,7 @@ Verifier produces a granular verdict on every `verify` card. The triple is more 
 | Verifier verdict | Meaning | Typical human translation |
 | --- | --- | --- |
 | `verify-clean` | All sub-checks passed: every citekey resolves, every substantive claim traces to a claim note, no near-duplicate above threshold, no retraction match. The draft is structurally publishable. | → `approve` |
-| `verify-needs-revision` | One or more failures the human can act on at the desk: an unresolved citekey, a claim that doesn't trace, a near-duplicate at high similarity. The verification report names exactly which lines need attention. | → `reject` (human then chooses supersede / discard per [board/README.md Post-rejection paths](../board/README.md#post-rejection-paths)) |
+| `verify-needs-revision` | One or more failures the human can act on at the desk: an unresolved citekey, a claim that doesn't trace, a near-duplicate at high similarity. The verification report names exactly which lines need attention. | → `reject` (human then chooses supersede / discard per [kanban-board/README.md Post-rejection paths](../kanban-board/README.md#post-rejection-paths)) |
 | `verify-needs-attention` | One or more failures the human cannot act on alone: a retraction match on a cited source, a claim that traces to a single source whose retraction status is ambiguous, a duplicate where the merge decision is non-obvious. Often spawns a gap card; sometimes needs a separate research action. | → `reject` or `escalate` depending on whether the human can address it now |
 
 The translation is human judgment, not automatic. Verifier never closes the card — it produces a recommendation, the human issues the verdict, the board state changes.
@@ -49,11 +49,3 @@ Folder permission matrix lives in [profiles/README.md](README.md#folder-permissi
 - ADRs: [20 dual-rater workflow](../decisions/20-dual-rater-workflow.md), [18 evidence quality fields](../decisions/18-evidence-quality-fields.md)
 - Method class: [architecture/why-computational-methods.md](../architecture/why-computational-methods.md) — Verifier sits on the hybrid side with a tightly-bounded LLM step; the design explicitly avoids LLM-as-similarity-judge in the determined bands.
 - Reference: [architecture/computational-toolbox.md](../architecture/computational-toolbox.md) — the embedding, similarity, and citation-extraction primitives Verifier relies on.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Writer — design summary](writer.md)
-
-[Next: Coder — design summary →](coder.md)

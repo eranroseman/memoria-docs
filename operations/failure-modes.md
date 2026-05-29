@@ -120,8 +120,8 @@ hermes lane status <lane>      # is the lane's queue backing up behind one card?
 **Fix.** Depends on where it's wedged:
 
 - **`running` (worker crashed or hung).** The claim is stale — no `done`, no return to `ready`. The dispatcher reclaims stale claims automatically on its next tick and returns the card to `ready` (recorded as `outcome: reclaimed`) — there is no manual `retry` verb. If it re-wedges at once on the re-dispatch, the tool or prompt is broken rather than transient — treat it as the `blocked` case.
-- **`blocked` (a human decision is owed — e.g. escalated past `max_retries`).** It needs a fix, not a re-run. Address the cause (revise the handoff `metadata`, fix the tool, rewrite the prompt), then `kanban_unblock` → `ready`; re-dispatch resets the retry count. If it can't be made to work, `hermes kanban archive` it with `reason: "infeasible"`. See the [retry pattern](../board/README.md#retry-pattern).
-- **`ready` but never dispatched.** Usually an unresolved `assignee` — the dispatcher emits `skipped_nonspawnable` and leaves the card in `ready`. Check the `assignee` names a real lane (see [worker lanes](../board/states.md#worker-lanes)).
+- **`blocked` (a human decision is owed — e.g. escalated past `max_retries`).** It needs a fix, not a re-run. Address the cause (revise the handoff `metadata`, fix the tool, rewrite the prompt), then `kanban_unblock` → `ready`; re-dispatch resets the retry count. If it can't be made to work, `hermes kanban archive` it with `reason: "infeasible"`. See the [retry pattern](../kanban-board/README.md#retry-pattern).
+- **`ready` but never dispatched.** Usually an unresolved `assignee` — the dispatcher emits `skipped_nonspawnable` and leaves the card in `ready`. Check the `assignee` names a real lane (see [worker lanes](../kanban-board/states.md#worker-lanes)).
 
 **Verify.**
 
@@ -137,8 +137,8 @@ Sorted by severity (most urgent first), then by topic. The **Severity** column u
 
 | Symptom | Severity | Cause | Fix |
 | --- | --- | --- | --- |
-| **Obsidian Linter corrupts frontmatter** | CRITICAL | The Obsidian Linter running on agent-maintained folders | Exclude `10-inbox/`, `20-sources/`, `30-synthesis/02-reference/` in the Obsidian Linter's `foldersToIgnore` — see [plugins/README.md](../plugins/README.md). |
-| **`_proposed_classification` or `_enrichment` deleted** | CRITICAL | An Obsidian Linter rule or plugin upgrade introduced an HTML-comment stripper that ran on save | **Never enable any rule that strips HTML comments.** Currently no such rule exists in Obsidian Linter v1.31.2, but the precaution is forward-looking — diff the rule registry before accepting any plugin upgrade. See [plugins/README.md](../plugins/README.md). |
+| **Obsidian Linter corrupts frontmatter** | CRITICAL | The Obsidian Linter running on agent-maintained folders | Exclude `10-inbox/`, `20-sources/`, `30-synthesis/02-reference/` in the Obsidian Linter's `foldersToIgnore` — see [obsidian-plugins/README.md](../obsidian-plugins/README.md). |
+| **`_proposed_classification` or `_enrichment` deleted** | CRITICAL | An Obsidian Linter rule or plugin upgrade introduced an HTML-comment stripper that ran on save | **Never enable any rule that strips HTML comments.** Currently no such rule exists in Obsidian Linter v1.31.2, but the precaution is forward-looking — diff the rule registry before accepting any plugin upgrade. See [obsidian-plugins/README.md](../obsidian-plugins/README.md). |
 | Enrichment block empty after ingest | HIGH | API keys not set in environment (silent — ingest "succeeded" but with degraded data) | `echo $OPENALEX_EMAIL`; check per-profile `.env` |
 | Dataview queries returning nothing | HIGH | `study_design` or `topic` vocabulary inconsistency — query returns empty table that looks like "nothing to do" | Check values in notes match the schema vocabulary exactly (see [frontmatter-schema.md](../vault/frontmatter-schema.md)). |
 | `qmd` search index stale — `draft` finds no notes | HIGH | Index not rebuilt after notes changed (silent — search returns nothing, looks like no matches) | See the **Stale `qmd` index** recipe (#4) above. |
@@ -149,7 +149,7 @@ Sorted by severity (most urgent first), then by topic. The **Severity** column u
 | VPS tunnel drops on WSL2 restart | MEDIUM | systemd user service not auto-starting | `systemctl --user enable hermes-tunnel`. |
 | Schema version mismatch in Dataview | MEDIUM | Notes on old schema version | `hermes -p memoria-linter run schema-migrate --dry-run` → review proposed field additions → run without `--dry-run` on a single folder first. |
 | Cron job didn't fire overnight | MEDIUM | Sleep-prone host or stale `.env` | `always-on` option only (VPS); check `journalctl --user -u hermes-overnight` and the [discovery loop section](../roadmap/future-directions.md#the-discovery-loop). |
-| Retry count climbing on same card | MEDIUM | Brittle prompt or broken tool | After `max_retries` (default 3) recoverable failures the card auto-escalates to `blocked` — see [board/README.md retry pattern](../board/README.md#retry-pattern). The human decides whether to revise the payload or archive as infeasible. |
+| Retry count climbing on same card | MEDIUM | Brittle prompt or broken tool | After `max_retries` (default 3) recoverable failures the card auto-escalates to `blocked` — see [kanban-board/README.md retry pattern](../kanban-board/README.md#retry-pattern). The human decides whether to revise the payload or archive as infeasible. |
 | Card not progressing (`running` / `ready` / `blocked`) | MEDIUM | Worker crashed mid-claim, unresolved `assignee`, or a human decision owed on a `blocked` card | See the **Stuck card** recipe (#6) above. |
 | Citekey not found at ingest | LOW | `.bib` not updated or not pulled | See the **Stale `.bib`** recipe (#1) above. |
 | `_enrichment` fields not queryable | LOW | `_enrichment` is a YAML comment block, not real frontmatter (design constraint, not a defect) | Use note modification date (`file.mtime`) as a proxy, or promote specific fields (e.g., `enriched_date`) to main frontmatter. |
@@ -163,11 +163,3 @@ Sorted by severity (most urgent first), then by topic. The **Severity** column u
 If a failure recurs and the Fix here doesn't work, treat that as a design issue. Either the symptom mapping is incomplete (the doc points at the wrong cause) or the fix is brittle (works sometimes but not always). In both cases the right response is to update this doc, not to memorize a workaround — the next human who hits it should find a recipe that actually works.
 
 The rule: never let a stale fix sit in this doc. If a command changed (e.g., a renamed flag) or a service was replaced (e.g., Bitwarden → 1Password), update or remove the entry the same session the drift is noticed.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Operations](README.md)
-
-[Next: Session logging →](session-logging.md)

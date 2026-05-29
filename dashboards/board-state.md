@@ -26,17 +26,9 @@ A Dataview view of cards on the Hermes Kanban board: active cards, review queue,
 
 ## Related
 
-- [board/README.md](../board/README.md) — Kanban state machine, lane definitions, review gate
+- [kanban-board/README.md](../kanban-board/README.md) — Kanban state machine, lane definitions, review gate
 - [glossary.md](../glossary.md#board-and-cards) — disambiguates the overloaded "review": `review_status`, `verdict`, and the Linter's verdict band
 - [vault/README.md](../vault/README.md) — claim-note `maturity` stages (seedling → budding → evergreen) shown in the histogram
 - [`discuss-queue`](discuss-queue.md) — upstream-discipline view (paper notes awaiting Socratic processing)
 - [Daily Health](daily-health.md) — daily health glance, includes today's queue (filtered subset of board-state)
 - [`audit-log`](audit-log.md) — per-decision forensics complementing board-level state
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: audit-log — design summary](audit-log.md)
-
-[Next: drift-watch — design summary →](drift-watch.md)

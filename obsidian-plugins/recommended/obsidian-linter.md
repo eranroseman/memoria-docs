@@ -65,11 +65,3 @@ Why this stratification: the on-save set is small enough that the human can keep
 **Never enable any rule that strips HTML comments.** Memoria's `_proposed_classification` and `_enrichment` blocks (see [vault/README.md](../../vault/README.md) and the [obsidian-citation-plugin](../required/obsidian-citation-plugin.md) template) live as `<!-- ... -->` blocks inside paper notes. A Linter rule that removes HTML comments will silently delete every one of them on the next lint pass — and there is no undo. The agent has to re-enrich and re-classify every affected note.
 
 **Version note.** As of Obsidian Linter `v1.31.2` (the version research-wiki runs against), no `remove-html-comments` rule exists in the bundled rule registry — a search of the plugin's `main.js` finds neither the rule name nor any equivalent transform. The warning here is forward-looking discipline rather than a current-version footgun: if a future version adds such a rule (or a community fork ships one), it must stay disabled. Before accepting any Obsidian Linter upgrade, diff the rule registry against the previous version and check for new rules whose name or description mentions "html", "comment", or "strip".
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: callout-manager](../required/callout-manager.md)
-
-[Next: smart-connections + markdb-connect →](smart-connections.md)

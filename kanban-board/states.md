@@ -167,11 +167,3 @@ Recommended work-in-progress limits to prevent overload:
 - **Writer lane (synthesis)**: bounded (e.g. 3). Too many drafts in flight at once means quality drops because evidence cannot be fully integrated.
 
 These are operational tuning parameters, not architectural constants.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Board, states, and the review gate](README.md)
-
-[Next: Board schema and handoff (reference) →](card-schema.md)

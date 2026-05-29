@@ -37,11 +37,3 @@ Split the Librarian profile into Retriever (broad discovery, candidate generatio
 
 - **Workflows affected:** [Find](../workflows/upstream/find.md), [Ingest](../workflows/upstream/ingest.md)
 - **Files affected:** [profiles/README.md](../profiles/README.md), [profiles/librarian.md](../profiles/librarian.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-16: Contradictions / tensions dashboard](16-contradictions-dashboard.md)
-
-[Next: ADR-18: Evidence quality fields layer →](18-evidence-quality-fields.md)

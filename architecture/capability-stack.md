@@ -9,7 +9,7 @@ topic: architecture
 The minimum capability stack to operate Memoria:
 
 1. **Hermes**, configured with seven profiles (Librarian, Mapper, Socratic, Writer, Verifier, Coder, Linter).
-2. **The Hermes built-in Kanban** with the required state machine and schema fields (see [board/README.md](../board/README.md)).
+2. **The Hermes built-in Kanban** with the required state machine and schema fields (see [kanban-board/README.md](../kanban-board/README.md)).
 3. **Obsidian** as the vault editor and Dataview query host.
 4. **Zotero + Better BibTeX** for the bibliographic backbone.
 5. **External APIs**: OpenAlex, Semantic Scholar, PubMed, Crossref, Unpaywall, ORCID, ROR for enrichment.
@@ -17,7 +17,7 @@ The minimum capability stack to operate Memoria:
 7. **A local REST API or Agent Client Protocol (ACP)** to let Hermes write into Obsidian.
 8. **Pandoc** for export.
 
-**Optional, adopt-when-needed: agent-side retrieval.** When the agent needs semantic recall over the vault (the Mapper's corpus queries, the search skills), Memoria uses **`qmd`** ([tobi/qmd](https://github.com/tobi/qmd) — local BM25 + vector + LLM-rerank over Markdown) as its retrieval substrate. It is *not* in the minimum stack — add it when corpus size makes keyword search insufficient. It is distinct from the human-side **Smart Connections** plugin (see [glossary: qmd](../glossary.md#computational-methods) and [plugins/recommended/smart-connections.md](../plugins/recommended/smart-connections.md)).
+**Optional, adopt-when-needed: agent-side retrieval.** When the agent needs semantic recall over the vault (the Mapper's corpus queries, the search skills), Memoria uses **`qmd`** ([tobi/qmd](https://github.com/tobi/qmd) — local BM25 + vector + LLM-rerank over Markdown) as its retrieval substrate. It is *not* in the minimum stack — add it when corpus size makes keyword search insufficient. It is distinct from the human-side **Smart Connections** plugin (see [glossary: qmd](../glossary.md#computational-methods) and [obsidian-plugins/recommended/smart-connections.md](../obsidian-plugins/recommended/smart-connections.md)).
 
 ## Use pre-built skills, don't roll your own
 
@@ -92,15 +92,7 @@ These are not skills — they are the surrounding ecosystem the agent integrates
 
 ## Related
 
-- Obsidian plugins (detailed per-plugin configuration): [plugins/README.md](../plugins/README.md)
+- Obsidian plugins (detailed per-plugin configuration): [obsidian-plugins/README.md](../obsidian-plugins/README.md)
 - Per-profile skill catalogs: [profiles/README.md](../profiles/README.md)
 - Lane-override mechanism: [profiles/README.md lane-override files](../profiles/README.md#lane-override-files)
 - Cost-discipline dashboard: [dashboards/fleet-health.md](../dashboards/fleet-health.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Computational toolbox: deterministic methods Memoria uses](computational-toolbox.md)
-
-[Next: Board, states, and the review gate →](../board/README.md)

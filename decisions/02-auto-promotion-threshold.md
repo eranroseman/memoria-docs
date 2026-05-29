@@ -37,11 +37,3 @@ A link-density heuristic was considered and rejected: it confuses "well-cited" w
 
 - **Workflows affected:** [Promote](../workflows/upstream/promote.md)
 - **Files affected:** [weekly-review.md](../dashboards/weekly-review.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Architecture Decision Records](README.md)
-
-[Next: ADR-3: Answer-draft retention →](03-answer-draft-retention.md)

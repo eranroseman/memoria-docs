@@ -102,7 +102,7 @@ See [Lint](maintenance/lint.md) for the operational details and weekly ritual; t
 
 Workflows are not scripted procedures; they are **event sequences on the Kanban**. Each workflow describes which cards open, which profiles claim them, and which state transitions advance them. The board isn't storage that workflows happen to write to — it's the substrate workflows are *made of*. Three properties fall out of this:
 
-- **Profiles don't call each other.** When Librarian finishes an ingest, it doesn't invoke Verifier; it sets the card's exit state. Verifier picks up cards in that state through the dispatcher (see [board/README.md dispatch interval](../board/README.md#dispatch-interval)). The handoff is the state change, not a message.
+- **Profiles don't call each other.** When Librarian finishes an ingest, it doesn't invoke Verifier; it sets the card's exit state. Verifier picks up cards in that state through the dispatcher (see [kanban-board/README.md dispatch interval](../kanban-board/README.md#dispatch-interval)). The handoff is the state change, not a message.
 - **The human is one event source among several.** Human action via the [command palette](../surfaces/command-palette.md) creates cards. So do cron triggers (scheduled tasks), file-system watchers (PDF drops), and git hooks (draft commits). Each one is a card creation; the dispatcher routes them identically.
 - **Workflows can be paused, resumed, or retried because the state is on the board.** A worker that fails mid-task leaves the card to be re-dispatched (returned to `ready`); the next dispatch picks it back up. A worker that succeeds completes the card to its exit state; the next workflow's trigger fires on that state change.
 
@@ -215,7 +215,7 @@ If a step fails, the failure is visible at exactly one layer — the plugin show
 
 ### Hotkey discipline
 
-Most commands are palette-only — `Cmd-P → M → <2–3 letters>` is the primary input mode. A small set of high-frequency commands earn dedicated hotkeys or [Commander](../plugins/optional/cmdr.md) buttons; see the [recommended Commander set in command-palette.md](../surfaces/command-palette.md#setting-up-the-bindings) for the recommended top five. Hotkey real estate is scarce; everything outside that set stays palette-only.
+Most commands are palette-only — `Cmd-P → M → <2–3 letters>` is the primary input mode. A small set of high-frequency commands earn dedicated hotkeys or [Commander](../obsidian-plugins/recommended/cmdr.md) buttons; see the [recommended Commander set in command-palette.md](../surfaces/command-palette.md#setting-up-the-bindings) for the recommended top five. Hotkey real estate is scarce; everything outside that set stays palette-only.
 
 ### What this section is not
 
@@ -311,11 +311,3 @@ If after three months of use the human's mouse hand barely moves and they've sto
 - **Treating archive as delete.** Archived notes are preserved for traceability; they should not be removed.
 - **Running find without a corpus boundary.** Generates noise that never gets classified. Symptom: `10-inbox/03-candidates/` grows without bound.
 - **Crossing pipelines mid-task.** Mixing upstream (classify, distill) work with downstream (draft, export) work in the same session. Each pipeline has its own rhythm; mixing them produces drafts that re-litigate filing decisions.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Linking patterns](../vault/linking-patterns.md)
-
-[Next: Zotero Capture →](upstream/zotero-capture.md)

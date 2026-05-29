@@ -8,7 +8,7 @@ topic: architecture
 
 This document covers Memoria's five human-facing channels — Obsidian dashboards + ACP panes, command palette, CLI, Telegram, API server — and the per-channel discipline that keeps the system from feeling like a control panel. The architecture overview that names these channels lives in [README.md §"Human channels"](README.md#human-channels); this doc carries the per-channel detail.
 
-The three layers ([board](../board/README.md), [workers/profiles](../profiles/README.md), [vault](../vault/README.md)) are *what the system is*. **Channels** are *where the human sees it and acts on it* — five of them, each owning one cognitive mode. (Inside the Obsidian channel, state is rendered further as one of four **surfaces** — persistent, modal, inline, ambient; that's a distinct taxonomy, covered in [surfaces/README.md](../surfaces/README.md). See the [glossary](../glossary.md#surfaces-and-channels) for how the two terms relate.) The defining discipline: **each channel owns one cognitive mode.** Using a channel for the wrong mode (Telegram for desktop work, CLI for daily ops) produces the "every operation feels slightly off" drift that erodes a workflow.
+The three layers ([board](../kanban-board/README.md), [workers/profiles](../profiles/README.md), [vault](../vault/README.md)) are *what the system is*. **Channels** are *where the human sees it and acts on it* — five of them, each owning one cognitive mode. (Inside the Obsidian channel, state is rendered further as one of four **surfaces** — persistent, modal, inline, ambient; that's a distinct taxonomy, covered in [surfaces/README.md](../surfaces/README.md). See the [glossary](../glossary.md#surfaces-and-channels) for how the two terms relate.) The defining discipline: **each channel owns one cognitive mode.** Using a channel for the wrong mode (Telegram for desktop work, CLI for daily ops) produces the "every operation feels slightly off" drift that erodes a workflow.
 
 | Channel | Mode | Use it for |
 | --- | --- | --- |
@@ -170,11 +170,3 @@ Seven integration patterns cover what the API is used for:
 - **Bypassing the policy MCP.** Every write that enters through the API still goes through the policy MCP. The API doesn't grant elevated permission; it's just another caller subject to the same lane-override rules.
 
 **Security and binding.** Per the [fail-closed startup](control-plane.md#fail-closed-startup) rules, the API binds to `127.0.0.1` by default. Non-loopback binding requires the API's auth token to be set. For a laptop that travels (coffee shops, conferences), loopback is the right default — local scripts can reach the API; nothing on the network can. Cross-machine integration earns its non-loopback binding only with explicit token configuration.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Architecture](README.md)
-
-[Next: On-disk layout: starter vault and Hermes runtime →](on-disk-layout.md)

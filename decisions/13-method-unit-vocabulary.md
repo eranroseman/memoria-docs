@@ -34,11 +34,3 @@ Original question: tag claim notes with methodological patterns (Idea2Story-styl
 ## Related
 
 - **Files affected:** [vault/README.md](../vault/README.md), [vault/frontmatter-schema.md](../vault/frontmatter-schema.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-12: Systematic-review mode](12-systematic-review-mode.md)
-
-[Next: ADR-14: Cross-run skill-insights memory →](14-cross-run-skill-insights.md)

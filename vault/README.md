@@ -137,7 +137,7 @@ A freshly-cloned vault ships with a small set of plain-language human notes in `
 | `00-meta/04-reference/dataview-cheatsheet.md` | Reference patterns for dashboard authors — TABLE / LIST / TASK / FROM / WHERE / SORT / FLATTEN / LIMIT examples. | Human (rarely changes) |
 | `00-meta/04-reference/performance-checklist.md` | Dashboard performance discipline (see [surfaces/persistent.md](../surfaces/persistent.md#performance-discipline)). | Human (rarely changes) |
 | `00-meta/04-reference/safe-mode.md` | The three core workflows (ingest, review, export) with minimal commands and fallbacks when something is broken. Open this when Hermes, the ACP connection, or the watcher is down. Pairs with [operations/failure-modes.md](../operations/failure-modes.md) for the Detect/Fix/Verify recipes. | Human (rarely changes) |
-| `00-meta/04-reference/obsidian-config.md` | Plain-language summary of which Obsidian community plugins Memoria uses and the load-bearing settings the human should not change. Mirrors [plugins/README.md](../plugins/README.md). | Human (sync with plugin changes) |
+| `00-meta/04-reference/obsidian-config.md` | Plain-language summary of which Obsidian community plugins Memoria uses and the load-bearing settings the human should not change. Mirrors [obsidian-plugins/README.md](../obsidian-plugins/README.md). | Human (sync with plugin changes) |
 | `00-meta/04-reference/design-system.md` | Canonical visual-style source for the vault — palette, typography, spacing, layout, components, motion, voice, brand, anti-patterns. Format follows [open-design](https://github.com/nexu-io/open-design)'s 9-section DESIGN.md schema so the same file can drive open-design's render pipeline. Read by CSS-snippet generators, by Pandoc export configs, and by open-design when rendering deliverables. Templated by [surfaces/design-system.md](../surfaces/design-system.md). | Human (edits define the brand); design-system schema versioned independently |
 
 The design folder is the *engineering* spec — it describes how to build and reason about the system. The vault skeleton is what a *human* needs in front of them while using the vault day-to-day. The skeleton notes are intentionally short and plain-language; if a section needs architectural detail, it links to the relevant `memoria-docs/` document.
@@ -225,11 +225,3 @@ Rules that constrain the map:
 Linking is the cross-cutting discipline that turns the vault into a graph rather than a flat folder hierarchy. Two cardinal rules anchor the practice: **every `claim-note` traces to at least one `paper-note` citekey**, and **provenance direction is preserved** — claims point to evidence, never the reverse.
 
 **Full reference** — five link types (`citekey-link`, `concept-link`, `moc-link`, `entity-link`, `agent-cross-link`), the full rule set (including indirect co-authorship and the orphan-rescue rule), the expected cross-link graph by note type, the topic/domain/child-MOC creation thresholds, and slug-collision resolution patterns — live in [linking-patterns.md](linking-patterns.md).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Coder profile and the external coding agent](../profiles/why-coder-external-agent.md)
-
-[Next: Note types and templates (reference) →](templates.md)

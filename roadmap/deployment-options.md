@@ -114,7 +114,7 @@ Requirements: SSH always reachable (Tailscale or local network), primary awake, 
 
 Under SSH-spawned ACP you can talk to *any* profile remotely, not just Socratic — the spawned Hermes is the authoritative one on the primary with the full profile suite. This matters because it removes the "what's installed locally?" question: nothing's installed locally, so the device can use whichever profile is appropriate for the moment.
 
-Concrete `customAgents` configuration examples for both the SSH-spawn path and the local-install path are in [plugins/required/agent-client.md — Configuring the laptop for non-Socratic ACP](../plugins/required/agent-client.md#configuring-the-laptop-for-non-socratic-acp). That section also has the deployment-option-specific recommendations table for which path to pick.
+Concrete `customAgents` configuration examples for both the SSH-spawn path and the local-install path are in [obsidian-plugins/required/agent-client.md — Configuring the laptop for non-Socratic ACP](../obsidian-plugins/required/agent-client.md#configuring-the-laptop-for-non-socratic-acp). That section also has the deployment-option-specific recommendations table for which path to pick.
 
 ### Pattern selection by option
 
@@ -148,11 +148,3 @@ Two distinct roles need different setups:
 - **Developer (building Memoria itself or its skills):** Full Hermes install on the dev machine is appropriate because testing changes requires running all profiles end-to-end. **Under always-on, `HERMES_HOME=/path/to/dev-hermes` isolation AND pointing at a *test vault* (clone, fixture, Docker volume) is mandatory, not optional.** Two Hermes dispatchers can coexist *only* if they're pointing at different vaults. A dev's Hermes pointed at the production vault while the VPS is also dispatching against it is the failure mode this rule exists to prevent — and under always-on it's the most likely real-world incident class because the dev's machine is on the same Tailscale as the VPS and can reach it.
 
 The VPS remains the primary dispatcher in either case. Developers iterate against test vaults; the principal investigator's research vault is touched by exactly one Hermes (the VPS's).
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Timeline and phases](timeline.md)
-
-[Next: Secret management →](secret-management.md)

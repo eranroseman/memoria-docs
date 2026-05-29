@@ -68,7 +68,7 @@ The real insight in the ablation — that gating everything and gating nothing a
 
 ## What this implies
 
-- The review gate (see [board/README.md](../board/README.md)) is structural, not optional. Every autonomy upgrade has to route through it.
+- The review gate (see [kanban-board/README.md](../kanban-board/README.md)) is structural, not optional. Every autonomy upgrade has to route through it.
 - The agent's job is to *surface*, *propose*, and *prepare* — never to canonize.
 - Scheduled / overnight operations write to `10-inbox/` only. Promotion is always synchronous with human attention.
 - Cost discipline ("$1–3/day API call budget for the nightly loop") matters because there's no scalar payoff to optimize against — discipline has to come from the budget, not from the metric.
@@ -78,14 +78,6 @@ The refusal is enforced by infrastructure, not by prompt discipline. The policy 
 ## Related
 
 - Overnight discovery loop (the autonomy that *is* adopted): [roadmap/future-directions.md](../roadmap/future-directions.md)
-- Review gate mechanics: [board/README.md](../board/README.md)
+- Review gate mechanics: [kanban-board/README.md](../kanban-board/README.md)
 - Policy MCP review-gated-zone rule: [architecture/policy-mcp.md](../architecture/policy-mcp.md)
 - Pattern provenance (the full borrow/adapt/ignore table): [architecture/why-pattern-provenance.md](../architecture/why-pattern-provenance.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Control plane: how a human request reaches Hermes](control-plane.md)
-
-[Next: Pattern provenance: borrow / adapt / ignore →](why-pattern-provenance.md)

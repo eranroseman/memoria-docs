@@ -311,11 +311,3 @@ These are the patterns to avoid, drawn from observation of single-agent systems:
 - **Socratic with write access.** Even a tiny write scope on Socratic ("just to scratch") defeats the architectural protection. Socratic's `policy.allow.write: []` is load-bearing.
 
 The structural guard against all of these is in the permission matrix and the board states. Treat them as non-negotiable.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Board schema and handoff (reference)](../board/card-schema.md)
-
-[Next: Profile commands (reference) →](profile-commands.md)

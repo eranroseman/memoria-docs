@@ -55,11 +55,3 @@ When something spikes, only the spike draws the eye — the rest stays minimal.
 - **Two producers is the working set.** Linter + Kanban counts. A third ambient producer is one too many — the line stops being glanceable when there are more than four to six tokens to parse. New "I want this always visible" requests get evaluated against the existing two, not added alongside.
 
 The ambient surface is the smallest of the four by design. Anything that needs more than one line earns its way into one of the other three types.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Inline surfaces: callouts in notes](inline.md)
-
-[Next: Command palette — Memoria's keyboard surface →](command-palette.md)

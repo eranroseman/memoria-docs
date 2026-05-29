@@ -20,11 +20,3 @@ Load-bearing settings (after secrets are gitignored):
 
 - `enableInsecureServer: false` — keep HTTP off; require HTTPS. The TLS cert lives in the same `data.json`.
 - `apiKey: "<token>"` — required when reachable from anything other than `127.0.0.1`. For the always-on option (VPS), this is non-optional. Mirrors the [fail-closed startup](../../architecture/control-plane.md#fail-closed-startup) discipline on the Hermes API side.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Obsidian plugins — configuration reference](../README.md)
-
-[Next: agent-client →](agent-client.md)

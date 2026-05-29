@@ -37,11 +37,3 @@ Adding `funding`, `coi` (conflict of interest), `risk_of_bias`, `population`, `i
 
 - **Part of:** [Adopt-on-demand: systematic-review tooling](adopt-on-demand-for-reviews.md) — the shared rationale, plus the other three members (ADR-12, ADR-19, ADR-20).
 - **Files affected:** `00-meta/03-templates/paper-note.md` (in the starter vault), [vault/README.md](../vault/README.md)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-17: Retriever / Scout as a separate profile](17-retriever-scout-profile.md)
-
-[Next: ADR-19: Pre-ingest screening layer (PRISMA + ASReview) →](19-pre-ingest-screening.md)

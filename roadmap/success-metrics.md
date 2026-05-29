@@ -15,11 +15,3 @@ After six months of running Memoria, the system should be measurable on:
 - **Reuse rate.** When drafting a chapter, what fraction of cited claims come from existing claim notes vs. fresh synthesis?
 
 These are not contract metrics; they are diagnostic. If reuse rate is high, the vault is paying off. If review backlog grows unboundedly, the workflow is mis-tuned.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Autonomy progression](autonomy-progression.md)
-
-[Next: Evaluation and benchmark-informed design →](evaluation.md)

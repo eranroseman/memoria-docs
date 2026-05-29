@@ -75,11 +75,3 @@ Below those thresholds, stay on the passthrough.
 ## Why this lives in the roadmap
 
 Skill governance is operational bookkeeping that matters most once the system is past MVS and accumulating tooling. A fresh install has a fixed set of K-Dense skills and the generic passthrough — no governance needed. The state machine and registry become load-bearing only when passthrough-graduations, retirements, and lane-permission changes start happening regularly. Treat the governance system as something to stand up around Phase 6, not Phase 1.
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: Sync and write coordination](sync-and-coordination.md)
-
-[Next: Standard cron tasks →](standard-cron-tasks.md)

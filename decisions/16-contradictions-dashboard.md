@@ -35,11 +35,3 @@ Surfacing contradictions in the claim graph would be high-value for argument con
 
 - **Depends on:** [ADR-9 typed relations](09-typed-relations-frontmatter.md)
 - **Files affected:** [`dashboards/`](../dashboards/) (would add a new dashboard)
-
-<!-- memoria-nav -->
-
----
-
-[← Previous: ADR-15: Dedicated review-note type](15-dedicated-review-note-type.md)
-
-[Next: ADR-17: Retriever / Scout as a separate profile →](17-retriever-scout-profile.md)
