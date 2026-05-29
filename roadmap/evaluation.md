@@ -8,19 +8,34 @@ topic: roadmap
 
 ## Purpose
 
-A review of ~51 agent / research / memory benchmarks (full workspace and per-paper notes in [`benchmarks/`](../../benchmarks/), synthesis in `benchmarks/findings.md`) produced two things: an **evaluation program** for Memoria, and a short list of **design implications**. This document is the roadmap-level synthesis — what to measure, how, and the design implications the literature actually warrants: one structural change, two refinements, and a set of observability additions. The headline is that the research **validates** most of the design; the changes are few and targeted.
+A review of ~51 agent / research / memory benchmarks (full workspace, per-paper notes, and synthesis `findings.md` maintained separately in the **benchmark-review workspace**) produced two things: an **evaluation program** for Memoria, and a short list of **design implications**. This document is the roadmap-level synthesis — what to measure, how, and the design implications the literature actually warrants: one structural change, two refinements, and a set of observability additions. The headline is that the research **validates** most of the design; the changes are few and targeted.
 
 ## How Memoria is evaluated — two layers
 
 **Layer 1 — vault-native gold eval (primary).** Off-the-shelf benchmarks measure the *model* on someone else's corpus; they do not answer Memoria's real question — *does this vault compound?* The primary eval is a small, hand-curated gold set drawn from the actual vault (scaffold at `benchmarks/vault-eval/`): ~20 items per workflow (`find`, `verify`, `query`, `classify`, `distill`, drift), re-run quarterly. The **trend** is the signal, and the metrics feed the existing [success-metrics.md](success-metrics.md) diagnostics — they are diagnostic, not contract, and must not become optimization targets.
 
-**Layer 2 — external benchmarks (reference).** The capability-mapped taxonomy (`benchmarks/benchmarks_for_memoria.md`) tags each benchmark by **adoption mode**:
+**Layer 2 — external benchmarks (reference).** The full capability-mapped taxonomy is maintained in the separate **benchmark-review workspace** (`benchmarks_for_memoria.md`); the condensed map below keeps this document self-contained. Each benchmark is tagged by **adoption mode**:
 
 - **run** — run the harness as-is for a capability baseline (e.g., LongMemEval, CiteME, τ-bench, BRIGHT, AgentDojo).
 - **borrow** — adopt the *metric or task*, don't run the leaderboard (e.g., **FAMA** for drift, **pass^k** for lane reliability, **coverage@k** for loose-ends, Contradiction-Retrieval for the contradictions surface, MASSW's 5-aspect note schema).
 - **validate** — design/positioning evidence; cite, don't run.
 
 Roughly half are `run`, about a third `borrow`, the rest `validate` — i.e. most of this corpus is to be **learned from**, not run.
+
+**Condensed adoption map** (one row per Memoria surface; the workspace taxonomy has the full per-benchmark detail):
+
+| Surface / capability | Benchmark(s) | Mode |
+| --- | --- | --- |
+| Find / retrieval | LitSearch, BRIGHT | run |
+| Classify & organize | ResearchArena | run |
+| Query / corpus QA | PaperQA · LitQA; KnowledgeBerg | run; borrow (coverage@k) |
+| Verify / citation | CiteME, CiteGuard; Wallat (correctness ≠ faithfulness) | run; borrow (NLI support check) |
+| Write & revise | ALCE, ExpertQA; EditEval, IteraTeR | run; borrow (edit-intention) |
+| Memory & drift | LongMemEval, MemoryAgentBench; Memora, ClawArena | run; borrow (FAMA, CRS) |
+| Tool use & RPC | τ-bench; ToolLLM, API-Bank | run; borrow (pass^k) |
+| Safety / injection | AgentDojo, InjecAgent, ToolEmu | run |
+
+Deliberately **out of scope** (and tracked as such in the workspace taxonomy): autonomous-scientist / end-to-end discovery, hypothesis & novelty scoring, Deep-Research report generation, and model-weight knowledge-editing — each conflicts with Memoria's human-gated, corpus-curating, file-based posture.
 
 ## Integrating vault-eval into the runtime
 
@@ -94,4 +109,4 @@ The benchmark corpus is autonomous-agent-centric, so the signals that most deter
 - [architecture/why-no-autonomous-synthesis.md](../architecture/why-no-autonomous-synthesis.md), [vision.md](../vision.md) — the posture the research validates.
 - [dashboards/drift-watch.md](../dashboards/drift-watch.md), [dashboards/fleet-health.md](../dashboards/fleet-health.md), [dashboards/audit-log.md](../dashboards/audit-log.md), [dashboards/weekly-review.md](../dashboards/weekly-review.md) — the surfaces the observability additions touch.
 - [architecture/memory-tiers.md](../architecture/memory-tiers.md) — the append-only vault audit memory (`00-meta/02-logs/`, `00-meta/08-metrics/`) the new telemetry extends.
-- `benchmarks/` (vault root) — the benchmark taxonomy, per-paper findings, and the `vault-eval` harness this synthesizes.
+- The **benchmark-review workspace** (maintained separately) — the full benchmark taxonomy (`benchmarks_for_memoria.md`), per-paper findings (`findings.md`), and the `vault-eval` harness scaffold this synthesizes.

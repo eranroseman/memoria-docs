@@ -42,7 +42,7 @@ Without the split, every cross-session question collapses into "store it in memo
 ## Related
 
 - Hermes Agent's native memory model: [hermes-agent.nousresearch.com/docs/user-guide/features/memory](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory)
-- Task packet (how board memory travels between profiles): [kanban-board/card-schema.md](../kanban-board/card-schema.md#structured-task-packet)
+- Task packet (how board memory travels between profiles): [kanban-board/card-schema.md](../kanban-board/card-schema.md#structured-payload)
 - Vault project-memory pattern: [workflows/README.md](../workflows/README.md)
 - Audit log location: `00-meta/02-logs/audit.jsonl` (see [architecture/policy-mcp.md](../architecture/policy-mcp.md))
 - Thin control over thick state: [architecture/README.md](README.md#thin-control-over-thick-state)
