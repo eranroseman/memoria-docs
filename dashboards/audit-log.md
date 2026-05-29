@@ -15,7 +15,7 @@ The forensic trail for every vault write the policy MCP touched. Spot decisions 
 ## What this dashboard is not
 
 - **Not [`drift-watch`](drift-watch.md).** Audit-log records *per-write decisions* (policy MCP outcome per attempted write). Drift-watch records *per-lint-pass findings* (structural-detector outputs). Different cadence, different abstraction.
-- **Not a trend view.** [`fleet-observability`](fleet-observability.md) aggregates audit-log entries into rolled-up metrics (audit deny rate, drift incidents, retry rate). Audit-log itself is the raw event stream — one JSON object per write decision.
+- **Not a trend view.** [`fleet-health`](fleet-health.md) aggregates audit-log entries into rolled-up metrics (audit deny rate, drift incidents, retry rate). Audit-log itself is the raw event stream — one JSON object per write decision.
 - **Not editable.** The audit log is append-only by design. Each entry has `before_hash` and `after_hash` SHA-256s for tamper detection; the [Linter's ault-hash-drift detector](../profiles/linter.md) catches files modified outside this trail.
 
 ## Design decisions
@@ -29,13 +29,13 @@ The forensic trail for every vault write the policy MCP touched. Spot decisions 
 
 - [architecture/policy-mcp.md](../architecture/policy-mcp.md) — the policy MCP that writes these entries; format and decision protocol
 - [`drift-watch`](drift-watch.md) — structural drift findings (different layer, complementary view)
-- [`fleet-observability`](fleet-observability.md) — operational rollups that consume this stream
+- [`fleet-health`](fleet-health.md) — operational rollups that consume this stream
 - [Linter design summary](../profiles/linter.md) — owns audit-log rotation
 
 <!-- memoria-nav -->
 
 ---
 
-[← Previous: index — design summary](README.md)
+[← Previous: Daily Health — design summary](README.md)
 
 [Next: board-state — design summary →](board-state.md)

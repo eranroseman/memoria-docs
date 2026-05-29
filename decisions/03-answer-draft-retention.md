@@ -36,7 +36,7 @@ Surface unreviewed answer drafts in the weekly dashboard. After a configurable t
 ## Related
 
 - **Workflows affected:** [Distill](../workflows/README.md), [Lint](../workflows/README.md)
-- **Files affected:** [profiles/linter.md](../profiles/linter.md), [weekly-overview.md](../dashboards/weekly-overview.md)
+- **Files affected:** [profiles/linter.md](../profiles/linter.md), [weekly-review.md](../dashboards/weekly-review.md)
 - **Resolves / supersedes:** none
 
 <!-- memoria-nav -->

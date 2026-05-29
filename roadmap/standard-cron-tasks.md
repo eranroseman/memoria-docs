@@ -35,7 +35,7 @@ Three of the four are on the Linter lane (read-only writes go to `00-meta/02-log
 
 ## `cron_mode` migration
 
-Hermes's default config ships `cron_mode: deny` — scheduled tasks don't fire until the human explicitly enables cron per lane. This is the safety default; Memoria preserves it.
+Two knobs are easy to conflate. **Whether a cron task is scheduled at all** is a per-job decision — you create the Hermes cron job for a lane. **`approvals.cron_mode`** (default `deny`) is separate: it governs what a cron job does when it hits a command that would normally need human approval — `deny` blocks that command (the agent must find another path), `approve` auto-approves everything in cron context. Cron jobs still *run* under `deny`; they just can't execute dangerous, approval-gated commands unattended. Memoria keeps the `deny` default and schedules cron jobs cautiously, lane by lane, in the order below.
 
 The recommended enablement order, by safety:
 

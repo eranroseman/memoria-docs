@@ -23,7 +23,7 @@ Every vault action goes through `check_permission(profile, action, path, task_id
 | `allow` | Action proceeds. Logged only if the lane's `policy.require` includes `audit_log`. | Path matches the lane's `policy.allow` patterns, no `policy.deny` matches, and the action is routine. |
 | `allow_with_log` | Action proceeds. Audit entry is **mandatory** regardless of lane policy. | The action is allowed but operationally significant — cross-zone moves, reads of canonical content, any action with `flags.explicit_authorization`. |
 | `deny` | Action is blocked; the worker must escalate or pick a different path. Always logged. | Path matches a `policy.deny` rule, or no rule matches at all (default-deny). |
-| `dry_run` | Action is logged and reported but not performed; the worker should escalate to a board comment for human approval. Always logged. | Path is in a canonical zone (`30-synthesis/01-claims/`, `30-synthesis/03-moc/`, `50-deliverables/`) even if the profile is otherwise allowed. |
+| `dry_run` | Action is logged and reported but not performed; the worker should escalate to a board comment for human approval. Always logged. | Path is in a canonical zone (`30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, `50-deliverables/`) even if the profile is otherwise allowed. |
 
 `task_id` is **required**, not optional. Hermes delegated children return summaries rather than sharing live state, so every MCP request must carry full identity from the parent handoff packet — the MCP cannot ask the worker "which task are you running?" mid-decision.
 
@@ -164,7 +164,7 @@ The MCP is invoked over MCP-standard JSON. Every request carries full identity; 
 }
 ```
 
-Workers must surface `deny` and `dry_run` responses to the board as either a `rejected` move or an explicit comment with the `policy_rule` cited. A worker that swallows a `deny` and tries a different path silently is misconfigured.
+Workers must surface `deny` and `dry_run` responses to the board as either a `declined` move or an explicit comment with the `policy_rule` cited. A worker that swallows a `deny` and tries a different path silently is misconfigured.
 
 ## What gets logged
 

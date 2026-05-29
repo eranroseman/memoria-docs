@@ -18,7 +18,7 @@ Operational concerns: what to do when things go wrong, and how to keep the runni
 - **Plugin configuration** — [plugins/](../plugins/) (per-plugin configs, lifecycle, visual style). Operationally adjacent but its own folder because of size (20+ files).
 - **Deployment and secret management** — [roadmap/deployment-options.md](../roadmap/deployment-options.md), [roadmap/secret-management.md](../roadmap/secret-management.md). These are about *setup* rather than runtime recovery.
 - **Safe-mode procedures** — `00-meta/04-reference/safe-mode.md` in the starter vault. The vault-resident counterpart of `failure-modes.md` for when Hermes, the ACP connection, or the watcher is down. See [vault/README.md vault skeleton](../vault/README.md#vault-skeleton-human-facing-notes).
-- **Audit and observability** — [dashboards/audit-log.md](../dashboards/audit-log.md), [dashboards/fleet-observability.md](../dashboards/fleet-observability.md). Dashboards surface the signal; operations recipes act on it.
+- **Audit and observability** — [dashboards/audit-log.md](../dashboards/audit-log.md), [dashboards/fleet-health.md](../dashboards/fleet-health.md). Dashboards surface the signal; operations recipes act on it.
 
 ## Operating principles
 
@@ -30,6 +30,6 @@ Operational concerns: what to do when things go wrong, and how to keep the runni
 
 ---
 
-[← Previous: weekly-dashboard — design summary](../dashboards/weekly-overview.md)
+[← Previous: weekly-review — design summary](../dashboards/weekly-review.md)
 
 [Next: Failure modes — Detect / Fix / Verify →](failure-modes.md)

@@ -33,7 +33,7 @@ The Core commands column in the [Lane permissions matrix](README.md#lane-permiss
 | `graph-analyze` | Knowledge graph health: orphans, hubs, clusters, link density. | Linter | Yes |
 | `session-log` | Write per-session log file to `00-meta/02-logs/`. | Linter | N/A |
 
-Rule: any command that writes to canonical folders (`30-synthesis/01-claims/`, `30-synthesis/03-moc/`, `50-deliverables/`) or runs a migration must default to dry-run. `schema-migrate` in particular must never be run without reviewing the diff first.
+Rule: any command that writes to canonical folders (`30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, `50-deliverables/`) or runs a migration must default to dry-run. `schema-migrate` in particular must never be run without reviewing the diff first.
 
 ## Related
 

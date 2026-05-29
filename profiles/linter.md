@@ -21,7 +21,7 @@ Linter is Memoria's deterministic conscience. It validates structure (frontmatte
 
 ## Design decisions
 
-- **Zero-LLM and deterministic — the design parallel to the trust score.** Linter's verdict band (PASS / REVIEW / FAIL) is the structural rollup; the fleet-observability dashboard's trust score is the operational rollup. Both are headline single numbers; both are reproducibly computed from logs and findings; neither involves LLM judgment in the rollup. This parallelism is intentional — operational health and structural health get separate headline metrics with the same epistemic discipline.
+- **Zero-LLM and deterministic — the design parallel to the trust score.** Linter's verdict band (PASS / REVIEW / FAIL) is the structural rollup; the fleet-health dashboard's trust score is the operational rollup. Both are headline single numbers; both are reproducibly computed from logs and findings; neither involves LLM judgment in the rollup. This parallelism is intentional — operational health and structural health get separate headline metrics with the same epistemic discipline.
 - **Owns `00-meta/02-logs/`.** Linter writes per-session log summaries, rotates the policy MCP audit log weekly (`audit.jsonl` → `00-meta/02-logs/archive/audit-YYYY-WW.jsonl`), and writes lint findings. This is the only path where Linter writes routinely. The rotation is classed as `authorized-targeted` in the auto-fix table, so the policy MCP allows it without escalation.
 - **M-detectors are the silent-failure layer.** The eight M-detectors catch failure modes the human wouldn't notice by reading content: a Dataview query that references a field no template emits (`dashboard-field-drift`), a `data.json` that drifted from the committed version (`plugin-config-drift`), an `extract_path` pointing at a missing file (`extract-path-broken`). The defining property is "silent" — the failure mode looks like "nothing to do" when there's actually something to do. The full detector specs live in `M-detectors.md` alongside the runtime SOUL.md.
 - **Auto-fix is class-gated by the policy MCP.** When `profile = "memoria-linter"` and `action = "auto_fix"`, the MCP requires `flags.class ∈ {"safe-and-unambiguous", "authorized-targeted"}`. Schema/content changes and canonical edits are always `deny` regardless of who requests them. Class gating is the runtime enforcement of the auto-fix policy — not just a design rule, an enforced one.
@@ -35,7 +35,7 @@ Linter classifies every proposed fix into one of four classes. The class determi
 | `safe-and-unambiguous` | Trailing whitespace, missing `created` timestamp on a new note, missing required template field with one obvious value | **Auto-fix** (delegated to Templater — see [§"Implementing safe-and-unambiguous fixes via Templater"](#implementing-safe-and-unambiguous-fixes-via-templater)) |
 | `authorized-targeted` | Audit-log rotation, lint-findings file truncation, dashboard `last_updated` refresh | **Auto-fix** (Linter's own logs/dashboards only) |
 | `schema-content` | Frontmatter field rename, value-set change, deprecated field removal | **Dry-run** (always — needs `schema-migrate`) |
-| `canonical-edit` | Any write to `30-synthesis/01-claims/`, `30-synthesis/03-moc/`, `50-deliverables/` | **Deny** (the policy MCP forces `dry_run` regardless of class) |
+| `canonical-edit` | Any write to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, `50-deliverables/` | **Deny** (the policy MCP forces `dry_run` regardless of class) |
 
 The gate is `policy.allow.auto_fix.classes: ["safe-and-unambiguous", "authorized-targeted"]` in `lane-overrides/linter.yaml`; anything else is `deny`. See [architecture/policy-mcp.md](../architecture/policy-mcp.md) for the request/response contract and audit-log shape.
 
@@ -46,8 +46,8 @@ Every Linter finding carries a severity. The scale drives dashboard surfacing, n
 | Severity | Meaning | Examples |
 | --- | --- | --- |
 | `LOW` | Cosmetic or eventually-fixable. Doesn't block; aggregated weekly. | Trailing whitespace, missing optional field, slightly stale `enriched_date`. |
-| `MEDIUM` | Real drift that hasn't yet caused breakage. Surfaced in [`weekly-dashboard`](../dashboards/weekly-overview.md); reviewed during the Friday ritual. | `data.json` plugin config diverged from committed version (`plugin-config-drift`), unused MOC entry, broken non-canonical link. |
-| `HIGH` | Active breakage or imminent breakage. Surfaced in [`index`](../dashboards/README.md) and [`drift-watch`](../dashboards/drift-watch.md); pushed to Telegram. | Broken `extract_path` (`extract-path-broken`), schema version mismatch on a recently-edited note, audit-log SHA-chain break (`vault-hash-drift`). |
+| `MEDIUM` | Real drift that hasn't yet caused breakage. Surfaced in [`weekly-review`](../dashboards/weekly-review.md); reviewed during the Friday ritual. | `data.json` plugin config diverged from committed version (`plugin-config-drift`), unused MOC entry, broken non-canonical link. |
+| `HIGH` | Active breakage or imminent breakage. Surfaced in [Daily Health](../dashboards/README.md) and [`drift-watch`](../dashboards/drift-watch.md); pushed to Telegram. | Broken `extract_path` (`extract-path-broken`), schema version mismatch on a recently-edited note, audit-log SHA-chain break (`vault-hash-drift`). |
 | `CRITICAL` | System integrity at risk. Always pushes to Telegram, blocks dispatch until acknowledged. | Audit-log tamper detection failure, policy MCP startup failure, lane-override file invalid. |
 
 The verdict band rolls up by counting findings: `PASS` if no HIGH/CRITICAL; `REVIEW` if any MEDIUM but no HIGH; `FAIL` if any HIGH or CRITICAL.

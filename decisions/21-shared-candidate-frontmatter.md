@@ -4,9 +4,8 @@ audience: system-designer
 topic: decisions
 id: 21
 title: Shared candidate frontmatter format
-status: accepted
+status: proposed
 date_proposed: 2026-05-15
-date_resolved: 2026-05-15
 supersedes: []
 superseded_by: []
 ---
@@ -33,7 +32,7 @@ projects: []                # plural list, matches other templates
 
 ## Consequences
 
-- A single Dataview query in the [weekly-dashboard](../dashboards/weekly-overview.md) covers all candidate sources.
+- A single Dataview query in the [weekly-review](../dashboards/weekly-review.md) covers all candidate sources.
 - Triage dashboards work uniformly regardless of where a candidate came from.
 - Tiny schema cost; high payoff for any later screening work.
 - Until the 16th note type is added in templates, the dashboard's "Discovery candidates" query returns no results.
@@ -47,7 +46,7 @@ projects: []                # plural list, matches other templates
 ## Related
 
 - **Related decisions:** [ADR-19 pre-ingest screening](19-pre-ingest-screening.md) consumes this schema for bulk screening.
-- **Files affected:** [vault/README.md](../vault/README.md), `templates/candidate-note.md` (to be created), [dashboards/weekly-overview.md](../dashboards/weekly-overview.md)
+- **Files affected:** [vault/README.md](../vault/README.md), `templates/candidate-note.md` (to be created), [dashboards/weekly-review.md](../dashboards/weekly-review.md)
 - **Resolves / supersedes:** none
 
 <!-- memoria-nav -->

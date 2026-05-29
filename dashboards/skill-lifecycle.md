@@ -37,6 +37,6 @@ Track every Hermes skill across the lifecycle: `intake → proposed → scaffold
 
 ---
 
-[← Previous: schema-hygiene — design summary](schema-hygiene.md)
+[← Previous: loose-ends — design summary](loose-ends.md)
 
-[Next: weekly-dashboard — design summary →](weekly-overview.md)
+[Next: weekly-review — design summary →](weekly-review.md)

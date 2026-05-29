@@ -12,7 +12,7 @@ Memoria's three layers (board, workers, vault) are the architecture; **surfaces*
 
 | Type | What it is | Open / close cadence | Examples |
 | --- | --- | --- | --- |
-| **Persistent** | Dashboards — Dataview queries rendered as notes. Opened deliberately; read; closed. | Seconds to minutes per visit; multiple times per day | `index`, `weekly-dashboard`, `audit-log` |
+| **Persistent** | Dashboards — Dataview queries rendered as notes. Opened deliberately; read; closed. | Seconds to minutes per visit; multiple times per day | `Daily Health`, `weekly-review`, `audit-log` |
 | **Modal** | Saved Obsidian workspaces bound to a hotkey. Switched into for a task; switched out of when the task ends. | Whole sessions (reading, drafting, triage) | Human (`Cmd-1`), Reading & Processing (`Cmd-2`), Drafting (`Cmd-3`) |
 | **Inline** | Callout blocks inside individual notes. Appear in place, where the relevant context lives. | Visible whenever the note is open | `[!brief]`, `[!suggestions]`, `[!verification]` |
 | **Ambient** | Always-visible but minimal indicators. Surface status without demanding attention. | Continuously visible while Obsidian is open | Status-bar lint findings, badge counts |
@@ -31,7 +31,7 @@ Each surface type is detailed in its own sub-file in this folder ([persistent.md
 Two rules apply to every surface, not just to one type.
 
 - **The surface is read; the work is elsewhere.** No surface contains fix logic. Surfaces surface issues; action happens in notes (for content) or commands (for state changes). This is what keeps state transitions deliberate — a clicked dashboard row, a typed command, an accepted callout suggestion all converge on the policy MCP, never bypass it.
-- **Invisible during normal use, legible on failure.** A healthy day is a 30-second glance at [`index`](../dashboards/README.md) that shows nothing red and gets closed. Surfaces earn their keep only when something goes wrong — and at that moment they must make the breakage immediately legible. A surface visited for reassurance is friction; a surface visited for diagnosis is the architecture working as designed.
+- **Invisible during normal use, legible on failure.** A healthy day is a 30-second glance at [Daily Health](../dashboards/README.md) that shows nothing red and gets closed. Surfaces earn their keep only when something goes wrong — and at that moment they must make the breakage immediately legible. A surface visited for reassurance is friction; a surface visited for diagnosis is the architecture working as designed.
 
 Type-specific rules live in each sub-file.
 

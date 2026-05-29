@@ -8,52 +8,54 @@ topic: board
 
 The Kanban board is the control plane for Memoria. It is the shared state machine across profiles and sessions. Every long-lived piece of work lives on the board until a human approves it into the vault.
 
-This document covers the conceptual model: why the board exists, what the states mean, and how cards move through review and retry. For the operational reference — the full state list, lane exit contracts, review-gate rules, and verdict vocabulary — see [states.md](states.md). For the card schema and handoff format see [card-schema.md](card-schema.md).
+This document covers the conceptual model: why the board exists, what the states mean, and how cards move through review and retry. Memoria tracks **two lifecycles** — *execution* (the Hermes built-in `status` enum) and *review* (a Memoria overlay in the card `metadata`). For the operational reference — the full state machine, lane exit contracts, review-gate rules, and verdict vocabulary — see [states.md](states.md). For the card schema and handoff format see [card-schema.md](card-schema.md).
 
-## Why every state matters
+## Why every distinction matters
 
-- **`unspecified` vs `queued`** — separates specification from dispatch. A card in `unspecified` may be missing `lane`, `canonical_target`, or a coherent task description. Promotion to `queued` is an explicit "I'm done thinking about scope" moment that the dispatcher waits for. The closest Hermes-default equivalent is the Triage state, but driven by human action rather than an orchestrator — see [Cards born in `unspecified` vs cards born in `queued`](#cards-born-in-unspecified-vs-cards-born-in-queued) below.
-- **`queued` vs `claimed`** — separates dispatch from execution. Multiple cards can be `queued`; only one profile holds `claimed` at a time per card.
-- **`blocked-on-human` vs `delivered`** — both block, but for different reasons. `blocked-on-human` is a decision the worker cannot make at all (the work itself can't proceed); `delivered` is a check on already-completed work.
-- **`declined` vs `requeued`** — `declined` is a quality decision (the work was wrong); `requeued` is an execution problem (a tool failed, a query timed out). `declined` is human-driven and exits via discard-or-supersede; `requeued` is dispatcher-driven and re-attempts the same card.
-- **`accepted` vs `closed`** — separation matters when promotion involves moving files or running follow-on tasks. `accepted` says "the work is good"; `closed` says "everything downstream has been handled."
+Memoria's earlier drafts invented one nine-value `status` enum. Those distinctions are still meaningful — they just split across the two lifecycles. Each pairing below is worth keeping:
 
-The key discipline: cards never close on a worker's say-so. The card lives until the human changes the review state.
+- **`triage` vs `ready`** — separates specification from dispatch. A card in `triage` may be missing an `assignee`, a `canonical_target`, or a coherent task description. Promotion to `ready` (via `hermes kanban specify`) is an explicit "I'm done thinking about scope" moment that the dispatcher waits for. This is the Hermes Triage state, driven by human action rather than an orchestrator — see [Cards born in `triage` vs cards born in `ready`](#cards-born-in-triage-vs-cards-born-in-ready) below.
+- **`ready` vs `running`** — separates dispatch from execution. Multiple cards can be `ready`; a profile holds one `running` card at a time.
+- **`blocked` vs awaiting review** — both stall the card, for different reasons. `blocked` is a decision the worker cannot make at all (the work itself can't proceed); a `done` card with `review_status: requested` is a check on already-completed work.
+- **`review_status: rejected` vs auto-retry** — `rejected` is a quality decision (the work was wrong); a retry is an execution problem (a tool failed, a query timed out). Rejection is human-driven and exits via discard-or-supersede; a retry is dispatcher-driven and re-attempts the same card by returning it to `ready`.
+- **`review_status: approved` vs `status: archived`** — separation matters when promotion involves moving files or running follow-on tasks. `approved` says "the work is good"; `archived` says "everything downstream has been handled."
 
-## Cards born in `unspecified` vs cards born in `queued`
+The key discipline: cards never reach canonical on a worker's say-so. The card lives until the human changes the review state.
 
-The default for **human-created cards** is `unspecified`. The command-palette commands that create cards (`Memoria: new project`, `Memoria: ingest source` when invoked manually, etc.) write the card with `status: unspecified` so the human can review the auto-populated fields and adjust before dispatch.
+## Cards born in `triage` vs cards born in `ready`
 
-The default for **cron-created cards and watcher-triggered cards** is `queued`. These cards are pre-specified by their cron config or trigger rule — there is no half-formed state to recover from, and the design intent is fire-and-forget. The nightly hygiene sweep, the weekly drift detector, file-system watchers on `library.bib`, and git-hook-fired verify cards all skip `unspecified` entirely.
+The default for **human-created cards** is `triage`. The command-palette commands that create cards (`Memoria: new project`, `Memoria: ingest source` when invoked manually, etc.) write the card with `status: triage` so the human can review the auto-populated fields and adjust before dispatch.
 
-The rule: **if the card is fully specified at creation time, start at `queued`; if a human still needs to shape it, start at `unspecified`.** The dispatcher ignores `unspecified` cards regardless of how they got there, so the distinction is visible only in the human's UI.
+The default for **cron-created cards and watcher-triggered cards** is `ready`. These cards are pre-specified by their cron config or trigger rule — there is no half-formed state to recover from, and the design intent is fire-and-forget. The nightly hygiene sweep, the weekly drift detector, file-system watchers on `library.bib`, and git-hook-fired verify cards all skip `triage` entirely.
+
+The rule: **if the card is fully specified at creation time, start at `ready`; if a human still needs to shape it, start at `triage`.** The dispatcher ignores `triage` cards regardless of how they got there, so the distinction is visible only in the human's UI.
 
 ## Post-rejection paths
 
-A card in `declined` is not "back to the worker." The human's judgment is "no, this work isn't right." What happens next is a separate decision made by the human with full context:
+A card with `review_status: rejected` is not "back to the worker." The human's judgment is "no, this work isn't right." What happens next is a separate decision made by the human with full context:
 
 | Path | What happens | Outcome marker |
 | --- | --- | --- |
-| **Supersede** | Human spawns a new card on the same lane with revised specification — addressing the issues that caused rejection. The new card carries a `supersedes: <original-card-id>` provenance field; the original card closes. This is the standard "revise and retry" pattern. | Original card → `closed` with `outcome: superseded`. New card starts in `unspecified`. |
-| **Discard** | Human decides the work shouldn't exist. The card closes without a successor. The rejection itself is the answer. | Card → `closed` with `outcome: discarded`. |
+| **Supersede** | Human spawns a new card on the same lane with revised specification — addressing the issues that caused rejection. The new card carries a `metadata.supersedes: <original-card-id>` provenance field; the original card is archived. This is the standard "revise and retry" pattern. | Original card → `archived` with `outcome: superseded`. New card starts in `triage`. |
+| **Discard** | Human decides the work shouldn't exist. The card is archived without a successor. The rejection itself is the answer. | Card → `archived` with `outcome: discarded`. |
 
 Both paths are explicit human actions. There is no implicit "return to lane queue" — every rework starts as a new card with new specs, which is more honest about how revisions actually work (the original prompt was usually wrong, not just the work product).
 
-This is *not* the same as `requeued`. Requeued is automatic re-dispatch after a transient failure on the same card with the same task packet. Rejection is human judgment that the task itself needs to be re-specified, which is what a new card is for.
+This is *not* the same as a retry. A retry is automatic re-dispatch after a transient failure on the same card with the same `metadata` payload. Rejection is human judgment that the task itself needs to be re-specified, which is what a new card is for.
 
 ## Persistence pattern
 
 The board is where work memory lives across sessions and across worker handoffs.
 
 - **Same card, same identity.** A retry does not create a new card.
-- **Session-safe memory.** Closing your chat does not lose the work; the card persists.
+- **Session-safe memory.** Closing your chat does not lose the work; the card persists in `kanban.db`.
 - **No chat-history dependence.** The next worker reads the card, not the transcript.
-- **Visible until closed.** A card in any non-terminal state is on the board.
-- **Shared memory across roles.** The handoff note is the API between profiles.
+- **Visible until archived.** A card in any non-terminal state is on the board.
+- **Shared memory across roles.** The handoff summary (and the `metadata` payload) is the API between profiles.
 
 ## Retry pattern
 
-Failed work moves to `requeued` instead of disappearing. The next attempt happens on the same card.
+Failed work returns to `ready` for re-dispatch instead of disappearing. The next attempt happens on the same card.
 
 The retry comment should capture:
 
@@ -61,13 +63,13 @@ The retry comment should capture:
 - **What was attempted.** Which approaches the previous worker tried.
 - **Next action.** The exact thing the next claim should try.
 
-`retry_count` increments. The same or a different profile can reclaim.
+Hermes increments the retry count in run history. The same or a different profile can reclaim.
 
 ### Escalation threshold
 
-**Default: `retry_count > 3` auto-moves the card to `blocked-on-human` with `blocked_reason: "retry_threshold_exceeded"`.** Three attempts is the operating point — enough that transient failures (a rate-limited API, a flaky external lookup) resolve themselves on retry, few enough that a structurally broken task doesn't burn the lane on the same failure mode all night. The threshold is configurable per lane in the lane-override file for lanes where the cost profile justifies a different number — the library lane may tolerate `>5` because each retry is cheap, the Writer lane may want `>2` because each retry is a model call. The Kanban dispatcher reads the threshold from the lane-override; no profile is "responsible" for enforcing it.
+**Default: after `max_retries` (default 3) recoverable failures, the dispatcher moves the card to `blocked` with `reason: "retry_threshold_exceeded"`.** Three attempts is the operating point — enough that transient failures (a rate-limited API, a flaky external lookup) resolve themselves on retry, few enough that a structurally broken task doesn't burn the lane on the same failure mode all night. `max_retries` is configurable per lane in the lane-override file for lanes where the cost profile justifies a different number — the library lane may tolerate `5` because each retry is cheap, the Writer lane may want `2` because each retry is a model call. The Kanban dispatcher reads the threshold from the task/lane config; no profile is "responsible" for enforcing it.
 
-The card stays in `blocked-on-human` until the human either revises the task packet (and resets `retry_count` to 0), promotes the issue out of band (rewriting the prompt, fixing a tool), or closes the card with `blocked_reason: "infeasible"`. The retry counter never auto-decrements; only an human decision resets it.
+The card stays in `blocked` until the human either revises the handoff payload (`metadata`) and re-dispatches (which resets the retry count), promotes the issue out of band (rewriting the prompt, fixing a tool), or archives the card with `reason: "infeasible"`. The retry counter never auto-decrements; only a human decision resets it.
 
 This avoids three problems: duplicate cards for the same work, lost history about why a task is hard, and the temptation to give up silently. The escalation threshold adds a fourth guard: a brittle prompt or a broken tool can't quietly burn through API budget overnight.
 
@@ -76,20 +78,20 @@ This avoids three problems: duplicate cards for the same work, lost history abou
 A typical card moves through:
 
 ```text
-Trigger creates card ──► Specialist executes ──► Verifier / Linter recommendation ──► Human approves
-                                                                                            │
-                                                                                            ├─ approved ──► Done
-                                                                                            │
-                                                                                            └─ rejected ──► Done (outcome: superseded or discarded)
-                                                                                                                  │
-                                                                                                                  └─ (optional) new pending card with provenance
+Trigger creates card ──► Specialist executes ──► Verifier / Linter recommendation ──► Human reviews
+                                                                                          │
+                                                                                          ├─ review_status: approved ──► archived
+                                                                                          │
+                                                                                          └─ review_status: rejected ──► archived (outcome: superseded or discarded)
+                                                                                                                           │
+                                                                                                                           └─ (optional) new triage card with provenance
 ```
 
-Triggers (human action, cron, git hook, file watcher) create cards according to the lane-override rules. Specialists act within their lane. Verifier produces a verification verdict on `verify` cards; Linter produces structural reports. The human approves or blocks.
+Triggers (human action, cron, git hook, file watcher) create cards according to the lane-override rules. Specialists act within their lane. Verifier produces a verification verdict (in `metadata.agent_verdict`) on `verify` cards; Linter produces structural reports. The human approves or blocks.
 
 ## Board implementation: Hermes built-in Kanban
 
-Memoria uses the **Hermes built-in Kanban board**. This is mandated — not one option among several.
+Memoria uses the **Hermes built-in Kanban board**. Once you adopt a board, this is the mandated choice — not one option among several. (The [minimum-viable system](../roadmap/README.md#minimum-viable-system) can run Hermes terminal-only and defer the board until task volume justifies it; what's mandated is *which* board you adopt, not that you start with one.)
 
 - [Hermes Kanban feature](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban)
 - [Kanban tutorial](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban-tutorial)
@@ -97,10 +99,10 @@ Memoria uses the **Hermes built-in Kanban board**. This is mandated — not one 
 
 Why Hermes native:
 
-- The whole architecture assumes Hermes profiles; the native board gives profiles first-class lane semantics without bridging.
-- Worker-lane contracts are built in — `delegate_task` for one-off children, profile binding for persistent lanes.
-- Review states are native fields, not extensions of a generic board schema.
-- Cross-session persistence and retry semantics match what's specified in the schema fields above.
+- The whole architecture assumes Hermes profiles; the native board gives profiles first-class lane semantics (a lane *is* a card's `assignee`) without bridging.
+- Worker-lane contracts are built in — `delegate_task` (the `delegation` toolset) for one-off isolated children, profile binding via `assignee` for persistent lanes.
+- Cross-session persistence and retry semantics are native — card state lives in `kanban.db` and survives restarts, and `max_retries` drives re-dispatch.
+- The one thing Hermes lacks — a human review gate — layers cleanly onto the native `metadata` field, so Memoria adds it without forking the fixed card schema. See [card-schema.md](card-schema.md).
 
 ### Dispatch interval
 
@@ -125,14 +127,14 @@ For implementation patterns and a working example of Hermes-managed boards, see 
 ## What the board does not do
 
 - **Not a knowledge store.** Cards die; knowledge lives in the vault.
-- **Not a chat log.** Conversation context goes into handoff notes, not card history.
+- **Not a chat log.** Conversation context goes into handoff summaries, not card history.
 - **Not a place for canonical claims.** Claims live in `30-synthesis/01-claims/`. The board references them; it doesn't hold them.
 - **Not a substitute for review.** A card with `review_status: approved` is meaningful; a card with no review state set is not.
 
 ## Anti-patterns
 
-- **Closing cards on worker say-so.** Always wait for the review state to change.
-- **Creating a new card for a retry.** Reuse the existing card; increment `retry_count`.
+- **Reaching canonical on worker say-so.** Always wait for the review state to change.
+- **Creating a new card for a retry.** Reuse the existing card; Hermes re-dispatches it and tracks the retry in run history.
 - **Burying review status in comments.** If `review_status` is the source of truth, queries must use it; if comments are the source of truth, review is implicit and unenforceable.
 - **Unbounded lanes.** Without WIP limits, the synthesis or review queue fills up and the human becomes the bottleneck silently.
 

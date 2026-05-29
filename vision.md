@@ -49,9 +49,9 @@ A survey of 37 contemporary agent-driven research systems and benchmarks — end
 **Adopted patterns:**
 
 - **Stage-gated pipelines** (LitSearch, ResearchArena, MLR-Copilot, Agent Laboratory) — distinct stages with distinct outputs and validation points. The dominant shape across every end-to-end system surveyed.
-- **Thin control over thick state** (Chen 2026, AgentRxiv 2025, PARNESS 2026) — the orchestrator and workers carry minimal context; durable knowledge lives in files. Three independent corroborations: Chen 2026's File-as-Bus ablation (−6.41 PaperBench, −31.82 MLE-Bench Lite when it's removed), AgentRxiv's +11% on MATH-500 when agents read prior agent outputs, and PARNESS naming cross-run knowledge accumulation as one of five load-bearing structural problems in prior systems. Memoria's three-layer split is the structural form of this finding — see [architecture/README.md §"Thin control over thick state"](architecture/README.md#thin-control-over-thick-state).
+- **Thin control over thick state** (Chen 2026, AgentRxiv 2025, PARNESS 2026) — the orchestrator and workers carry minimal context; durable knowledge lives in files. Three independent results corroborate it, and Memoria's three-layer split is its structural form. The ablation figures and the full borrow-mapping are in [architecture/README.md §"Thin control over thick state"](architecture/README.md#thin-control-over-thick-state).
 - **Explicit agent roles** (AI co-scientist, MetaGPT, MOOSE, Agent Laboratory) — separate specialists (planner, executor, reviewer, Writer) over a generalist. Memoria's seven Hermes profiles.
-- **Structured outputs at handoffs** (MetaGPT, PARNESS) — agents produce typed structured outputs at inter-agent boundaries, not free text. Memoria's frontmatter schema + handoff task packet.
+- **Structured outputs at handoffs** (MetaGPT, PARNESS) — agents produce typed structured outputs at inter-agent boundaries, not free text. Memoria's frontmatter schema + handoff payload.
 - **Persistent knowledge graphs** (AI co-scientist's Memory module, AI-Supervisor's Research World Model, PARNESS, OmegaWiki) — typed relationships as primary memory, not RAG-only. Memoria's vault folders + frontmatter + wikilinks + MOC.
 - **Reviewable organization artifacts** (AI co-scientist's Meta-review agent, LitLLM, LatteReview) — synthesis as inspectable output, not hidden in prompts.
 
@@ -98,7 +98,7 @@ Memoria is built on the conviction that a research vault should grow more useful
 - A specialist multi-agent architecture (Hermes profiles) coordinated by a state machine (Kanban).
 - A vault that distinguishes source material, claim material, reference material, and project material — by folder, not by topic.
 - A single-user system, designed for a researcher who values control and provenance.
-- A system where **the human review state is structurally blocking, not advisory.** A card cannot promote until the human changes `status` to `approved`. This is deliberate positioning: the surveyed contemporary autonomous-research systems (ResearchAgent, AI co-scientist, MOOSE, Agent Laboratory) use LLM-based reviewers that advise; few make a human gate structurally required. Memoria's blocking gate is the structural form of the human-judgment commitment.
+- A system where **the human review state is structurally blocking, not advisory.** A card cannot promote until the human sets `review_status` to `approved`. This is deliberate positioning: the surveyed contemporary autonomous-research systems (ResearchAgent, AI co-scientist, MOOSE, Agent Laboratory) use LLM-based reviewers that advise; few make a human gate structurally required. Memoria's blocking gate is the structural form of the human-judgment commitment.
 
 ## Position on the autonomy spectrum
 
@@ -142,7 +142,7 @@ These are inviolable design constraints, not preferences:
 
 - **Folders encode lifecycle stage, not subject area.** A paper note about HCI lives in `20-sources/01-papers/`, not in `HCI/`. Topics belong in frontmatter and links.
 - **Canonical synthesis is human-owned.** `30-synthesis/01-claims/` is not auto-written. Agents can suggest links; humans write claims.
-- **The review state must change before promotion.** No worker says "I'm finished" and that promotes the card. The human changes `status` to `approved`.
+- **The review state must change before promotion.** No worker says "I'm finished" and that promotes the card. The human sets `review_status` to `approved`.
 - **Paper notes are never overwritten by structure or code agents.** Provenance is preserved.
 - **The agent logs what it changed and why.** Every action is reversible because every action is recorded.
 

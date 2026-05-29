@@ -29,7 +29,7 @@ Human only. This is not a workflow Hermes can execute — gap-loop decisions are
 
 ## Card lifecycle
 
-Inherited from [Verify](verify.md) — the `verify` card lands in one of `verify-needs-revision` or `verify-needs-attention` and becomes human-owned. Each human revision commit re-fires [Verify](verify.md), which produces a new verification report; the same card iterates until verify returns clean (or human marks remaining gaps as accepted-soft and manually advances the card to `approved`). [Export](export.md) cannot run while a verify card sits in a non-clean state.
+Inherited from [Verify](verify.md) — the `verify` card lands in one of `verify-needs-revision` or `verify-needs-attention` and becomes human-owned. Each human revision commit re-fires [Verify](verify.md), which produces a new verification report; the same card iterates until verify returns clean (or human marks remaining gaps as accepted-soft and manually sets `review_status: approved`). [Export](export.md) cannot run while a verify card sits in a non-clean state.
 
 ## Command
 

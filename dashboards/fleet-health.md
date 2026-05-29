@@ -4,9 +4,9 @@ audience: operator
 topic: dashboards
 ---
 
-# `fleet-observability` — design summary
+# `fleet-health` — design summary
 
-**Runtime artifact.** This dashboard ships at `00-meta/01-dashboards/fleet-observability.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview. The summary below covers its design role; the runtime queries live in the vault file.
+**Runtime artifact.** This dashboard ships at `00-meta/01-dashboards/fleet-health.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview. The summary below covers its design role; the runtime queries live in the vault file.
 
 ## Mission
 
@@ -16,7 +16,7 @@ Track whether the Hermes fleet is healthy: cost per task trending up, success ra
 
 - **Not [`drift-watch`](drift-watch.md).** Fleet-observability is *operational* (cost, latency, success rates); drift-watch is *structural* (structural-detector findings). The two are the design's complementary rollups — trust score for operations, verdict band for structure. Both are headline single numbers; both are reproducibly computed; neither involves LLM judgment in the rollup.
 - **Not actionable on individual writes.** That's [`audit-log`](audit-log.md)'s job. Fleet-observability aggregates across many writes into trends.
-- **Not a workflow tracker.** [`board-state`](board-state.md) shows work-in-flight; fleet-observability shows *quality* of completed work.
+- **Not a workflow tracker.** [`board-state`](board-state.md) shows work-in-flight; fleet-health shows *quality* of completed work.
 
 ## Design decisions
 

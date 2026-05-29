@@ -60,7 +60,7 @@ Hermes for type detection, routing, creation, enrichment, content extraction, ca
 
 ## Card lifecycle
 
-`ready` (file-system watcher or `.bib` change creates `intake:source` card; watcher-triggered cards skip `pending`) → `active` (Librarian claims within 60s) → `awaiting-review` (Librarian exits with `_proposed_classification` proposed) → human advances to [Classify](classify.md). Failed metadata fetch increments `retry_count`; threshold breach moves to `blocked-on-human` per [board/README.md retry pattern](../../board/README.md#retry-pattern).
+`ready` (file-system watcher or `.bib` change creates `intake:source` card; watcher-triggered cards skip `triage`) → `running` (Librarian claims within 60s) → `done` with `review_status: requested` (Librarian exits with `_proposed_classification` proposed) → human advances to [Classify](classify.md). A failed metadata fetch is retried on the same card; after `max_retries` it moves to `blocked` per [board/README.md retry pattern](../../board/README.md#retry-pattern).
 
 ## Command
 
@@ -68,7 +68,7 @@ Hermes for type detection, routing, creation, enrichment, content extraction, ca
 
 ## Example
 
-Citekey `mamykina2010sense` now exists in `library.bib`. The Librarian runs `hermes run llm-wiki ingest --source mamykina2010sense` → DOI in `.bib` routes to `20-sources/01-papers/` → creates a note from `paper-note.md` → Marker extracts the PDF to `90-assets/extracts/mamykina2010sense.md` → populates paper-note frontmatter (`extract_path: 90-assets/extracts/mamykina2010sense.md`, `pdf_uri: zotero://open-pdf/library/items/<key>`, `zotero_uri: zotero://select/items/<key>`) → enriches via OpenAlex (citation count, abstract) and PubMed (publication metadata) → proposes `_proposed_classification: { topic: [receptivity-detection], methods: [field-study] }` → writes the OpenAlex ID back to Zotero's `Extra` field → exits at `awaiting-review`. The human will triage it next.
+Citekey `mamykina2010sense` now exists in `library.bib`. The Librarian runs `hermes run llm-wiki ingest --source mamykina2010sense` → DOI in `.bib` routes to `20-sources/01-papers/` → creates a note from `paper-note.md` → Marker extracts the PDF to `90-assets/extracts/mamykina2010sense.md` → populates paper-note frontmatter (`extract_path: 90-assets/extracts/mamykina2010sense.md`, `pdf_uri: zotero://open-pdf/library/items/<key>`, `zotero_uri: zotero://select/items/<key>`) → enriches via OpenAlex (citation count, abstract) and PubMed (publication metadata) → proposes `_proposed_classification: { topic: [receptivity-detection], methods: [field-study] }` → writes the OpenAlex ID back to Zotero's `Extra` field → exits at `done` (`review_status: requested`). The human will triage it next.
 
 ## Related
 

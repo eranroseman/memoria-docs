@@ -13,7 +13,7 @@ By the end of this tutorial you will have:
 - One source ingested from Zotero into the vault with a real `[!brief]` callout
 - One audit-log entry proving the policy MCP gated the write
 
-This is the **minimum viable system** ([roadmap/README.md](../roadmap/README.md#minimum-viable-system)) path. You can grow from here. Don't worry about the seven-profile canonical setup yet; it earns its place once your review queue is a bottleneck.
+This is the **minimum viable system** ([roadmap/README.md](../roadmap/README.md#minimum-viable-system)) path. You can grow from here. Don't worry about the full seven-profile setup yet; it earns its place once your review queue is a bottleneck.
 
 Expect 60–90 minutes if you're new to all the pieces.
 
@@ -162,7 +162,7 @@ Open the paper-note (`20-sources/01-papers/<citekey>.md`) in Obsidian. The top s
 
 You've exercised all three Memoria layers:
 
-- **Board** — implicit; the ingest ran as a single card flowing through `ready → active → done`.
+- **Board** — implicit; the ingest ran as a single card flowing through `ready → running → archived`.
 - **Workers** — Librarian claimed the card, called the policy MCP for each write, wrote a paper-note.
 - **Vault** — the paper-note now lives in `20-sources/01-papers/`, the audit log records what happened, the `[!brief]` callout will populate properly once you have a few more sources.
 
@@ -174,7 +174,7 @@ Now that one source is in the vault:
 
 1. **Ingest 5–10 more sources.** Drag them into Zotero, run `hermes ... ingest --source <citekey>` for each. Once you have 5+, the `[!brief]` callouts on subsequent sources will start showing real comparative reads.
 2. **Run the Linter once.** `hermes -p memoria-linter run lint --target 20-sources/` will report any structural issues (frontmatter shape, link health). The Linter profile was already deployed by `install.ps1` in step 4 — fill in `~/.hermes/profiles/memoria-linter/.env` the first time you run it.
-3. **Open the [weekly-dashboard](../dashboards/weekly-overview.md)** once a week (Friday afternoon is the recommended ritual). Decide what to promote from `10-inbox/` and classify outstanding paper-notes.
+3. **Open the [weekly-review](../dashboards/weekly-review.md)** once a week (Friday afternoon is the recommended ritual). Decide what to promote from `10-inbox/` and classify outstanding paper-notes.
 
 When you start to feel the absence of capabilities — comparative scope reports, claim verification, drafting assistance — that's when to add more profiles. The [graduated start path](../roadmap/README.md#implementation-paths-graduated-start) describes when each profile earns its keep.
 

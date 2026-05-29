@@ -39,7 +39,7 @@ pandoc 40-workbench/01-projects/<project>/drafts/{chapter}.md --citeproc \
 
 ## Card lifecycle
 
-`export` (opens when [Revise](revise.md) closes) → `active` (Coder runs Pandoc) → `done` with the deliverable written to `50-deliverables/`. The card cannot enter `active` while the upstream `verify` card is in a non-clean state.
+`ready` (the `export` card opens when [Revise](revise.md) closes) → `running` (Coder runs Pandoc) → `archived` with the deliverable written to `50-deliverables/`. The card cannot enter `running` while the upstream `verify` card is in a non-clean state.
 
 ## Why export is its own stage
 

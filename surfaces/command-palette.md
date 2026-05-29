@@ -16,7 +16,7 @@ Every command begins with the prefix **`Memoria:`** so the human can type `Cmd-P
 
 Two-tier discipline:
 
-- The **canonical commands** below are the operational surface. They cover capture, processing, interactive retrieval, projects, maintenance, and lens-based reading.
+- The **core commands** below are the operational surface. They cover capture, processing, interactive retrieval, projects, maintenance, and lens-based reading.
 - Anything beyond these is an *human addition*, not part of the standard Memoria UX. Humans add their own custom commands freely — but the standard set is what every Memoria install ships with, what cross-machine portability assumes, and what the [Commander](../plugins/optional/cmdr.md) recommendation set is drawn from.
 
 ## The standard commands
@@ -26,7 +26,7 @@ Two-tier discipline:
 | Command | What it does | Implementation |
 | --- | --- | --- |
 | `Memoria: capture fleeting` | Instant note to `10-inbox/01-fleeting/` with timestamp. No friction; the human presses the hotkey, types one sentence, presses enter, and the thought is captured. | QuickAdd → Templater (fleeting-note template) |
-| `Memoria: capture source from URL` | Prompts for a URL, creates `intake:source` card in the Library lane's queue. Librarian picks it up within 60 seconds and starts the ingest pipeline. | QuickAdd → POST to Hermes API (`hermes kanban add`) |
+| `Memoria: capture source from URL` | Prompts for a URL, creates `intake:source` card in the Library lane's queue. Librarian picks it up within 60 seconds and starts the ingest pipeline. | QuickAdd → POST to Hermes API (`hermes kanban create`) |
 | `Memoria: capture from Zotero selection` | Reads the current Zotero selection (via the Zotero local API), creates an `intake:source` card with the citekey pre-populated. Useful when the human is mid-reading in Zotero and wants the paper in the vault. | QuickAdd → reads Zotero API → POST to Hermes API |
 
 ### Processing (3 commands)
@@ -74,9 +74,9 @@ The distinction is *output discipline*: transient commands produce chat output t
 
 | Command | What it does | Implementation |
 | --- | --- | --- |
-| `Memoria: approve all link suggestions` | Bulk-approves every `awaiting-review` link-suggestion card. The human should glance through the [`weekly-dashboard`](../dashboards/weekly-overview.md) first; this is the "if they all look right" shortcut. | QuickAdd → POST to Hermes API (bulk approve filtered cards) |
+| `Memoria: approve all link suggestions` | Bulk-approves every link-suggestion card awaiting review (`review_status: requested`). The human should glance through the [`weekly-review`](../dashboards/weekly-review.md) first; this is the "if they all look right" shortcut. | QuickAdd → POST to Hermes API (bulk approve filtered cards) |
 | `Memoria: lint this note` | Runs the Linter (dry-run) on the current note, displays the report inline. The Linter is otherwise scheduled (see [`roadmap/README.md` Standard cron tasks](../roadmap/standard-cron-tasks.md)); this is the manual on-demand check. | QuickAdd → POST to Hermes API (lane: linter, task: lint, payload: note path) |
-| `Memoria: show lane status` | Opens [`index.md`](../dashboards/README.md) in the right sidebar. Useful when the human wants to glance at lane health mid-task without leaving their current note. | QuickAdd → Workspace pane manipulation |
+| `Memoria: show lane status` | Opens [Daily Health](../dashboards/README.md) in the right sidebar. Useful when the human wants to glance at lane health mid-task without leaving their current note. | QuickAdd → Workspace pane manipulation |
 
 ### Lens-based reading (parameterized; 4 examples)
 
@@ -129,4 +129,4 @@ The `Cmd-P → "M"` filter convention works from the moment the first three comm
 
 [← Previous: design-system template](design-system.md)
 
-[Next: index — design summary →](../dashboards/README.md)
+[Next: Daily Health — design summary →](../dashboards/README.md)

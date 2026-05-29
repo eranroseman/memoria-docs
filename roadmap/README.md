@@ -37,11 +37,11 @@ If the full setup feels heavy, start with this subset. It delivers most of the l
 | --- | --- | --- |
 | **Tools** | Zotero + Better BibTeX, Obsidian, Hermes (terminal only), Git | Kanban board, ACP plugins, Scite, ASReview, K-Dense skills |
 | **Folders** | `00-meta/`, `10-inbox/`, `20-sources/01-papers/`, `30-synthesis/01-claims/`, `30-synthesis/02-reference/` | items, entities, projects, drafts, deliverables, archive |
-| **Templates** | `paper-note.md`, `claim-note.md` | All others (11 more) |
+| **Templates** | `paper-note.md`, `claim-note.md` | All others (13 more) |
 | **Schema fields** | `type`, `lifecycle`, `maturity`, `topic`, `projects`, `added` | `pub_status`, `full_text_reviewed`, `_proposed_classification`, `_enrichment`, MOCs |
 | **Workflow** | Ingest → classify → claim note | find, enrich, MOCs, code artifacts, Canvas, deliverables |
 | **Dashboard** | One Dataview query for classification debt | The full weekly dashboard |
-| **Profile** | Mode-based Hermes (one tool, per-run mode) | Four-profile, six-profile |
+| **Profile** | Mode-based Hermes (one tool, per-run mode) | Four-profile, seven-profile |
 
 **The rule:** add complexity only when you feel the absence of the missing piece. If you're not running into a problem, you don't need the solution yet.
 
@@ -53,7 +53,7 @@ Don't start with seven profiles if seven profiles will block you from starting. 
 | --- | --- | --- |
 | **Mode-based** | One Hermes, with per-run `mode: ingest \| synthesize \| verify \| maintain`. | Single tool, single config. Simplest start. Good for exploration; weakest safety properties. |
 | **Four-profile minimal** | Librarian + Writer + Verifier + Linter (see [profiles/README.md](../profiles/README.md)). | Solo workflow at low volume. Mapper and Socratic capabilities fold into Librarian and Writer respectively, with care. |
-| **Seven-profile canonical** | The full design: Librarian, Mapper, Socratic, Writer, Verifier, Coder, Linter. | When volume makes the human's review queue a bottleneck, or you want strong architectural separation between thinking (Socratic, write-denied) and producing (Writer, review-gated). |
+| **Seven-profile (full)** | The full design: Librarian, Mapper, Socratic, Writer, Verifier, Coder, Linter. | When volume makes the human's review queue a bottleneck, or you want strong architectural separation between thinking (Socratic, write-denied) and producing (Writer, review-gated). |
 
 The migration path is *up*: start with mode-based or four-profile; promote to the full seven once the bottleneck makes the cost worth paying.
 

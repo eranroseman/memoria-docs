@@ -20,7 +20,7 @@ Between draft (inside [Write](write.md)) and [Revise](revise.md). Fires automati
 3. The output lands as a `[!verification]` callout at the top of the draft (see [surfaces/README.md](../../surfaces/inline.md)), summarizing total claims / traced / failed. The detailed per-claim report writes to `40-workbench/01-projects/<project>/verification/<chapter>-<date>.md`.
 4. For each failed trace, Verifier spawns a `gap:<claim-text>` card in the upstream queue (`10-inbox/03-candidates/` with `type: gap-candidate`). This is the feedback loop that closes downstream back to upstream — see [Find](../upstream/find.md) for what happens to gap cards.
 5. The `verify` card moves to one of three exit states (`verify-clean`, `verify-needs-revision`, `verify-needs-attention`). The human decides per claim whether the gap is substantive (needs to be filled) or the claim should be softened.
-6. Card moves to [Revise](revise.md) if any claim needs human action, or `approved` if everything traced cleanly.
+6. Card moves to [Revise](revise.md) if any claim needs human action, or `accepted` if everything traced cleanly.
 
 ## Owners
 
@@ -28,7 +28,7 @@ Verifier executes `cite-check`; human decides per claim; gap cards become Librar
 
 ## Card lifecycle
 
-`ready` (git post-commit hook creates the `verify` card targeting Verifier; hook-created cards skip `draft`) → `active` (Verifier claims; Kanban-dispatched within 60s of commit) → exits to one of three states: `verify-clean` (human advances to export), `verify-needs-revision` (advances to [Revise](revise.md)), or `verify-needs-attention` (human-only judgment; retraction or substantive duplicate finding). Each failed claim-trace also creates a child `gap:<claim-text>` card in the upstream Find queue — those are independent cards, not state changes on the parent.
+`ready` (git post-commit hook creates the `verify` card targeting Verifier; hook-created cards skip `triage`) → `running` (Verifier claims; Kanban-dispatched within 60s of commit) → completes to `done` with one of three `agent_verdict` values: `verify-clean` (human advances to export), `verify-needs-revision` (advances to [Revise](revise.md)), or `verify-needs-attention` (human-only judgment; retraction or substantive duplicate finding). Each failed claim-trace also creates a child `gap:<claim-text>` card in the upstream Find queue — those are independent cards, not state changes on the parent.
 
 ## Command
 

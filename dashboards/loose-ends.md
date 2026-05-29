@@ -4,9 +4,9 @@ audience: operator
 topic: dashboards
 ---
 
-# `schema-hygiene` — design summary
+# `loose-ends` — design summary
 
-**Runtime artifact.** This dashboard ships at `00-meta/01-dashboards/schema-hygiene.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview. The summary below covers its design role; the runtime queries live in the vault file.
+**Runtime artifact.** This dashboard ships at `00-meta/01-dashboards/loose-ends.md` in the [starter vault](https://github.com/eranroseman/memoria-vault) and runs in Obsidian via Dataview. The summary below covers its design role; the runtime queries live in the vault file.
 
 ## Mission
 
@@ -14,7 +14,7 @@ Catch leftover junk that accumulates between rituals: filenames containing `TODO
 
 ## What this dashboard is not
 
-- **Not [Linter `orphan-working-files`](../profiles/linter.md).** `orphan-working-files` detects transient *patterns* (`.tmp.*`, `.bak`, editor backups, manual-rename leftovers) outside permitted zones. Schema-hygiene detects *filename keywords* that signal in-progress human content. Different surface: `orphan-working-files` is automation leftovers; schema-hygiene is human leftovers.
+- **Not [Linter `orphan-working-files`](../profiles/linter.md).** `orphan-working-files` detects transient *patterns* (`.tmp.*`, `.bak`, editor backups, manual-rename leftovers) outside permitted zones. Loose-ends detects *filename keywords* that signal in-progress human content. Different surface: `orphan-working-files` is automation leftovers; loose-ends is human leftovers.
 - **Not Linter's schema-version-mismatch check.** That check (data-hygiene tier, not M-rule) is surfaced in [`drift-watch`](drift-watch.md)'s schema-migration-progress section. Schema-hygiene catches naming-level junk, not version-level migration debt.
 - **Not data-quality validation.** Empty frontmatter fields, missing wikilinks, broken references — those are Linter findings surfaced elsewhere. Schema-hygiene's mission is narrower: "files I clearly forgot to finish."
 
@@ -30,7 +30,7 @@ Catch leftover junk that accumulates between rituals: filenames containing `TODO
 
 - [Linter design summary](../profiles/linter.md) — `orphan-working-files` is the structural detector counterpart
 - [`drift-watch`](drift-watch.md) — schema-version-mismatch and structural drift live there
-- [`weekly-dashboard`](weekly-overview.md) — recommends opening schema-hygiene as part of the Friday ritual
+- [`weekly-review`](weekly-review.md) — recommends opening loose-ends as part of the Friday ritual
 
 <!-- memoria-nav -->
 

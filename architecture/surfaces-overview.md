@@ -42,7 +42,7 @@ The CLI surface is for **rare, precise operations** — debugging stuck cards, i
 
 Six use case categories cover what the CLI is for:
 
-**1. Card inspection.** When a card has been sitting in `retry-needed` for two days, you want to know why. `hermes kanban show card-<id>` returns full state, retry count, blocker reason, and handoff notes in one screen — faster than navigating to the board dashboard and clicking through.
+**1. Card inspection.** When a card has been retried repeatedly over two days, you want to know why. `hermes kanban show card-<id>` returns full state, retry count, blocker reason, and handoff summary in one screen — faster than navigating to the board dashboard and clicking through.
 
 **2. Lane health checks.** `hermes lane status library` shows [trust score](../glossary.md#observability-and-verdicts), recent deny rate, last successful task, current queue depth. Run when something feels off but the dashboards haven't flagged anything yet.
 
@@ -94,14 +94,14 @@ The dashboards tell the human what needs attention when they open them. Telegram
 
 **Wire notifications for:**
 
-- **Hard blockers.** A card hit retry threshold (>3 attempts) and auto-moved to `blocked-on-human`. The policy MCP denied an unexpected write (security signal). A skill broke catastrophically.
+- **Hard blockers.** A card hit the retry threshold (`max_retries`, default 3) and auto-moved to `blocked`. The policy MCP denied an unexpected write (security signal). A skill broke catastrophically.
 - **Time-sensitive workflows.** The human triggered an overnight ingest of 30 papers and wants a morning summary when it's done, not on their next dashboard check.
 - **Drift alarms.** Linter's M-series detectors found something at HIGH or CRITICAL severity. Audit deny rate spiked above baseline.
 - **Cron failures.** A scheduled task (nightly hygiene, weekly drift report) didn't run, or ran but failed. The human wants to know before the next day's cron cycle.
 
 **Do not wire notifications for:**
 
-- Anything that surfaces in the morning [`index.md`](../dashboards/README.md) glance.
+- Anything that surfaces in the morning [Daily Health](../dashboards/README.md) glance.
 - Per-card events ("new card created", "card moved to active"). Volume kills signal.
 - Routine approvals. Those wait until the human chooses to do them; the queue surfaces them in the daily/weekly dashboards.
 

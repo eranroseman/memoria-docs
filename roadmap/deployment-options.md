@@ -6,7 +6,7 @@ topic: roadmap
 
 # Deployment options
 
-The system spans a vault (knowledge layer) and an execution layer (Hermes profiles, MCPs). Where each lives — and how they sync — is an human decision with real tradeoffs. Four deployment patterns, ordered by setup complexity.
+The system spans a vault (knowledge layer) and an execution layer (Hermes profiles, MCPs). Where each lives — and how they sync — is a human decision with real tradeoffs. Four deployment patterns, ordered by setup complexity.
 
 | Pattern | Sync mechanism | Always-on agent | Zotero API access | Ongoing cost | When to use |
 | --- | --- | --- | --- | --- | --- |
@@ -28,7 +28,7 @@ These apply regardless of which option you pick:
 - **Cheap-task routing is configured in Hermes, not in the deployment.** See [architecture/capability-stack.md](../architecture/capability-stack.md) for the model-routing pattern (synthesis to Claude, embed / classify / quick-summary to cheaper models via OpenRouter or similar).
 - **Per-session log files, not a single `log.md`.** Each agent session writes a new file to `00-meta/02-logs/`. With one append-only file, distributed writes from VPS and desktop produce sync conflicts; one-file-per-session has nothing to conflict on.
 - **Hermes data dir is `~/.hermes/` by default** (or `%USERPROFILE%\.hermes\` on Windows). Override with `HERMES_HOME=/path/to/dir` when you need isolation — most commonly on the local-mesh and always-on options, where any secondary device's Hermes should keep its own profiles, sessions, and audit log isolated from the primary's `~/.hermes/`.
-- **One Hermes dispatcher per vault.** Under the local-mesh and always-on options, multiple machines have the vault but only *one* should run Hermes as a dispatcher (cron + `hermes serve` + card claiming). The task registry lives in `~/.hermes/` per machine; two active dispatchers against the same synced vault race on card writes and produce conflicting audit logs. The convention: the *primary device* (desktop on local-mesh, VPS on always-on) owns dispatch; secondary devices run vault-only or in restricted modes — see [Secondary-device patterns](#secondary-device-patterns-local-mesh-and-always-on) below.
+- **One Hermes dispatcher per vault.** Under the local-mesh and always-on options, multiple machines have the vault but only *one* should run Hermes as a dispatcher (cron + `hermes gateway` + card claiming). The task registry lives in `~/.hermes/` per machine; two active dispatchers against the same synced vault race on card writes and produce conflicting audit logs. The convention: the *primary device* (desktop on local-mesh, VPS on always-on) owns dispatch; secondary devices run vault-only or in restricted modes — see [Secondary-device patterns](#secondary-device-patterns-local-mesh-and-always-on) below.
 - **Profile aliases are first-class.** The `install.ps1` script invokes `hermes profile install ./.memoria/profiles/memoria-<name> --alias memoria-<name>` for each profile, which gives you `memoria-librarian chat` as a shortcut for `hermes -p memoria-librarian chat`, which is what the workflows in [workflows/README.md](../workflows/README.md) assume.
 - **`.env` is per-machine, never committed.** Each profile ships a `.env.EXAMPLE` listing required and optional env vars with descriptions. The installer copies it to `.env` on first install if `.env` doesn't already exist; the human fills in keys. Hermes hard-excludes `.env` and `auth.json` from `hermes profile install` / `update` so credentials never travel between machines.
 - **Profile memory can ride the vault.** `MEMORY.md` / `USER.md` are per-machine by default, but the [`memories/` junction](sync-and-coordination.md#syncing-profile-memory-across-machines-the-memories-junction) promotes them into the git-synced vault (`.memoria/profile-memory/memoria-<name>/`) so learned notes follow you across machines — the automatic, no-extra-channel way to share profile memory under non-concurrent local-only / local-mesh use. Session history (`state.db`) and secrets (`.env`) deliberately stay per-machine.
@@ -44,7 +44,7 @@ Four patterns, ordered by setup complexity:
 | **Vault-only** | Obsidian + vault folder + Git client | ✅ | ❌ | ❌ |
 | **Telegram dispatch** | Telegram client (no vault on this device) | n/a | ✅ (via primary's bot) | ❌ |
 | **HTTP API client** | Obsidian + QuickAdd / shell to POST to primary | ✅ | ✅ (via primary's API) | ❌ |
-| **Hermes ACP-only** | Obsidian + full Hermes install (no cron, no `hermes serve`) | ✅ | ✅ interactive only | ✅ |
+| **Hermes ACP-only** | Obsidian + full Hermes install (no cron, no `hermes gateway`) | ✅ | ✅ interactive only | ✅ |
 
 ### Vault-only (simplest)
 
@@ -64,7 +64,7 @@ The only pattern that **enables the `agent-client` (ACP) plugin on the secondary
 
 #### Install only the profiles you need (structural over behavioral enforcement)
 
-The naive approach is to mirror the primary's full profile set on every device. That works under the discipline *"don't enable cron, don't run `hermes serve`, don't claim cards"* — but those are behavioral rules the human has to remember. A stronger guarantee is **structural enforcement**: only compile profiles whose behavior is architecturally safe on this device. `hermes -p memoria-librarian find` returns "profile not found" rather than running a duplicate discovery pass.
+The naive approach is to mirror the primary's full profile set on every device. That works under the discipline *"don't enable cron, don't run `hermes gateway`, don't claim cards"* — but those are behavioral rules the human has to remember. A stronger guarantee is **structural enforcement**: only compile profiles whose behavior is architecturally safe on this device. `hermes -p memoria-librarian find` returns "profile not found" rather than running a duplicate discovery pass.
 
 The recommended install tiers:
 
@@ -91,18 +91,18 @@ The recommended install tiers:
 With Socratic-only, the constraint list becomes much shorter because most of it is structurally enforced:
 
 - **Cron irrelevant.** Socratic has no cron entries to enable.
-- **`hermes serve` irrelevant.** The dispatcher only matters if there are queue-dispatched profiles installed; Socratic is `interactive_only` and there are no others.
+- **`hermes gateway` irrelevant.** The dispatcher only matters if there are queue-dispatched profiles installed; Socratic is `interactive_only` and there are no others.
 - **No card-claiming possible.** With no queue-dispatched profile installed, `hermes kanban claim` has nothing to claim from.
 
 If you add Mapper / Writer / Verifier to the install set, the original constraints come back:
 
-- **Do NOT enable cron** on the secondary. Leave `cron_mode: deny` (Memoria's default).
-- **Do NOT run `hermes serve`** on the secondary.
+- **Do NOT schedule cron jobs** on the secondary. (`approvals.cron_mode` stays at its default `deny`, but that only blocks dangerous commands in cron context — the real safeguard is not creating cron jobs and not running the gateway.)
+- **Do NOT run `hermes gateway`** on the secondary.
 - **Use only interactive commands** (`chat`, `similarity-check` for Verifier). Never `run draft`, never full `cite-check` passes, never `scope-project` runs that touch project-scratch the primary also writes to.
 
 Each added profile is a discipline obligation the human is choosing to take on. Socratic-only requires no discipline at all.
 
-#### Canonical secondary-device workflow
+#### Recommended secondary-device workflow
 
 Read a paper note on the laptop → open the ACP pane → run a `socratic-processing` conversation → write the resulting claim-note yourself (human's hands, not Socratic's) → sync carries the new note back to the primary, where the Librarian runs enrichment overnight. See the [Discuss workflow](../workflows/upstream/discuss.md). Socratic's write-denial is what makes this *architecturally* safe — even with a buggy plugin or a misconfigured skill, the policy MCP returns `deny` before any bytes reach disk.
 

@@ -25,9 +25,9 @@ Memoria has three layers — a Kanban board that orchestrates work, seven Hermes
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
 │  Board layer (Kanban) — orchestration and memory of active work │
-│  states: pending → ready → active → awaiting-review →           │
-│          approved → done                                        │
-│  (rejected, retry-needed, blocked-on-human are off-path)        │
+│  status: triage → ready → running → done → archived             │
+│  review overlay on done: requested → approved                   │
+│  (blocked is off-path; rejected → archived)                     │
 └────────────────────────────┬────────────────────────────────────┘
                              │ assigns lane / advances state
                              ▼
@@ -50,7 +50,7 @@ Memoria has three layers — a Kanban board that orchestrates work, seven Hermes
 
 A single-agent or single-document system blurs three different concerns: *what work is in progress*, *who is doing it*, and *what stable knowledge has accumulated*. Memoria treats each as its own layer with its own semantics.
 
-- **The board never holds knowledge.** It tracks work. Cards die at `done`; knowledge lives in the vault.
+- **The board never holds knowledge.** It tracks work. Cards die at `archived`; knowledge lives in the vault.
 - **The workers never hold permanent state.** They claim cards, act, and release. Continuity comes from the board (in-flight) or the vault (settled).
 - **The vault never schedules work.** It is the destination, not the orchestrator.
 
@@ -68,23 +68,23 @@ Memoria's three-layer split is the structural form of that finding. See [archite
 
 ## Layer 1: Board (Kanban)
 
-The board is the control plane. It persists every task as a card with state, assignee, blocker, retry count, and handoff note, and it keeps the card alive until the human review gate is passed.
+The board is the control plane. It persists every task as a card with status, assignee, blocker reason, retry history, and a handoff summary, and it keeps the card alive until the human review gate is passed.
 
-Recommended states:
+The execution `status` is the fixed Hermes Kanban enum:
 
-- `pending` — card created, specification in progress; dispatcher ignores.
-- `ready` — specified and dispatchable.
-- `active` — owned by one profile.
-- `blocked-on-human` — needs a human decision the worker cannot make.
-- `awaiting-review` — ready for human review (or Linter dry-run report).
-- `rejected` — human declined this review pass; revise and return.
-- `retry-needed` — failed but reusable (same card, not a new one).
-- `approved` — human accepted.
-- `done` — canonical, archived, or shipped.
+- `triage` — card created, specification in progress; dispatcher ignores.
+- `todo` — specified, on the backlog, not yet released for dispatch.
+- `ready` — dispatchable.
+- `running` — owned and being executed by one profile.
+- `blocked` — needs a human decision the worker cannot make.
+- `done` — worker finished; in Memoria this is where the review overlay applies.
+- `archived` — terminal (canonical and shipped, or abandoned).
 
-The key rule: `awaiting-review` is a real state, not a label. A card can be worked on, blocked, returned, and retried without losing history or confusing completion with approval.
+The review overlay (`metadata.review_status`) rides on `done`: `requested` → `approved` (canonical) or `rejected` (revise-and-supersede or discard). A retry is not a distinct status — a recoverable failure returns the card to `ready`.
 
-See [board/README.md](../board/README.md) for full board schema, state transitions, and the review gate rules.
+The key rule: a `done` card awaiting review is a real state, not a label. A card can be worked on, blocked, reviewed, rejected, and retried without losing history or confusing completion with approval.
+
+See [board/README.md](../board/README.md) for the conceptual model and [board/states.md](../board/states.md) for the full state machine, the crosswalk from Memoria's older state names, and the review gate rules.
 
 ## Layer 2: Workers (Hermes profiles)
 
@@ -92,7 +92,7 @@ Hermes is split into seven specialist profiles rather than one generalist agent.
 
 | Profile | Role |
 | --- | --- |
-| **Librarian** | Discovers, ingests, enriches, and classifies sources. Exits at `awaiting-review`. |
+| **Librarian** | Discovers, ingests, enriches, and classifies sources. Exits at `done` (`review_status: requested`). |
 | **Mapper** | Maps the corpus for a project: scope reports, gap reports, cluster maps. Read-only across vault except project scratch. |
 | **Socratic** | Questions the human about a paper note or framing. Write-denied across the entire vault. Invoked synchronously. |
 | **Writer** | Synthesizes evidence into drafts, answer notes, and reference-ready prose. Cannot canonize. |
@@ -153,12 +153,12 @@ The trade-off is that shared content (audit-log behavior, common policy invarian
 
 The recommended interaction pattern is:
 
-1. A trigger (human action, cron job, git hook, file watcher) creates a card on the board with a lane and an initial state. Routing is encoded in the trigger's rules — there is no profile that "decides" lane assignment.
-2. **Specialist profile** (Librarian, Mapper, Writer, Verifier, Coder) claims a card from its lane and moves it to `active`. Socratic is invoked synchronously by the human and doesn't appear in queue-based handoffs.
-3. The worker executes the task, writes any provisional outputs (e.g., paper notes, answer drafts) into the lane's declared write scope, and moves the card to `awaiting-review`.
-4. The **human** examines the work, then sets the card to `approved` or `rejected`. Some review decisions are partially automated — Verifier produces a `[!verification]` callout the human reads — but the approval is always human-driven.
-5. If `approved`, the worker (or the next workflow trigger) advances the card to `done` and the output remains in its current location (or is moved to a canonical layer if promotion is part of the task).
-6. If `rejected`, the human chooses between two follow-ups: spawn a revision card on the same lane (carrying a `supersedes` link back to the original; original closes with `outcome: superseded`) or close the original entirely with `outcome: discarded`. See [board/README.md Post-rejection paths](../board/README.md#post-rejection-paths).
+1. A trigger (human action, cron job, git hook, file watcher) creates a card on the board with an assignee (its lane) and an initial status. Routing is encoded in the trigger's rules — there is no profile that "decides" lane assignment.
+2. **Specialist profile** (Librarian, Mapper, Writer, Verifier, Coder) claims a card from its lane and moves it to `running`. Socratic is invoked synchronously by the human and doesn't appear in queue-based handoffs.
+3. The worker executes the task, writes any provisional outputs (e.g., paper notes, answer drafts) into the lane's declared write scope, and completes the card to `done` with `review_status: requested`.
+4. The **human** examines the work, then sets `review_status` to `approved` or `rejected`. Some review decisions are partially automated — Verifier produces a `[!verification]` callout the human reads — but the approval is always human-driven.
+5. If `approved`, the worker (or the next workflow trigger) archives the card and the output remains in its current location (or is moved to a canonical layer if promotion is part of the task).
+6. If `rejected`, the human chooses between two follow-ups: spawn a revision card on the same lane (carrying a `metadata.supersedes` link back to the original; original archived with `outcome: superseded`) or archive the original entirely with `outcome: discarded`. See [board/README.md Post-rejection paths](../board/README.md#post-rejection-paths).
 7. **Linter** can act on any card structurally — usually before review — to flag schema, link, or orphan issues. It only ever produces reports, never silent fixes.
 
 Cards never close on a worker's say-so. The card lives until the human changes the review state.
@@ -177,7 +177,7 @@ Cards never close on a worker's say-so. The card lives until the human changes t
 
 ## Memory tiers
 
-Memory spans two **Hermes-native** layers — working context (session-bound) and profile memory (`MEMORY.md` + `USER.md`, frozen-snapshot per profile), plus on-demand SQLite **session search** — and two substrates **Memoria adds**: board memory (the task packet, card-bound, travels between profiles) and vault memory (project files for cross-lane state; append-only audit logs for the operational record). Confusing the scopes is the source of most "the agent forgot" and "the agent remembered something it shouldn't have" bugs.
+Memory spans two **Hermes-native** layers — working context (session-bound) and profile memory (`MEMORY.md` + `USER.md`, frozen-snapshot per profile), plus on-demand SQLite **session search** — and two substrates **Memoria adds**: board memory (the handoff payload, card-bound, travels between profiles) and vault memory (project files for cross-lane state; append-only audit logs for the operational record). Confusing the scopes is the source of most "the agent forgot" and "the agent remembered something it shouldn't have" bugs.
 
 **See [architecture/memory-tiers.md](memory-tiers.md)** for the full substrate table, the rules that keep memory from bleeding across lanes, and why the thin-control-over-thick-state split matters.
 
@@ -196,7 +196,7 @@ The MCP guards eight distinct actions (`read`, `write`, `append`, `move`, `delet
 
 Two structural rules sit above the lane configuration:
 
-- **Canonical zones are never auto-written.** Writes to `30-synthesis/01-claims/`, `30-synthesis/03-moc/`, and `50-deliverables/` degrade to `dry_run` regardless of lane policy.
+- **Canonical zones are never auto-written.** Writes to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, and `50-deliverables/` degrade to `dry_run` regardless of lane policy.
 - **Linter auto-fix is class-gated** to `safe-and-unambiguous` or `authorized-targeted` (see [profiles/linter.md](../profiles/linter.md#auto-fix-policy)).
 
 Every allowed write produces an append-only audit entry in `00-meta/02-logs/audit.jsonl` with SHA-256 `before_hash` and `after_hash` for tamper detection and reversibility. The MCP — not the worker — computes the hashes; hash failures cause `deny`.
@@ -211,7 +211,7 @@ Lane-overrides are the baseline policy a profile carries. A small set of skills 
 
 The board defines *what state* a card is in. The policy MCP defines *where* a worker may write. The **control plane** is the daily-use surface that lets the human trigger discrete actions: three thin layers — Obsidian Command Palette → Hermes API → MCP servers — between the human and Hermes. None of them owns business logic except the MCP servers.
 
-The Hermes API is fail-closed: binds to `127.0.0.1` by default, and refuses to start on a non-loopback interface unless its auth token is set.
+The Hermes API is fail-closed: it requires its auth token (`API_SERVER_KEY`) on every bind including the default `127.0.0.1` loopback, and a non-loopback bind must be explicitly configured (`API_SERVER_HOST`).
 
 **See [architecture/control-plane.md](control-plane.md)** for the layer-by-layer responsibility table, fail-closed startup rules, and MCP server registration shape.
 
@@ -237,14 +237,7 @@ On top of that base, **pre-built skills** (K-Dense `paper-lookup` / `pyzotero` /
 
 ## Operating model
 
-The architecture implies a specific operating model:
-
-1. **Daily.** Capture new sources in Zotero. Let Hermes ingest them. Skim the inbox for answer drafts and discovery candidates.
-2. **Weekly.** Run the [weekly dashboard](../surfaces/README.md). Clear unreviewed synthesis. Promote evergreen claim notes. Classify partial paper notes.
-3. **Per-project.** Draft from `30-synthesis/01-claims/`, arrange in `40-workbench/01-projects/*/canvas/`, write in `40-workbench/01-projects/*/drafts/`, export to `50-deliverables/` via Pandoc.
-4. **Continuously.** The Linter runs scheduled checks; cron and git-hook triggers advance cards through their lifecycle; the human clears the approval queue.
-
-This model is bounded, stage-gated, and human-in-the-loop by default. Autonomy is added at the edges (scheduled discovery, automatic enrichment) without weakening the review gate.
+The architecture implies a bounded, stage-gated, human-in-the-loop cadence: daily capture and ingest, a weekly dashboard ritual, per-project drafting, and continuous Linter / cron / git-hook activity at the edges — autonomy added at the edges (scheduled discovery, automatic enrichment) without ever weakening the review gate. The full daily / weekly / per-project / continuous breakdown is the [Default operating model in workflows/README.md](../workflows/README.md#default-operating-model); it isn't duplicated here.
 
 <!-- memoria-nav -->
 

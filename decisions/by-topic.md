@@ -18,7 +18,7 @@ Note types, frontmatter, naming, and the controlled vocabularies that govern the
 - [09-typed-relations-frontmatter.md](09-typed-relations-frontmatter.md) — Typed relations frontmatter · proposed
 - [15-dedicated-review-note-type.md](15-dedicated-review-note-type.md) — Dedicated review-note type · proposed
 - [18-evidence-quality-fields.md](18-evidence-quality-fields.md) — Evidence quality fields layer · proposed
-- [21-shared-candidate-frontmatter.md](21-shared-candidate-frontmatter.md) — Shared candidate frontmatter format · **accepted**
+- [21-shared-candidate-frontmatter.md](21-shared-candidate-frontmatter.md) — Shared candidate frontmatter format · proposed
 
 ## Workflows
 

@@ -15,7 +15,7 @@ Keep papers flowing through the upstream pipeline and surface what's stuck. The 
 ## What this dashboard is not
 
 - **Not [`discuss-queue`](discuss-queue.md).** Discuss-queue is narrowly scoped to fully-classified paper notes that haven't yet had a Socratic pass — the upstream-cognitive-discipline view. Reading-pipeline is broader: any paper note in `partial` state, regardless of classification completeness. Reading-pipeline asks "what's in flight?"; discuss-queue asks "what owes me a Socratic conversation?"
-- **Not [`weekly-dashboard`](weekly-overview.md).** Weekly is a ritual entry point; reading-pipeline is a working surface used between rituals.
+- **Not [`weekly-review`](weekly-review.md).** Weekly is a ritual entry point; reading-pipeline is a working surface used between rituals.
 - **Not a board view.** It queries note state (paper-note `lifecycle` and claim-note `maturity`), not card state. [`board-state`](board-state.md) is the card view.
 
 ## Design decisions
@@ -27,7 +27,7 @@ Keep papers flowing through the upstream pipeline and surface what's stuck. The 
 ## Related
 
 - [`discuss-queue`](discuss-queue.md) — the narrower upstream-discipline view
-- [`weekly-dashboard`](weekly-overview.md) — links to reading-pipeline as the weekly reading-planning step
+- [`weekly-review`](weekly-review.md) — links to reading-pipeline as the weekly reading-planning step
 - [workflows/upstream/discuss.md](../workflows/upstream/discuss.md) — the Discuss stage that drains the queue
 - [vault/README.md](../vault/README.md) — definitions of `lifecycle` and `maturity` lifecycle states
 
@@ -37,4 +37,4 @@ Keep papers flowing through the upstream pipeline and surface what's stuck. The 
 
 [← Previous: discuss-queue — design summary](discuss-queue.md)
 
-[Next: schema-hygiene — design summary →](schema-hygiene.md)
+[Next: loose-ends — design summary →](loose-ends.md)

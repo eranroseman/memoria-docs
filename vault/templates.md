@@ -54,7 +54,7 @@ Two rules govern the suffix:
 
 ### Type-specific behavior
 
-A handful of types have load-bearing constraints worth calling out.
+A handful of types have constraints worth calling out.
 
 - **`fleeting-note`** — one idea, one quote, or one task; no polish needed. Promoted or discarded within ~7 days; never lingers.
 - **`paper-note`** — `partial` means the Librarian has populated `_proposed_classification` but the human has not promoted fields. `full` means classification is complete. Paper notes are never rewritten as claim notes; they stay tied to their source.
@@ -99,7 +99,7 @@ Every note carries one universal field, **`lifecycle`** — its durability phase
 | `draft` | `proposed` → `current` (submitted) | `draft_stage`: `outline` / `in-progress` / `submitted` |
 | `deliverable` | `current` (final) | — |
 
-The `lifecycle` enum and each refinement field are validated by the Linter's `schema-check` (see [profiles/linter.md](../profiles/linter.md)). New allowed values are added here first, then to the templates. The `lifecycle` value set is deliberately **disjoint from board-card `status`** (`pending`/`ready`/`active`/…/`done`), so a value alone identifies whether it's a note or a card.
+The `lifecycle` enum and each refinement field are validated by the Linter's `schema-check` (see [profiles/linter.md](../profiles/linter.md)). New allowed values are added here first, then to the templates. The `lifecycle` value set is kept **distinct from board-card `status`** (the Hermes enum `triage`/`ready`/`running`/`done`/`archived`); the two are disambiguated by field name — a note carries `lifecycle`, never `status` — even though both happen to include `archived`.
 
 ## Templates
 

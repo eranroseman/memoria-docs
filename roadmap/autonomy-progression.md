@@ -148,7 +148,7 @@ The five layers above are about the **synthesis pipeline** — discovery → tri
 | --- | --- | --- | --- |
 | C.1 | Coder-lane experiment loop | Chen et al. 2026 (long-horizon engineering), Karpathy Autoresearch | [future-directions.md §"Coder lane experiment loop"](future-directions.md#coder-lane-experiment-loop) |
 
-**Why it is not in the layers.** C.1 is not "same gate, fewer presses" on the synthesis pipeline — it is a different lane with its own scalar success criterion that exists *before* the loop runs. It still respects the promotion gate: the loop keeps/reverts code variants internally against the metric, then routes the best variant to `awaiting-review`, and the human promotes it into the project's working code. The keep/revert autonomy is bounded to `40-workbench/01-projects/<project>/code/experiments/<run-id>/`; the policy MCP's canonical-zone deny rule is untouched. It depends only on Layer 0 (reliable unattended runs); it shares nothing else with the synthesis layers, which is why it sits outside the dependency graph.
+**Why it is not in the layers.** C.1 is not "same gate, fewer presses" on the synthesis pipeline — it is a different lane with its own scalar success criterion that exists *before* the loop runs. It still respects the promotion gate: the loop keeps/reverts code variants internally against the metric, then routes the best variant to `done` for review, and the human promotes it into the project's working code. The keep/revert autonomy is bounded to `40-workbench/01-projects/<project>/code/experiments/<run-id>/`; the policy MCP's canonical-zone deny rule is untouched. It depends only on Layer 0 (reliable unattended runs); it shares nothing else with the synthesis layers, which is why it sits outside the dependency graph.
 
 ## Dependency graph
 
@@ -190,7 +190,7 @@ Layer 4 ─────────── once corpus density justifies cost ─
 
 Coder lane (orthogonal — depends on Layer 0 only) ─────────────────────
 
-  C.1 coder-lane experiment loop ──► best variant to awaiting-review
+  C.1 coder-lane experiment loop ──► best variant to done (review)
         (internal keep/revert on code vs. tests; promotion still gated)
 ```
 

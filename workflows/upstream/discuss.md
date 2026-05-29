@@ -26,7 +26,7 @@ Human owns the thinking; Socratic owns the questioning. Architecturally the Socr
 
 ## Card lifecycle
 
-`ready` (opens automatically when `lifecycle` becomes `current`; the card is on the human-targeted lane, not Kanban-dispatched) → human invokes Socratic via ACP → Socratic conversation happens (no card state change, no writes) → human writes the claim note in `30-synthesis/01-claims/`, which closes the card via the git hook → `done` (with `outcome: claim-written`) OR human manually closes with `outcome: no-claim`. The card never reaches `active` in the dispatcher sense — Socratic is `routing.invocation: interactive_only`.
+`ready` (opens automatically when `lifecycle` becomes `current`; the card is on the human-targeted lane, not Kanban-dispatched) → human invokes Socratic via ACP → Socratic conversation happens (no card state change, no writes) → human writes the claim note in `30-synthesis/01-claims/`, which closes the card via the git hook → `archived` (with `outcome: claim-written`) OR human manually archives with `outcome: no-claim`. The card never reaches `running` in the dispatcher sense — Socratic is `routing.invocation: interactive_only`.
 
 ## Command
 
@@ -38,7 +38,7 @@ The system cannot tell whether thinking has happened. A paper note with `lifecyc
 
 ## Example
 
-`mamykina2010sense.md` finishes classification at `lifecycle: current`. A `discuss` card opens. Three days later it's still open — the `weekly-dashboard` surfaces it in the "discuss queue" view. The human opens the note, invokes Socratic, and the profile asks: "What's Mamykina's strongest claim?" The human answers ("receptivity depends on momentary cognitive load — strongest at idle / commute / waiting-room moments, weakest during task focus"). Socratic follows up: "What would falsify it?" → human thinks → answers. After ten minutes, the human closes the ACP pane and switches to Writer profile (or just writes in the editor without ACP) to author `30-synthesis/01-claims/receptivity-decreases-under-high-cognitive-load.md` from scratch in their own words. The `discuss` card auto-closes on the new claim note's creation.
+`mamykina2010sense.md` finishes classification at `lifecycle: current`. A `discuss` card opens. Three days later it's still open — the `weekly-review` surfaces it in the "discuss queue" view. The human opens the note, invokes Socratic, and the profile asks: "What's Mamykina's strongest claim?" The human answers ("receptivity depends on momentary cognitive load — strongest at idle / commute / waiting-room moments, weakest during task focus"). Socratic follows up: "What would falsify it?" → human thinks → answers. After ten minutes, the human closes the ACP pane and switches to Writer profile (or just writes in the editor without ACP) to author `30-synthesis/01-claims/receptivity-decreases-under-high-cognitive-load.md` from scratch in their own words. The `discuss` card auto-closes on the new claim note's creation.
 
 ## Related
 

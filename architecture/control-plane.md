@@ -10,7 +10,7 @@ The board defines *what state* a card is in. The policy MCP defines *where* a wo
 
 ```text
 Obsidian Command Palette  ──►  Hermes API  ──►  MCP servers  ──►  Hermes
-       (UI)                       (hermes serve)            (policy + tasks)   (worker)
+       (UI)                       (hermes gateway)          (policy + tasks)   (worker)
 ```
 
 Each layer has exactly one job. None of them owns business logic except the MCP servers.
@@ -18,7 +18,7 @@ Each layer has exactly one job. None of them owns business logic except the MCP 
 | Layer | What it does | What it doesn't do |
 | --- | --- | --- |
 | **Command Palette** (Obsidian plugin) | Reads frontmatter from the active note. POSTs a small JSON payload to the Hermes API. Shows a status notice. | No database access. No policy evaluation. No task state changes. |
-| **Hermes API** | Hermes's built-in HTTP API (`hermes serve`, `127.0.0.1:8642`); receives the POST and triggers the operation — add a card, run a task, query the audit log — dispatching into the MCP-gated worker. Upstream Hermes, not custom Memoria code. | No persistent state. No business rules. |
+| **Hermes API** | Hermes's built-in HTTP API (`hermes gateway`, `127.0.0.1:8642`); receives the POST and triggers the operation — add a card, run a task, query the audit log — dispatching into the MCP-gated worker. Upstream Hermes, not custom Memoria code. | No persistent state. No business rules. |
 | **MCP servers** | `policy_mcp` checks permissions, writes the audit log. `tasks_mcp` updates the board, records handoffs, dispatches to Hermes. | No UI. No direct vault writes outside their declared tool surface. |
 | **Hermes** | Runs the actual skill, writes the vault note, returns a structured result. | No board management — reports completion through the task MCP. |
 
@@ -35,9 +35,9 @@ The discipline that makes this work: **never put business logic in the palette /
 The Hermes API is the dispatch entry point — and the one with the largest blast radius if misconfigured, since anything that can reach it can dispatch tasks and trigger writes. Two rules at startup:
 
 - **Default to loopback only.** Bind to `127.0.0.1` unless explicitly configured otherwise. The vast majority of deployments (the local-only, local-mesh, and obsidian-sync options; see [roadmap/deployment-options.md](../roadmap/deployment-options.md)) never need anything else. Under the always-on option and the micro-always-on variant of local-mesh (where the laptop reaches the desktop's Hermes via Tailscale-bridged SSH or API), the binding may need to extend to a network interface — but only with the API's auth token set.
-- **Refuse non-loopback without authentication.** If the API is configured to bind a non-loopback interface without an auth token set, it must refuse to start with a clear error. Failing closed at startup is what makes the always-on option (VPS-side API reachable from the desktop) viable without a long-running unauthenticated endpoint. The vault side mirrors this: the obsidian-local-rest-api plugin requires its own `apiKey` whenever it is reachable beyond loopback.
+- **Always authenticate; never expose a non-loopback bind unprotected.** Hermes requires `API_SERVER_KEY` for **every** deployment, including the default loopback bind — so the auth token is always set, not just when going off-host. Binding to a non-loopback interface additionally requires explicitly setting `API_SERVER_HOST`; do that only with the key in place. Failing closed at startup is what makes the always-on option (VPS-side API reachable from the desktop) viable without a long-running unauthenticated endpoint. The vault side mirrors this: the obsidian-local-rest-api plugin requires its own `apiKey` whenever it is reachable beyond loopback.
 
-The discipline is binary: each HTTP surface either runs in a trusted zone (loopback) or with authentication. There is no third state, and there is no "I'll add the token later" — a misconfiguration here is invisible until someone notices traffic in the audit log they didn't expect.
+The discipline is binary: every HTTP surface runs authenticated, and a non-loopback bind is opt-in. There is no "I'll add the token later" — a misconfiguration here is invisible until someone notices traffic in the audit log they didn't expect.
 
 ## MCP server registration
 

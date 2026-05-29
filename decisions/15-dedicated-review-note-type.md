@@ -19,7 +19,7 @@ Add a `review-note` type for storing reviewer judgments with provenance, separat
 
 ## Decision
 
-**Defer.** The board card's `review_status`, `reviewed_at`, and `handoff_note` fields carry enough provenance for the current single-user workflow. Add a review-note type only if audit history needs to outlive the card.
+**Defer.** The board card's `review_status`, `reviewed_at`, and handoff `summary` carry enough provenance for the current single-user workflow. Add a review-note type only if audit history needs to outlive the card.
 
 ## Consequences
 

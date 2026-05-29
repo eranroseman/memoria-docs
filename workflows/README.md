@@ -104,7 +104,7 @@ Workflows are not scripted procedures; they are **event sequences on the Kanban*
 
 - **Profiles don't call each other.** When Librarian finishes an ingest, it doesn't invoke Verifier; it sets the card's exit state. Verifier picks up cards in that state through the dispatcher (see [board/README.md dispatch interval](../board/README.md#dispatch-interval)). The handoff is the state change, not a message.
 - **The human is one event source among several.** Human action via the [command palette](../surfaces/command-palette.md) creates cards. So do cron triggers (scheduled tasks), file-system watchers (PDF drops), and git hooks (draft commits). Each one is a card creation; the dispatcher routes them identically.
-- **Workflows can be paused, resumed, or retried because the state is on the board.** A worker that fails mid-task leaves the card in `retry-needed`; the next dispatch picks it back up. A worker that succeeds moves the card to its exit state; the next workflow's trigger fires on that state change.
+- **Workflows can be paused, resumed, or retried because the state is on the board.** A worker that fails mid-task leaves the card to be re-dispatched (returned to `ready`); the next dispatch picks it back up. A worker that succeeds completes the card to its exit state; the next workflow's trigger fires on that state change.
 
 This is why the per-workflow `Card lifecycle` lines in each workflow file name explicit state transitions rather than function calls — workflows ARE state-machine paths, and reading them as paths makes the architecture's failure modes legible (a stuck card is a stuck workflow).
 
@@ -219,7 +219,7 @@ Most commands are palette-only — `Cmd-P → M → <2–3 letters>` is the prim
 
 ### What this section is not
 
-- **Not a plugin spec.** The TypeScript implementation and HTTP endpoint schemas live outside the design — there is no custom Memoria HTTP code. Command dispatch goes through Hermes's built-in API (`hermes serve`), and vault read/write goes through the `obsidian-local-rest-api` community plugin. See [architecture/control-plane.md](../architecture/control-plane.md) for the layer architecture and the Hermes MCP reference for the wire formats.
+- **Not a plugin spec.** The TypeScript implementation and HTTP endpoint schemas live outside the design — there is no custom Memoria HTTP code. Command dispatch goes through Hermes's built-in API (`hermes gateway`), and vault read/write goes through the `obsidian-local-rest-api` community plugin. See [architecture/control-plane.md](../architecture/control-plane.md) for the layer architecture and the Hermes MCP reference for the wire formats.
 - **Not the only trigger surface.** Cron jobs, the discovery loop (see [roadmap/future-directions.md](../roadmap/future-directions.md#the-discovery-loop)), and Hermes-side `delegate_task` all also fire workflow steps. The Command Palette is the *human-facing* surface; the others are scheduled or agent-driven.
 
 ## Research directions (steering input)

@@ -16,17 +16,17 @@ Every dashboard exists in the vault. The question is how often you open it.
 
 | Frequency | Dashboard | Purpose |
 | --- | --- | --- |
-| **Daily** | [`index`](../dashboards/README.md) | Always-on health monitor. Open before any large operation. |
+| **Daily** | [Daily Health](../dashboards/README.md) | Always-on health monitor. Open before any large operation. |
 | **Reading session** | [`discuss-queue`](../dashboards/discuss-queue.md) | "What should I think about today?" — paper notes classified but not yet processed via Socratic. The upstream-discipline dashboard. |
-| **Weekly** | [`weekly-dashboard`](../dashboards/weekly-overview.md) | Weekly ritual entry point (see [workflows/README.md](../workflows/README.md) workflow Lint). |
+| **Weekly** | [`weekly-review`](../dashboards/weekly-review.md) | Weekly ritual entry point (see [workflows/README.md](../workflows/README.md) workflow Lint). |
 | **Weekly** | [`reading-pipeline`](../dashboards/reading-pipeline.md) | "What to read next?" — papers by processing stage. |
-| **Weekly** | [`schema-hygiene`](../dashboards/schema-hygiene.md) | Catch TODO / tmp / draft filenames and leftover junk. |
+| **Weekly** | [`loose-ends`](../dashboards/loose-ends.md) | Catch TODO / tmp / draft filenames and leftover junk. |
 | **Weekly** | [`drift-watch`](../dashboards/drift-watch.md) | Linter's structural detector findings + [verdict band](../glossary.md#observability-and-verdicts). Open when the lint pass passed but something still feels off. |
 | **Per board op** | [`board-state`](../dashboards/board-state.md) | Active cards, review queue, retry watch. |
 | **Forensic** | [`audit-log`](../dashboards/audit-log.md) | Policy-MCP write decisions. Open when something feels off. |
 | **Planning** | [`open-questions`](../dashboards/open-questions.md) | Research agenda view — surface all explicit Open Questions sections. |
 | **Scale-dependent** | [`skill-lifecycle`](../dashboards/skill-lifecycle.md) | Hermes skill registry view. Deferred — maybe later if needed; see [roadmap/future-directions.md](../roadmap/future-directions.md#skill-governance). |
-| **Scale-dependent** | [`fleet-observability`](../dashboards/fleet-observability.md) | Cost and reliability trends for the worker fleet. Post-MVS only — see [roadmap/future-directions.md](../roadmap/future-directions.md). |
+| **Scale-dependent** | [`fleet-health`](../dashboards/fleet-health.md) | Cost and reliability trends for the worker fleet. Post-MVS only — see [roadmap/future-directions.md](../roadmap/future-directions.md). |
 
 The "scale-dependent" dashboards are designed to be present from day one but only carry meaningful data once the corpus is large enough that human eyes stop noticing slow regressions. Until then they're inert.
 
@@ -56,7 +56,7 @@ A query depends on a field, a folder, or a decision that may not exist yet — `
 
 The discipline:
 
-- **Empty result + explanation beats error.** A `TABLE` that returns zero rows should be paired with a one-line markdown note explaining what would populate it. Example: "Empty until Decision 21 is adopted and a `candidate-note` template exists" (see [weekly-dashboard](../dashboards/weekly-overview.md)).
+- **Empty result + explanation beats error.** A `TABLE` that returns zero rows should be paired with a one-line markdown note explaining what would populate it. Example: "Empty until Decision 21 is adopted and a `candidate-note` template exists" (see [weekly-review](../dashboards/weekly-review.md)).
 - **Detect dependency, not absence of data.** A query on a brand-new vault returns zero rows because there is no data yet — that is the right behavior. A query that returns zero rows because the *field doesn't exist anywhere* is a capability gap, not an empty queue. The explanatory note distinguishes the two cases.
 - **`dataviewjs` should guard explicit reads.** Queries that load external files (`audit.jsonl`, `state.json`) must handle the missing-file case and render a placeholder, not throw a stack trace into the dashboard.
 - **Surface dependencies at the top of the dashboard.** Each dashboard's frontmatter or intro paragraph should name the decisions, files, or aggregators it depends on. If the human already knows what's missing, an empty query isn't a mystery.

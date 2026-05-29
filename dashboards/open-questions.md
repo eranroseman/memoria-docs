@@ -28,13 +28,13 @@ Turn the vault into a research agenda by surfacing every note that contains an e
 ## Related
 
 - [vault/README.md](../vault/README.md) — claim-note structure (Open questions is a recommended section)
-- [`weekly-dashboard`](weekly-overview.md) — surfaces this dashboard as part of the Friday ritual
+- [`weekly-review`](weekly-review.md) — surfaces this dashboard as part of the Friday ritual
 - [Librarian design summary](../profiles/librarian.md) — the upstream discovery direction is informed by aggregated open questions
 
 <!-- memoria-nav -->
 
 ---
 
-[← Previous: fleet-observability — design summary](fleet-observability.md)
+[← Previous: fleet-health — design summary](fleet-health.md)
 
 [Next: discuss-queue — design summary →](discuss-queue.md)

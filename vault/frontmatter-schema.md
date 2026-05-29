@@ -8,7 +8,7 @@ topic: vault
 
 Frontmatter discipline has two concerns: **field shape** (what fields exist, what values they take) and **namespace ownership** (who is allowed to write which field). This document is the authoritative reference for both. For the conceptual model (folder structure, note types, promotion map) see [README.md](README.md); for the universal `lifecycle` field and per-type refinements see [templates.md](templates.md#lifecycle).
 
-The vault ships an human-facing companion at `00-meta/04-reference/schema-reference.md` (see [README.md vault skeleton](README.md#vault-skeleton-human-facing-notes)). That note is the in-vault version templates and the Linter point at; this document is the design source it's generated from.
+The vault ships a human-facing companion at `00-meta/04-reference/schema-reference.md` (see [README.md vault skeleton](README.md#vault-skeleton-human-facing-notes)). That note is the in-vault version templates and the Linter point at; this document is the design source it's generated from.
 
 ## Frontmatter
 
@@ -44,11 +44,11 @@ Frontmatter fields split into four categories by *what they're for*. The split k
 
 ## Rules
 
-- **`type` is universal and load-bearing.** Every note has a `type` field whose value is one of the 15 type names. Missing or unknown `type` is a schema-hygiene flag for the Linter.
+- **`type` is universal and required.** Every note has a `type` field whose value is one of the 15 type names. Missing or unknown `type` is a schema-hygiene flag for the Linter.
 - **`lifecycle` is universal; refinements are type-specific.** Every note carries `lifecycle` ∈ `proposed` / `current` / `dormant` / `archived`. Types that need finer state within a phase add a refinement: `maturity` (claim-note, within `current`), `project_phase` (project-note), `draft_stage` (draft). For sources, triage *is* the `proposed`→`current` transition — no separate field. Orthogonal `*_status` fields (`pub_status`, `maintenance_status`, `outreach_status`) describe the *thing the note is about*, not the note's lifecycle. See [Lifecycle](templates.md#lifecycle).
 - **Time fields are mostly common.** `created` and `updated` are universal except that `paper-note` historically uses `added` instead of `created`; treat the two as synonymous for paper notes.
 - **Domain fields are scoped to their type.** Don't pad every note with null domain fields. A `claim-note` should not carry a `doi` field just to keep the schema "uniform."
-- **`status` is card-only; notes use `lifecycle`.** The board card's `status` tracks board state (`unspecified` / `queued` / `claimed` / `delivered` / … / `closed` — see [board/README.md](../board/README.md)). Notes never carry `status`; their durability phase is `lifecycle` (`proposed` / `current` / `dormant` / `archived`). The two value sets are deliberately disjoint, so a bare value tells you whether it belongs to a note or a card.
+- **`status` is card-only; notes use `lifecycle`.** The board card's `status` is the Hermes Kanban enum (`triage` / `todo` / `ready` / `running` / `blocked` / `done` / `archived` — see [board/states.md](../board/states.md)). Notes never carry `status`; their durability phase is `lifecycle` (`proposed` / `current` / `dormant` / `archived`). The two are disjoint by field name and by carrier — a note never has `status`, a card never has `lifecycle` — so even though both value sets happen to include `archived`, the field name tells you which lifecycle you are reading. (Memoria's earlier `status` values like `queued`/`delivered`/`accepted` map onto the Hermes enum plus the `metadata.review_status` overlay; see the [state crosswalk](../board/states.md#crosswalk-old-memoria-states).)
 - **Once the design is in use, any frontmatter change to a template bumps that template's `schema_version`.** Adding a field, removing a field, renaming a field, changing a field's value space — all of these are schema changes that require a version bump *if there are existing notes in human vaults that would lag behind*. New notes get the new version; existing notes stay on the old version until migrated. The Linter's schema-version-mismatch check ([profiles/linter.md](../profiles/linter.md)) surfaces notes still on older versions; `schema-migrate --dry-run` proposes the migration. This rule is what turns per-field migration debt into a single rollup signal — "127 notes still on v1" rather than "127 notes missing field X, 89 missing field Y, ..." per field. **Bumping is per-template, not global** — only the template whose schema changed bumps. Paper-note and code-note can be on different versions independently. **Pre-first-deployment, the design is fluid; the baseline is `schema_version: 1` for every template and the bump discipline activates the first time a template ships into a vault that holds real notes.**
 
 ## Controlled vocabularies
@@ -58,7 +58,8 @@ For controlled-vocabulary fields, the allowed values are:
 | Field | Where it lives | Allowed values |
 | --- | --- | --- |
 | `lifecycle` | Every note | `proposed`, `current`, `dormant`, `archived` |
-| `status` (card-only) | Board card | `unspecified`, `queued`, `claimed`, `blocked-on-human`, `delivered`, `declined`, `requeued`, `accepted`, `closed` |
+| `status` (card-only) | Board card | Hermes enum: `triage`, `todo`, `ready`, `running`, `blocked`, `done`, `archived` |
+| `review_status` (card-only) | Board card `metadata` | `unreviewed`, `requested`, `in-review`, `approved`, `rejected` |
 | `maturity` | claim-note | `seedling`, `budding`, `evergreen` |
 | `project_phase` | project-note | `planning`, `active`, `paused`, `complete` |
 | `draft_stage` | draft | `outline`, `in-progress`, `submitted` |

@@ -20,10 +20,10 @@ A four-number summary of the board, also rendered as a one-liner:
 Active: 3 · Waiting: 2 · Review: 7 · Retries: 0
 ```
 
-- **Active** — cards in `active` state across all lanes
-- **Waiting** — cards in `blocked-on-human`
-- **Review** — cards in `awaiting-review`
-- **Retries** — cards in `retry-needed`
+- **Active** — cards in `running` state across all lanes
+- **Waiting** — cards in `blocked`
+- **Review** — `done` cards awaiting review (`review_status: requested`)
+- **Retries** — cards re-dispatched after a recoverable failure (back in `ready`)
 
 Click anywhere in the four counts → opens [`board-state.md`](../dashboards/board-state.md). The indicator is glanceable; the drill-down lives in the persistent surface.
 

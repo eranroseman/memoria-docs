@@ -30,7 +30,7 @@ No separate decision is needed.
 
 ## Alternatives considered
 
-Per-action logs were considered for debugging precision but rejected because they would either (a) be too noisy to read or (b) require post-hoc aggregation, at which point the per-session shape is more honest about what an human actually reviews.
+Per-action logs were considered for debugging precision but rejected because they would either (a) be too noisy to read or (b) require post-hoc aggregation, at which point the per-session shape is more honest about what a human actually reviews.
 
 ## Related
 

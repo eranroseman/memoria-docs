@@ -6,7 +6,7 @@ topic: operations
 
 # Failure modes — Detect / Fix / Verify
 
-Operational reference for failures that block core workflows. Each entry follows a **Detect / Fix / Verify** triplet: the symptom an human notices, the commands to recover, and the check that confirms the recovery actually worked. This is the authoritative companion to `00-meta/04-reference/safe-mode.md` (the vault-resident human note); use safe-mode for the *first response* and this doc for the *full recovery procedure*.
+Operational reference for failures that block core workflows. Each entry follows a **Detect / Fix / Verify** triplet: the symptom a human notices, the commands to recover, and the check that confirms the recovery actually worked. This is the authoritative companion to `00-meta/04-reference/safe-mode.md` (the vault-resident human note); use safe-mode for the *first response* and this doc for the *full recovery procedure*.
 
 The structure is borrowed from prior-iteration operational practice — symptoms alone are not enough. A failure recovery isn't complete until the verify step passes.
 
@@ -39,7 +39,7 @@ hermes -p memoria-librarian run llm-wiki ingest --source {citekey} --dry-run   #
 
 ### 2. Missing `_proposed_classification` — classification can't proceed
 
-**Detect.** Note exists in `20-sources/01-papers/` with `lifecycle: proposed` but no `_proposed_classification` comment block in the file body. The classification query in [weekly-dashboard](../dashboards/weekly-overview.md) surfaces the note but it has no classification proposal to review.
+**Detect.** Note exists in `20-sources/01-papers/` with `lifecycle: proposed` but no `_proposed_classification` comment block in the file body. The classification query in [weekly-review](../dashboards/weekly-review.md) surfaces the note but it has no classification proposal to review.
 
 **Fix.**
 
@@ -123,7 +123,7 @@ Sorted by severity (most urgent first), then by topic. The **Severity** column u
 | VPS tunnel drops on WSL2 restart | MEDIUM | systemd user service not auto-starting | `systemctl --user enable hermes-tunnel`. |
 | Schema version mismatch in Dataview | MEDIUM | Notes on old schema version | `hermes -p memoria-linter run schema-migrate --dry-run` → review proposed field additions → run without `--dry-run` on a single folder first. |
 | Cron job didn't fire overnight | MEDIUM | Sleep-prone host or stale `.env` | `always-on` option only (VPS); check `journalctl --user -u hermes-overnight` and the [discovery loop section](../roadmap/future-directions.md#the-discovery-loop). |
-| Retry count climbing on same card | MEDIUM | Brittle prompt or broken tool | After `retry_count > 3` the card auto-escalates to `blocked-on-human` — see [board/README.md retry pattern](../board/README.md#retry-pattern). The human decides whether to revise the packet or close as infeasible. |
+| Retry count climbing on same card | MEDIUM | Brittle prompt or broken tool | After `max_retries` (default 3) recoverable failures the card auto-escalates to `blocked` — see [board/README.md retry pattern](../board/README.md#retry-pattern). The human decides whether to revise the payload or archive as infeasible. |
 | Citekey not found at ingest | LOW | `.bib` not updated or not pulled | See failure mode #1 above. |
 | `_enrichment` fields not queryable | LOW | `_enrichment` is a YAML comment block, not real frontmatter (design constraint, not a defect) | Use note modification date (`file.mtime`) as a proxy, or promote specific fields (e.g., `enriched_date`) to main frontmatter. |
 | Pandoc + BBT DOCX corrupt | LOW | Known Pandoc/Better BibTeX issue with some citation styles | Rerun Pandoc; test on a single-citation document first to isolate. |

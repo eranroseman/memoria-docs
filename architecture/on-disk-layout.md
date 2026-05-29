@@ -23,7 +23,7 @@ Numbered-prefix subdirectories (e.g., `01-templates`, `02-csl`, `01-papers`) are
 ├── install.sh                          # macOS / Linux installer
 │
 ├── 00-meta/                            # vault skeleton (human-visible in Obsidian)
-│   ├── 01-dashboards/                  # 10 dashboards (index, board-state, drift-watch, audit-log, …)
+│   ├── 01-dashboards/                  # 11 dashboards (Daily Health index, board-state, drift-watch, audit-log, …)
 │   ├── 02-logs/                        # audit.jsonl, board-state.jsonl, lint-findings.jsonl, cron-history.jsonl
 │   ├── 03-templates/                   # 15 note templates (claim-note, paper-note, …)
 │   ├── 04-reference/                   # human-facing reference notes (design-system, schema-reference, …)

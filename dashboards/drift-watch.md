@@ -16,12 +16,12 @@ Surface the Linter's eight structural detector findings as one consolidated view
 
 - **Not [`audit-log`](audit-log.md).** Audit-log shows policy-MCP write decisions (per attempted write); drift-watch shows structural detector findings (per lint pass). Different cadence, different abstraction layer.
 - **Not actionable on its own.** Every finding links back to the [Linter SOUL.md and M-detectors.md](../profiles/linter.md) in the starter vault; the remediation lives there, not here. This dashboard surfaces *which* drift, not *how to fix*.
-- **Not for data-hygiene checks.** Orphan notes, stale enrichment, broken wikilinks are surfaced by [`weekly-dashboard`](weekly-overview.md) and the lint report itself, not here. M-detectors are reserved for structural drift between vault source, deployed Hermes profiles, and the human's working vault state.
+- **Not for data-hygiene checks.** Orphan notes, stale enrichment, broken wikilinks are surfaced by [`weekly-review`](weekly-review.md) and the lint report itself, not here. M-detectors are reserved for structural drift between vault source, deployed Hermes profiles, and the human's working vault state.
 
 ## Design decisions
 
 - **When to open.** Weekly review (Friday ritual); after accepting a plugin upgrade; after editing a profile's SOUL.md or a lane-override file and re-running `install.ps1`; when an audit-log anomaly suggests a configuration drift.
-- **Verdict band gates scheduled work.** Each lint pass produces one verdict (PASS / REVIEW / FAIL). FAIL pauses scheduled work (the discovery loop, batch enrichment, the Linter's next sweep) until resolved. This is the design parallel to [`fleet-observability`](fleet-observability.md)'s trust score — operational vs structural rollups, same epistemic discipline.
+- **Verdict band gates scheduled work.** Each lint pass produces one verdict (PASS / REVIEW / FAIL). FAIL pauses scheduled work (the discovery loop, batch enrichment, the Linter's next sweep) until resolved. This is the design parallel to [`fleet-health`](fleet-health.md)'s trust score — operational vs structural rollups, same epistemic discipline.
 - **Schema migration progress lives here too.** Per-template `schema_version` rollups (e.g., "127 notes still on v1") share the dashboard because they're related drift surfaces, even though schema-version-mismatch isn't an M-rule by design (data-hygiene check, not structural).
 - **Graceful degradation.** Until the Linter is implemented end-to-end and writing to `00-meta/02-logs/lint-findings.jsonl`, this dashboard is empty.
 
@@ -29,8 +29,8 @@ Surface the Linter's eight structural detector findings as one consolidated view
 
 - [Linter design summary](../profiles/linter.md) — the agent that produces these findings; the M-detector specs (`M-detectors.md`) live alongside its SOUL.md in the starter vault
 - [`audit-log`](audit-log.md) — per-decision forensics layer below this one
-- [`fleet-observability`](fleet-observability.md) — operational health complement to structural verdict band
-- [`index`](README.md) — daily glance surfaces last-24h HIGH/CRITICAL findings (filtered subset of this dashboard)
+- [`fleet-health`](fleet-health.md) — operational health complement to structural verdict band
+- [Daily Health](README.md) — daily glance surfaces last-24h HIGH/CRITICAL findings (filtered subset of this dashboard)
 
 <!-- memoria-nav -->
 
@@ -38,4 +38,4 @@ Surface the Linter's eight structural detector findings as one consolidated view
 
 [← Previous: board-state — design summary](board-state.md)
 
-[Next: fleet-observability — design summary →](fleet-observability.md)
+[Next: fleet-health — design summary →](fleet-health.md)

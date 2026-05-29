@@ -19,7 +19,7 @@ First downstream stage; precondition for [Frame](frame.md).
 2. A `scope-project` card opens on the project. Mapper claims it.
 3. Mapper runs `scope-project` (see [profiles/README.md](../../profiles/README.md#lane-permissions-matrix)): retrieves all claim and reference notes matching the brief topic; computes cluster density, recency distribution, source diversity; identifies adjacent topics with thin coverage.
 4. The output is written to `40-workbench/01-projects/<project>/map/corpus-map.md` as a structured report.
-5. The card moves to `awaiting-review`. Human reads the corpus map and decides: proceed to [Frame](frame.md), or pause to read more (loops back to [Zotero Capture](../upstream/zotero-capture.md) / [Find](../upstream/find.md)).
+5. The card completes to `done` (`review_status: requested`). Human reads the corpus map and decides: proceed to [Frame](frame.md), or pause to read more (loops back to [Zotero Capture](../upstream/zotero-capture.md) / [Find](../upstream/find.md)).
 
 ## Owners
 
@@ -27,7 +27,7 @@ Mapper executes the `scope-project` retrieval (read-only across the vault, write
 
 ## Card lifecycle
 
-`ready` if watcher-created (file-system watcher on new `brief.md`) OR `pending` if human-created via `Memoria: new project` (human transitions to `ready` after reviewing the auto-populated brief fields) → `active` (Mapper claims) → `awaiting-review` with `corpus-map.md` written → human reads, decides: `approved` (advances to [Frame](frame.md)) or `rejected` (human typically spawns new cards in [Find](../upstream/find.md) to read more first; the original closes with `outcome: superseded` when the revision card opens, or `outcome: discarded` if the assessment is abandoned).
+`ready` if watcher-created (file-system watcher on new `brief.md`) OR `triage` if human-created via `Memoria: new project` (human transitions to `ready` after reviewing the auto-populated brief fields) → `running` (Mapper claims) → `done` with `review_status: requested` and `corpus-map.md` written → human reads, decides: `approved` (advances to [Frame](frame.md)) or `rejected` (human typically spawns new cards in [Find](../upstream/find.md) to read more first; the original is archived with `outcome: superseded` when the revision card opens, or `outcome: discarded` if the assessment is abandoned).
 
 ## Command
 

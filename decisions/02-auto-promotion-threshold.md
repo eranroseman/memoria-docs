@@ -19,7 +19,7 @@ At what point does a `claim-note` get flagged for promotion to `reference-note`?
 
 ## Decision
 
-Manual flagging via `maturity: evergreen`, surfaced by the [weekly dashboard](../dashboards/weekly-overview.md). No automatic promotion to the reference layer.
+Manual flagging via `maturity: evergreen`, surfaced by the [weekly dashboard](../dashboards/weekly-review.md). No automatic promotion to the reference layer.
 
 ## Consequences
 
@@ -36,7 +36,7 @@ A link-density heuristic was considered and rejected: it confuses "well-cited" w
 ## Related
 
 - **Workflows affected:** [Promote](../workflows/upstream/promote.md)
-- **Files affected:** [weekly-overview.md](../dashboards/weekly-overview.md)
+- **Files affected:** [weekly-review.md](../dashboards/weekly-review.md)
 - **Resolves / supersedes:** none
 
 <!-- memoria-nav -->

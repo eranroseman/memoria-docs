@@ -41,19 +41,19 @@ The Diátaxis modes ([explanation, reference, how-to, tutorial][diataxis]) descr
 | [vision.md](vision.md) | Single-doc top-level explanation. Purpose, naming, what Memoria is and is not. |
 | [glossary.md](glossary.md) | ~40 cross-cutting terms grouped by domain. Cross-cutting; lives at root. |
 | [architecture/](architecture/) | Three-layer model, capability stack, on-disk layout, control plane, memory tiers. Includes `why-*.md` rationale docs (computational methods, pattern provenance, no autonomous synthesis). |
-| [board/](board/) | `README.md` (concept) + `states.md` (state machine, lanes, review gate) + `card-schema.md` (card fields, task packet, handoff). |
+| [board/](board/) | `README.md` (concept) + `states.md` (state machine, lanes, review gate) + `card-schema.md` (Hermes card fields, metadata overlay, handoff). |
 | [profiles/](profiles/) | `README.md` (the seven, lane permissions, delegation, anti-patterns) + `profile-commands.md` (operational command catalog) + per-profile design summaries + `why-coder-external-agent.md`. |
 | [vault/](vault/) | `README.md` (folder taxonomy, promotion map, pitfalls) + `templates.md` (15 note types + lifecycles) + `frontmatter-schema.md` (frontmatter, controlled vocab) + `linking-patterns.md`. |
 | [workflows/](workflows/) | `README.md` (the two pipelines, role matrix) + `upstream/`, `downstream/`, `maintenance/` (one how-to per workflow, 18 total). |
 | [surfaces/](surfaces/) | `README.md` (four surface types) + per-type detail (`persistent`, `modal`, `inline`, `ambient`) + `design-system.md` (visual-style template) + `command-palette.md`. |
-| [dashboards/](dashboards/) | `README.md` (the dashboard set) + 10 per-dashboard design summaries. Runtime Dataview queries live at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault). |
+| [dashboards/](dashboards/) | `README.md` (Daily Health) + 10 further per-dashboard design summaries — 11 dashboards total. Runtime Dataview queries live at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault). |
 | [operations/](operations/) | `README.md` + [failure-modes.md](operations/failure-modes.md) (Detect / Fix / Verify recipes). |
 | [plugins/](plugins/) | `README.md` (priority-ordered overview) + per-plugin configuration split by lifecycle into `required/` (8), `recommended/` (5), `optional/` (6, includes deployment-conditional and future-migration), plus top-level `plugin-configs-lifecycle.md` and `ui-discipline.md` (Obsidian UI conventions). |
-| [decisions/](decisions/) | 18 architecture decision records (ADRs) + `_template.md` + `by-topic.md` (secondary index grouping ADRs by topic folder). Cross-cuts all topics, so it sits at the top level. |
+| [decisions/](decisions/) | 21 architecture decision records (ADRs) — 18 with their own file, 3 (ADR-1, 8, 11) index-only — + `_template.md` + `by-topic.md` (secondary index grouping ADRs by topic folder). Cross-cuts all topics, so it sits at the top level. |
 | [roadmap/](roadmap/) | `README.md` (phased plan) + per-section detail (`timeline`, `deployment-options`, `autonomy-progression`, `success-metrics`, `design-tensions`, `future-directions`, `profile-compilation` (deferred), etc.) + `pilots/`. |
 | *(cross-cutting reference is distributed)* | Each cross-cutting reference doc lives next to what it explains: [surfaces/command-palette.md](surfaces/command-palette.md), [architecture/policy-mcp.md](architecture/policy-mcp.md), [architecture/computational-toolbox.md](architecture/computational-toolbox.md), [roadmap/profile-compilation.md](roadmap/profile-compilation.md) (**deferred**), [board/card-schema.md](board/card-schema.md), [vault/frontmatter-schema.md](vault/frontmatter-schema.md), [vault/linking-patterns.md](vault/linking-patterns.md), [profiles/profile-commands.md](profiles/profile-commands.md). |
 | [tutorials/](tutorials/) | Step-by-step walkthroughs. Currently: [`01-set-up-from-zero.md`](tutorials/01-set-up-from-zero.md). |
-| **(runtime, in [memoria-vault](https://github.com/eranroseman/memoria-vault))** | 10 dashboards at `00-meta/01-dashboards/`; 15 note templates at `00-meta/03-templates/`; 10 human-facing reference notes at `00-meta/04-reference/`; SOUL.md prompts at `.memoria/profiles/memoria-<name>/SOUL.md`; Linter detectors at `.memoria/profiles/memoria-linter/M-detectors.md`. |
+| **(runtime, in [memoria-vault](https://github.com/eranroseman/memoria-vault))** | 11 dashboards at `00-meta/01-dashboards/`; 15 note templates at `00-meta/03-templates/`; 10 human-facing reference notes at `00-meta/04-reference/`; SOUL.md prompts at `.memoria/profiles/memoria-<name>/SOUL.md`; Linter detectors at `.memoria/profiles/memoria-linter/M-detectors.md`. |
 
 ## Core idea, in one paragraph
 
@@ -75,7 +75,7 @@ Mode is what kind of writing this is. Audience is who it's for. Topic mirrors th
 
 ## Glossary
 
-If you hit an unfamiliar term mid-document — *task packet, lane-override file, verdict band, trust score, hybrid pattern, method class, restrictive skill, …* — look it up in [glossary.md](glossary.md). About 40 terms grouped by domain (system, board, policy MCP, deployment, computational methods, pipeline stages, note types, future-direction terms). The most-linked-from terms also have inline glossary references at their first-mention site in the topic READMEs.
+If you hit an unfamiliar term mid-document — *handoff payload, lane-override file, verdict band, trust score, hybrid pattern, method class, restrictive skill, …* — look it up in [glossary.md](glossary.md). About 40 terms grouped by domain (system, board, policy MCP, deployment, computational methods, pipeline stages, note types, future-direction terms). The most-linked-from terms also have inline glossary references at their first-mention site in the topic READMEs.
 
 <!-- memoria-nav -->
 

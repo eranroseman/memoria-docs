@@ -13,7 +13,7 @@ Implements ACP — the Agent Client Protocol — inside Obsidian. ACP is what ma
 Load-bearing settings:
 
 - **`customAgents` — configure four Memoria profiles, labelled by identity.** The picker entries name the *agent* (Socratic, Mapper, Writer, Verifier), each followed by a one-sentence description of what it does. These are distinct profiles with fixed permission contracts, not modes of one assistant, so the label names the specialist rather than an action. See the [picker labels table](#picker-labels-and-descriptions) below for the full text per entry.
-- `defaultAgentId: "memoria-socratic"` — Memoria's canonical ACP default is **Socratic**. The human falls into it without choosing; the other three are reached via [mode-switching hotkeys](#mode-switching-hotkeys) or via the [transient palette verbs](../../surfaces/command-palette.md#interactive-retrieval-3-commands--transient-acp).
+- `defaultAgentId: "memoria-socratic"` — Memoria's ACP default is **Socratic**. The human falls into it without choosing; the other three are reached via [mode-switching hotkeys](#mode-switching-hotkeys) or via the [transient palette verbs](../../surfaces/command-palette.md#interactive-retrieval-3-commands--transient-acp).
 - `autoAllowPermissions: false` — **never set to `true`.** When `false`, every tool call the ACP agent makes prompts the human for approval before executing. Setting this to `true` bypasses human approval on every ACP write, which is exactly the failure mode the policy MCP exists to prevent at the Hermes side. The two layers (ACP approval + policy MCP enforcement) compose; turning either off breaks the composition.
 - `autoMentionActiveNote: true` — automatically passes the active note's path and frontmatter to the agent as context. This is what makes "ask about the current note" work from one keystroke.
 - `chatViewLocation: "right-tab"` — places the ACP pane on the right, matching the [Reading & Processing workspace](../../surfaces/modal.md) assumption.
@@ -86,7 +86,7 @@ Under [the local-mesh option](../../roadmap/deployment-options.md) (desktop + la
 
 1. Clone the same starter vault on the laptop and run `./install.ps1`. Under direct profile management, profile parity follows from cloning the same vault — same `.memoria/profiles/memoria-<name>/` source on every device produces the same deployed copy at `~/.hermes/profiles/memoria-<name>/`.
 2. The installer registers each profile with `--alias`, so `memoria-<name>` works as a command shortcut on the laptop the same way it does on the desktop.
-3. Verify `cron_mode: deny` in the profile's `config.yaml` (Memoria's default — should not need changes).
+3. Verify `approvals.cron_mode: deny` in the profile's `config.yaml` (Memoria's default — should not need changes).
 4. Add to the agent-client `customAgents` array with a `displayName` that signals the discipline:
 
 ```json
@@ -103,8 +103,8 @@ The `(laptop, chat-only)` suffix in the display name is a discipline reminder �
 
 The discipline obligations under this path:
 
-- **Never enable cron** on the laptop (default deny; leave it).
-- **Never run `hermes serve`** on the laptop. No dispatcher, no API server, no card claiming.
+- **Never schedule cron jobs** on the laptop. (`approvals.cron_mode` stays at its default `deny`, but the real safeguard is simply not creating cron jobs here.)
+- **Never run `hermes gateway`** on the laptop. No dispatcher, no API server, no card claiming.
 - **Use only `chat`-mode commands** via ACP. Never `run draft`, never full `cite-check` passes, never `scope-project` invocations that write project-scratch files.
 - Treat the laptop's ACP sessions with these profiles as *information surfaces*, not *production surfaces*. The architectural protection (the policy MCP) catches some write attempts, but not all — a Writer `run draft` invoked on the laptop will write to the synced vault if you're not careful.
 

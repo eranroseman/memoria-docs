@@ -86,7 +86,7 @@ The migration path always points the same direction: **start narrow, expand when
 1. Confirm the folder structure matches [vault/README.md](../vault/README.md). Create any missing folders.
 2. Drop the 15 templates into `00-meta/03-templates/` (see [vault/templates.md](../vault/templates.md) for the full list).
 3. Migrate any existing notes whose folder no longer matches their type.
-4. Set up `00-meta/index.md` and `00-meta/weekly-overview.md` with the queries from [surfaces/README.md](../surfaces/README.md).
+4. Set up `00-meta/index.md` and `00-meta/weekly-review.md` with the queries from [surfaces/README.md](../surfaces/README.md).
 5. Confirm Zotero + Better BibTeX exports to `.memoria/library.bib`.
 
 **Exit criteria.** A new note created from a template lands in the right folder with the right frontmatter. Dashboards open and show real data.
@@ -124,27 +124,27 @@ The principle: **install only what the device's role can safely run.** This is t
 **Steps.**
 
 1. Stand up the **Hermes built-in Kanban** (see [board/README.md](../board/README.md) for the mandated choice and the alternatives that were considered).
-2. Configure the nine states: `pending`, `ready`, `active`, `blocked-on-human`, `awaiting-review`, `rejected`, `retry-needed`, `approved`, `done`.
-3. Configure the schema fields: `status`, `assignee`, `lane`, `blocked_reason`, `retry_count`, `handoff_note`, `last_updated`, `canonical_target`, `review_status`, `review_owner`, `review_requested_at`, `reviewed_at`.
-4. Configure dispatch logic so cards in `pending`, `awaiting-review`, or `blocked-on-human` are not claimable by non-review workers.
-5. Configure retry behavior so failed work reuses the same card and increments `retry_count`.
-6. Configure the Kanban dispatch rules to advance cards (no Orchestrator profile); configure Verifier and Linter to set `review_status` as recommendations the human approves.
+2. Adopt the Hermes Kanban's fixed `status` enum — `triage`, `todo`, `ready`, `running`, `blocked`, `done`, `archived`. These are not configurable; map Memoria's lifecycle onto them (see [board/states.md](../board/states.md) for the crosswalk).
+3. Define the review overlay in card `metadata`: `review_status`, `agent_verdict`, `review_owner`, `review_requested_at`, `reviewed_at`, `canonical_target`, `supersedes`. (The execution fields — `status`, `assignee`, `reason`, `max_retries` — are Hermes built-ins, not Memoria's to define.)
+4. Configure dispatch logic so cards in `triage`, `done` (awaiting review), or `blocked` are not claimable by non-review workers.
+5. Configure retry behavior so recoverable failures reuse the same card (returned to `ready`) within `max_retries`.
+6. Configure the Kanban dispatch rules to advance cards (no Orchestrator profile); configure Verifier and Linter to write `agent_verdict` recommendations the human promotes to `review_status: approved`.
 7. **Stand up a mock REST API for board-layer testing.** A small in-memory or fixture-backed server that implements the same HTTP endpoints as the live Obsidian Local REST API (see [architecture/control-plane.md](../architecture/control-plane.md)) but writes to a scratch directory instead of the live vault. The board's dispatch logic, retry rules, and state transitions are exercised end-to-end against the mock without Obsidian running — this is also what CI runs against. The thin-layers discipline (one job per layer, no business logic in the glue) is what makes the mock cheap to build and maintain.
 
 **Exit criteria.** A card can flow from `ready` through review and back to a worker. Retries reuse the same card. The review gate blocks dispatch. The state machine has a regression test suite that runs without live Obsidian.
 
 ### Phase 5 — Pilot corpus (small end-to-end run)
 
-**Goal.** Run a small corpus through the full pipeline and refine the lane rules, review states, and handoff notes before scaling.
+**Goal.** Run a small corpus through the full pipeline and refine the lane rules, review overlay, and handoff summaries before scaling.
 
 **Steps.**
 
 1. Pick 5–10 sources representative of your active research.
 2. Run them through ingest → classify → distill → promote.
 3. For each card, exercise the review gate explicitly. Watch for any state that "leaks" past review.
-4. Note handoff friction: where did the next worker have to re-derive context? Improve handoff notes.
+4. Note handoff friction: where did the next worker have to re-derive context? Improve handoff summaries.
 5. Note routing friction: where did the dispatch rules misfire? Improve lane-override rules.
-6. Refine the schema if a field is missing or unused.
+6. Refine the `metadata` overlay if a field is missing or unused (the Hermes `status`/built-in fields are fixed).
 
 **Exit criteria.** A new source can move through the pipeline without surprises. The weekly dashboard meaningfully reflects state.
 

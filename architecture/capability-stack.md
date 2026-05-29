@@ -69,7 +69,7 @@ Not every model call needs the most capable model. The discipline:
 The model selection is configured in each profile's `config.yaml` — not at the workflow layer. The lane-override declares *what skills the profile may run*; the profile's config decides *which model* runs them. This keeps cost discipline operational rather than aspirational:
 
 - The discovery loop's `$1–3/day` budget (see [roadmap/future-directions.md](../roadmap/future-directions.md)) is achievable *because* embed and classify calls go to a cheap model; routing everything through Claude would push the budget several times higher.
-- Cost regressions surface in the [fleet-observability dashboard](../dashboards/fleet-observability.md) at the per-skill level — if `paper-lookup` cost-per-task triples, the routing config drifted (or a cheap model was retired and the call now silently falls back to Claude).
+- Cost regressions surface in the [fleet-health dashboard](../dashboards/fleet-health.md) at the per-skill level — if `paper-lookup` cost-per-task triples, the routing config drifted (or a cheap model was retired and the call now silently falls back to Claude).
 
 OpenRouter and similar gateways (Kilopass, OpenAI's own model fan-out) are the practical access path to cheap models — they expose a single API surface with many backend models, so the profile config picks the model name rather than negotiating credentials per provider.
 
@@ -93,7 +93,7 @@ These are not skills — they are the surrounding ecosystem the agent integrates
 - Obsidian plugins (detailed per-plugin configuration): [plugins/README.md](../plugins/README.md)
 - Per-profile skill catalogs: [profiles/README.md](../profiles/README.md)
 - Lane-override mechanism: [profiles/README.md lane-override files](../profiles/README.md#lane-override-files)
-- Cost-discipline dashboard: [dashboards/fleet-observability.md](../dashboards/fleet-observability.md)
+- Cost-discipline dashboard: [dashboards/fleet-health.md](../dashboards/fleet-health.md)
 
 <!-- memoria-nav -->
 

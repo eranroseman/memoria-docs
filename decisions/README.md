@@ -37,13 +37,13 @@ Resolved decisions that don't have their own file are noted in the **Resolution*
 | 12 | [Systematic-review mode](12-systematic-review-mode.md) | `proposed` | Adopt only when actively running a systematic review. |
 | 13 | [Method-unit vocabulary](13-method-unit-vocabulary.md) | `retired` (2026-05) | Premature ontology; no triggering pattern emerged. |
 | 14 | [Cross-run skill-insights memory](14-cross-run-skill-insights.md) | `proposed` | Defer. Significant architecture for a single-user vault. |
-| 15 | [Dedicated review-note type](15-dedicated-review-note-type.md) | `proposed` | Defer. Card's review_status / handoff_note carries enough provenance. |
+| 15 | [Dedicated review-note type](15-dedicated-review-note-type.md) | `proposed` | Defer. Card's review_status / handoff summary carries enough provenance. |
 | 16 | [Contradictions / tensions dashboard](16-contradictions-dashboard.md) | `proposed` | Depends on ADR-9 being adopted. |
 | 17 | [Retriever / Scout as a separate profile](17-retriever-scout-profile.md) | `proposed` | Keep Librarian unified until discovery volume overwhelms it. |
 | 18 | [Evidence quality fields layer](18-evidence-quality-fields.md) | `proposed` | Per-project activation when a protocol or journal requires it. |
 | 19 | [Pre-ingest screening layer (PRISMA + ASReview)](19-pre-ingest-screening.md) | `proposed` | Adopt when starting a formal scoping or systematic review. |
 | 20 | [Dual-rater workflow for inter-rater reliability](20-dual-rater-workflow.md) | `proposed` | Activate only when the chapter / paper requires it. |
-| 21 | [Shared candidate frontmatter format](21-shared-candidate-frontmatter.md) | `accepted` (2026-05) | Adopt the `type: candidate` schema for all candidate sources. Adds `candidate-note` as the 16th note type. |
+| 21 | [Shared candidate frontmatter format](21-shared-candidate-frontmatter.md) | `proposed` | Defer. Would standardize a `type: candidate` schema across candidate sources and add `candidate-note` as a 16th note type (the current 15 are authoritative in [vault/templates.md](../vault/templates.md#note-types)). |
 
 ## Numbering gaps and the graveyard
 

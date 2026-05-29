@@ -32,7 +32,7 @@ Hermes is the worker layer, split into seven specialist profiles. Each has a foc
 | **Coder** | Coder | Level 2 (external dispatch) | Build and maintain code artifacts, scripts, repos. Transactional. |
 | **Linter** | Linter | Level 1 (scheduled) | Validate structure, metadata, schema, link health. Default dry-run. Also owns session-log and audit-trail housekeeping. |
 
-**No Orchestrator, no Reviewer.** Routing lives in lane-overrides and Kanban dispatch — see [Routing without an Orchestrator](#routing-without-an-orchestrator). Review gates are board states (`awaiting-review`, `approved`) enforced by the policy MCP; the mechanical parts of review (claim tracing, similarity, retraction) live in Verifier, the judgment parts with the human.
+**No Orchestrator, no Reviewer.** Routing lives in lane-overrides and Kanban dispatch — see [Routing without an Orchestrator](#routing-without-an-orchestrator). The review gate rides on the card's `review_status` (a `done` card with `review_status: requested`, promoted to `approved`) enforced by the policy MCP; the mechanical parts of review (claim tracing, similarity, retraction) live in Verifier, the judgment parts with the human.
 
 ## Lane permissions matrix
 
@@ -52,7 +52,7 @@ Rules of thumb:
 
 - **Networked skills are lane-restricted.** Only Library can call `rest-passthrough`. The passthrough is the escape hatch (see [architecture/capability-stack.md](../architecture/capability-stack.md#rest-passthrough--the-escape-hatch)); confining it to one lane keeps external I/O auditable.
 - **Socratic and Mapper are read-only.** Any `decision: allow` for `profile: memoria-socratic` or `profile: memoria-mapper` on a `write` action outside its declared scratch path is a configuration bug — surfaced by the [audit-log dashboard](../dashboards/audit-log.md).
-- **No lane writes to canonical zones.** `30-synthesis/01-claims/`, `30-synthesis/03-moc/`, and `50-deliverables/` are policy-MCP `dry_run` for every lane. Promotion is always synchronous with human attention.
+- **No lane writes to canonical zones.** `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, and `50-deliverables/` are policy-MCP `dry_run` for every lane. Promotion is always synchronous with human attention.
 
 ## Autonomy levels
 
@@ -62,7 +62,7 @@ Each profile's autonomy level is part of its contract:
 - **Level 2 (Kanban-pulled)** — picks up cards from its lane queue. Produces output to review-gated paths. The bulk of Memoria's work.
 - **Level 2 with review gate** — produces drafts that don't promote to canonical without explicit human approval. Writer.
 - **Level 3 (interactive)** — invoked synchronously by the human (via ACP, command palette, or Telegram). No queue. Socratic.
-- **Level 2 (external dispatch)** — handoffs to an external agent (Claude Code, Aider, Codex) via task packets. Coder.
+- **Level 2 (external dispatch)** — handoffs to an external agent (Claude Code, Aider, Codex) via handoff payloads. Coder.
 
 The level governs both the cadence (background / kanban-pulled / interactive) and the expected output mode (report / artifact / conversation). It does not loosen any policy MCP rule.
 
@@ -78,9 +78,9 @@ This is the operational access map. For the layered folder structure these colum
 | Writer | Read | Write (answer drafts) | Read only | Read only | Write drafts (review-gated) | Read; suggest | Write (drafts, framing) | Read only unless export task |
 | Verifier | Read | Write (gap-candidate cards in `03-candidates/`) | Read only | Read only | Read only | Read only | Write (`01-projects/*/verification/*`) | Read only |
 | Coder | Read | Read only | Read only | Read only | Read for context | Read | Write (`40-workbench/01-projects/*/code/`, project pages under `01-projects/`) | Read / write on explicit export tasks |
-| Linter | Read; write `04-logs/` (audit, session) | Read | Read | Read | Read | Read | Read | Read |
+| Linter | Read; write `02-logs/` (audit, session) | Read | Read | Read | Read | Read | Read | Read |
 
-Rule of thumb: **canonical synthesis remains human-owned** in `30-synthesis/01-claims/`. **Schema governance remains human-owned** in `00-meta/` except for the logs subfolder Linter writes to. Project scratch (`40-workbench/01-projects/`) is the only zone where multiple profiles write, and each profile writes to its own named subfolder.
+Rule of thumb: **canonical synthesis remains human-owned** across the `30-synthesis/` canonical zones (`01-claims/`, `02-reference/`, `03-moc/`). **Schema governance remains human-owned** in `00-meta/` except for the logs subfolder Linter writes to. Project scratch (`40-workbench/01-projects/`) is the only zone where multiple profiles write, and each profile writes to its own named subfolder.
 
 ## Lane-override files
 
@@ -200,11 +200,11 @@ Each profile's core verbs are listed in the [Lane permissions matrix](#lane-perm
 
 Routing — "which profile picks up this card?" — is rule-encoded, not reasoned. Three mechanisms together:
 
-1. **The card's `lane` field** determines which profiles are eligible to claim it. A card with `lane: mapping` can only be claimed by a worker whose lane-override file declares it on that lane.
+1. **The card's `assignee` (its lane)** determines which profile is eligible to claim it. A card assigned to the mapping lane can only be claimed by a worker whose lane-override file declares it on that lane. There is no separate `lane` field — the lane *is* the `assignee`.
 2. **The lane-override file's `routing.write_scope`** declares where that worker's output should land by default, so the worker doesn't have to decide.
 3. **The Kanban dispatcher** picks the highest-priority eligible card from each lane's queue when a worker becomes available. Priority is set at card creation (cron-triggered work is usually low-priority; human-initiated is high).
 
-There is no reasoning step. If the rules can't decide (two profiles eligible, or none eligible), the card sits in `ready` until the human intervenes. This is the design — silent reasoning about routing is exactly what the policy MCP exists to prevent.
+There is no reasoning step. If the rules can't decide (two profiles eligible, or none eligible), the card sits in `ready` (unclaimed) until the human intervenes. This is the design — silent reasoning about routing is exactly what the policy MCP exists to prevent.
 
 When a card needs to move between lanes (e.g., from library to verify after ingest), the *worker that just finished* moves it. The Librarian who completes an ingest moves the card to the `verify` lane's queue if a similarity check is needed; the Writer who commits a draft fires the verify-on-commit hook. No central agent makes these decisions; the workflow does.
 
@@ -219,7 +219,7 @@ Delegation is strongest in profiles that produce derivative artifacts (drafts, c
 | Socratic | **None.** Socratic has nothing to delegate — questions and conversations are the whole product. Cannot delegate writing because it can't write. |
 | Writer | **Supportive.** Delegates facts or cleanup; keeps synthesis ownership. Final draft remains local. |
 | Verifier | **Very low.** Delegation weakens verification independence. Inspects, traces, flags. |
-| Coder | **Moderate.** Delegates helper work, formatting, lookup; keeps implementation control. Commits stay per task. Also delegates substantive coding work to the external coding agent via task packets — see the Coder section above. |
+| Coder | **Moderate.** Delegates helper work, formatting, lookup; keeps implementation control. Commits stay per task. Also delegates substantive coding work to the external coding agent via handoff payloads — see the Coder section above. |
 | Linter | **Lowest.** Does not spawn work. May request context, but its job is to validate, report, and log. |
 
 Rule: delegate narrow, temporary, low-risk subtasks; never delegate away the role's defining judgment.
@@ -267,8 +267,8 @@ A lane is a board-level contract about *who can claim a card*. The lane tells th
 The two work together:
 
 - If a card is in the library lane, only Librarian-class workers may claim it.
-- If a card is `awaiting-review`, only the human may clear it (no Reviewer profile to do so).
-- When a worker finishes its slice, it moves the card to the appropriate exit state — it does not mark the card done.
+- If a card is `done` and awaiting review (`review_status: requested`), only the human may clear it (no Reviewer profile to do so).
+- When a worker finishes its slice, it completes the card to `done` with `review_status: requested` — it does not mark the work approved.
 
 This is what prevents "everything becomes orchestration." Each profile stays accountable for what it ships.
 
@@ -287,7 +287,7 @@ These are the patterns to avoid, drawn from observation of single-agent systems:
 - **Linter as auto-fixer.** The Linter silently corrects orphans, retags notes, moves things to archive. Symptom: vault state diverges from human intent without notice.
 - **Socratic with write access.** Even a tiny write scope on Socratic ("just to scratch") defeats the architectural protection. Socratic's `policy.allow.write: []` is load-bearing.
 
-The structural guard against all of these is in the permission matrix and the board states. Treat them as load-bearing.
+The structural guard against all of these is in the permission matrix and the board states. Treat them as non-negotiable.
 
 <!-- memoria-nav -->
 

@@ -21,7 +21,7 @@ Folders encode **lifecycle stage**, not subject area. The top-level number tells
 ```text
 <vault-root>/                  ← starter vault; human picks the folder name
 ├── 00-meta/
-│   ├── 01-dashboards/         # 10 Dataview dashboards
+│   ├── 01-dashboards/         # 11 Dataview dashboards (Daily Health + 10)
 │   ├── 02-logs/               # audit.jsonl, board-state.jsonl, lint-findings.jsonl, cron-history.jsonl
 │   ├── 03-templates/          # 15 note templates
 │   ├── 04-reference/          # human-facing reference notes
@@ -70,7 +70,7 @@ The vault is a single repo, opened directly by Obsidian. The numbered top-level 
 
 The biggest gain over a flat structure is that **source**, **synthesis**, **workbench**, and **deliverable** become visibly different zones. The agent and human both see at a glance what a folder is *for*: things that describe the world (sources), things that express your thinking (synthesis), things being worked on (workbench), and things that have shipped (deliverables).
 
-The split inside `30-synthesis/` (`claims/`, `reference/`, `moc/`) is especially load-bearing because it makes the three kinds of conceptual knowledge distinct: claims, reference pages, and navigation hubs.
+The split inside `30-synthesis/` (`claims/`, `reference/`, `moc/`) is especially important because it makes the three kinds of conceptual knowledge distinct: claims, reference pages, and navigation hubs.
 
 ### Folder roles and access
 
@@ -120,7 +120,7 @@ A small set of `00-meta/` files are not folders and not templates — they are h
 | `00-meta/research-directions.md` | Current research priorities, open questions, synthesis gaps, papers to prioritize. The Librarian reads this at session start. | Human (refresh weekly) |
 | `00-meta/system-status.md` | Runtime health snapshot: Hermes API running, MCPs up, plugin enabled, profiles available. **Distinct from `board-state`**, which tracks work in flight. | Human (occasional refresh) |
 
-`research-directions.md` is the most operationally load-bearing of these: an empty or stale file produces an unfocused Librarian. See [workflows/README.md](../workflows/README.md) for how it feeds the find workflow.
+`research-directions.md` is the most operationally important of these: an empty or stale file produces an unfocused Librarian. See [workflows/README.md](../workflows/README.md) for how it feeds the find workflow.
 
 ## Vault skeleton: human-facing notes
 
@@ -140,7 +140,7 @@ A freshly-cloned vault ships with a small set of plain-language human notes in `
 | `00-meta/04-reference/obsidian-config.md` | Plain-language summary of which Obsidian community plugins Memoria uses and the load-bearing settings the human should not change. Companion to [plugins/README.md](../plugins/README.md). | Human (sync with plugin changes) |
 | `00-meta/04-reference/design-system.md` | Canonical visual-style source for the vault — palette, typography, spacing, layout, components, motion, voice, brand, anti-patterns. Format follows [open-design](https://github.com/nexu-io/open-design)'s 9-section DESIGN.md schema so the same file can drive open-design's render pipeline. Read by CSS-snippet generators, by Pandoc export configs, and by open-design when rendering deliverables. Templated by [surfaces/design-system.md](../surfaces/design-system.md). | Human (edits define the brand); design-system schema versioned independently |
 
-The design folder is the *engineering* spec — it describes how to build and reason about the system. The vault skeleton is what an *human* needs in front of them while using the vault day-to-day. The skeleton notes are intentionally short and plain-language; if a section needs architectural detail, it links to the relevant `memoria-docs/` document.
+The design folder is the *engineering* spec — it describes how to build and reason about the system. The vault skeleton is what a *human* needs in front of them while using the vault day-to-day. The skeleton notes are intentionally short and plain-language; if a section needs architectural detail, it links to the relevant `memoria-docs/` document.
 
 ### Drift discipline
 
@@ -161,7 +161,7 @@ These failure modes recur. Treat them as anti-patterns to actively avoid.
 
 - **Summary notes masquerading as synthesis.** A paper note that lists bullet points is a summary, not synthesis. Synthesis means connecting what the paper says to what you already know — if there are no wikilinks in the Summary section, no synthesis has happened.
 - **Too many claims in one claim note.** If the title contains "and" doing real work, split the note. One claim, one note.
-- **Treating agent synthesis as verified content.** A `answer-note` is a proposal. The agent may cite a paper for a claim that paper doesn't actually make. Always verify citekeys before promoting.
+- **Treating agent synthesis as verified content.** An `answer-note` is a proposal. The agent may cite a paper for a claim that paper doesn't actually make. Always verify citekeys before promoting.
 
 ### Promotion and structure
 

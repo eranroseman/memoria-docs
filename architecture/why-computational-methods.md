@@ -53,7 +53,7 @@ Concrete instances in Memoria:
 - **`[!brief]` comparative read.** New source → top-5 most-comparable existing sources by shared citations + embedding similarity → LLM composes the comparative narrative across 5 sources, not the entire corpus.
 - **`_proposed_classification`.** A new paper-note → small multi-label classifier produces topic/methods/study_design proposals → if classifier confidence > 0.85, accept; else fall back to LLM proposal.
 
-The benefit isn't just cost. The deterministic step's output is *auditable* (you can show which sources contributed to the rank, what the similarity score was, why the candidate was selected). The LLM's output is qualitative — useful but opaque. The hybrid keeps the audit trail load-bearing.
+The benefit isn't just cost. The deterministic step's output is *auditable* (you can show which sources contributed to the rank, what the similarity score was, why the candidate was selected). The LLM's output is qualitative — useful but opaque. The hybrid keeps the audit trail authoritative.
 
 ## Methods Memoria uses
 
