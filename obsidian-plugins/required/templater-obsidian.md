@@ -6,8 +6,6 @@ topic: plugins
 
 # templater-obsidian
 
-> Renamed to [templater-obsidian.md](templater-obsidian.md). This file is kept for link stability.
-
 Templater is the templating layer Memoria uses for safe-and-unambiguous frontmatter fixes (see [linter.md](../../profiles/linter.md#implementing-safe-and-unambiguous-fixes-via-templater)) and for capture commands invoked via [quickadd](quickadd.md).
 
 Load-bearing settings:

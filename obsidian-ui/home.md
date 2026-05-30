@@ -4,9 +4,12 @@ audience: operator
 topic: obsidian-ui
 ---
 
+> [!warning] Status: Accepted-Pending (ADR-25)
+> `Home.md` does not yet exist at the vault root. Create it manually or wait for the post-clone setup step to be documented.
+
 # Home — the startup front door
 
-`Home.md` (vault root) is the note Memoria opens on launch via [obsidian-homepage](../obsidian-plugins/recommended/obsidian-homepage.md) ([ADR-25](../decisions/25-homepage-front-door.md)). It is a **launchpad**, not a dashboard: it *surfaces* the dashboards rather than being one of the twelve. Role split — [Daily Health](../dashboards/daily-health.md) is the health glance; Home leads with it and adds navigation plus quick actions, so a session starts at one deliberate place.
+`Home.md` (vault root) is the note Memoria opens on launch via [obsidian-homepage](../obsidian-plugins/recommended/obsidian-homepage.md) ([ADR-25](../decisions/25-homepage-front-door.md)). It is a **launchpad**, not a dashboard: it *surfaces* the dashboards rather than being one of the eleven shipped dashboards. Role split — [Daily Health](../dashboards/daily-health.md) is the health glance; Home leads with it and adds navigation plus quick actions, so a session starts at one deliberate place.
 
 ## What Home contains
 

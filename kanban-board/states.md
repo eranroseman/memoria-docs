@@ -4,9 +4,12 @@ audience: operator
 topic: board
 ---
 
+> [!warning] Status: Deferred (Phase 4)
+> The Kanban board does not exist in the starter vault. This document describes the planned design. See `board-export.md` for implementation notes.
+
 # Board states and the review gate
 
-The board tracks **two orthogonal lifecycles**:
+The board tracks **three card dimensions** (two execution/review lifecycles plus agent recommendation):
 
 1. **Execution** — the Hermes built-in `status` field, a fixed seven-value enum. This is what the dispatcher and workers move.
 2. **Review** — a Memoria overlay stored in `metadata.review_status` (plus `metadata.agent_verdict`). Hermes has no review gate, so Memoria layers one on. It rides on top of `status: done`.
@@ -61,8 +64,8 @@ Every lane exits to `status: done`; what differs is what "done" means and which 
 
 | Profile (lane `assignee`) | Input | Exit | What "done" means |
 | --- | --- | --- | --- |
-| Librarian | Candidate paper / item | `done` (`review_status: requested`) | Paper notes created, enriched, classified; ready for human classification. |
-| Mapper | Project brief | `done` (`review_status: requested`) | Scope-map (or gap-report, cluster-map, comparative-brief) written; ready for human decision. |
+| Librarian | Candidate paper / item | `done` (`review_status: requested`) | Paper notes created, enriched, and draft-classified; ready for human classification decision. |
+| Mapper | Project brief | `done` (`review_status: requested`) | Corpus-map (or gap-report, cluster-map, comparative-brief) written; ready for human decision. |
 | Writer | Approved evidence | `done` (`review_status: requested`) | Answer draft ready; the commit fires the Verifier hook that creates a `verify` card. |
 | Verifier | Draft commit | `done` (`agent_verdict` = the `verify-*` triple) | Verification report written; the human translates `verify-clean` / `verify-needs-revision` / `verify-needs-attention` into a verdict. |
 | Linter | Candidate or draft | `done` (`agent_verdict`: `approve` / `reject` / `escalate`) | Structural check completed (pass or fix-needed); report attached as a comment. |
@@ -101,7 +104,7 @@ A card is canonical only after a human sets `review_status: approved`, not becau
 
 ### Rule 3: Review states block dispatch
 
-Cards in `done` (awaiting review), `blocked`, `triage`, or `todo` are not claimable by non-review workers until state changes. Hermes does not dispatch these statuses; Memoria additionally checks `review_status` before promoting. Non-dispatchable means non-dispatchable.
+Cards in `done` (awaiting review), `blocked`, `triage`, or `todo` are not claimable by any worker until state changes. Hermes does not dispatch these statuses; Memoria additionally checks `review_status` before promoting. Non-dispatchable means non-dispatchable.
 
 ### Rule 4: Review has ownership
 

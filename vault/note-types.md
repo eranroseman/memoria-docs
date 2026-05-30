@@ -96,7 +96,7 @@ Every note carries one universal field, **`lifecycle`** — its durability phase
 | `project-note` | `proposed` → `current` → `dormant`/`archived` | `project_phase`: `planning` / `active` / `paused` / `complete` |
 | `code-note` | `proposed` → `current` (active) → `archived` (deprecated) | — |
 | `canvas` | `proposed` → `current` → `archived` (informally "frozen" once it has informed the draft — *frozen* is prose, not a `lifecycle` value) | — |
-| `draft` | `proposed` → `current` (submitted) | `draft_stage`: `outline` / `in-progress` / `submitted` |
+| `draft` | `proposed` → `current` | `draft_stage`: `outline` / `in-progress` / `submitted` (refinement within `current` — not a lifecycle value) |
 | `deliverable` | `current` (final) | — |
 
 The `lifecycle` enum and each refinement field are validated by the Linter's `schema-check` (see [profiles/linter.md](../profiles/linter.md)). New allowed values are added here first, then to the templates. The `lifecycle` value set is deliberately kept **distinct from board-card `status`** — see [frontmatter-schema.md](frontmatter-schema.md#rules) for the full disambiguation.

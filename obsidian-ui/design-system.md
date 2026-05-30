@@ -6,7 +6,7 @@ topic: obsidian-ui
 
 # `design-system` template
 
-Unlike the rest of this folder, the design system is not a UI component — it's the visual-style contract the components render *against*. This file is the **template**: the section schema plus Memoria's per-field guidance, written with placeholders, not values. The **filled, authoritative instance** for a given vault lives at `00-meta/04-reference/design-system.md` — that copy sets the brand (real palette, type scale, fonts); this one defines the shape it must take. Both exist on purpose: schema here, instance there — the same template-vs-instance split as note types (`vault/note-types.md` vs `00-meta/03-templates/`) and dashboards (design summary vs runtime query). Read by Memoria's CSS snippet generator, by exports (Pandoc, open-design), and by anything else that needs to render Memoria content with a consistent look.
+Unlike the rest of this folder, the design system is not a UI component — it's the visual-style contract the components render *against*. This file is the **template**: the section schema plus Memoria's per-field guidance, written with placeholders, not values. The **filled, authoritative instance** for a given vault lives at `00-meta/04-reference/design-system.md` — that copy sets the brand (real palette, type scale, fonts); this one defines the shape it must take. Both exist on purpose: schema here, instance there — the same template-vs-instance split as note types (`vault/note-types.md` vs `00-meta/03-templates/`) and dashboards (design summary vs runtime query). Intended future consumer: a CSS snippet generator (deferred), by exports (Pandoc, open-design), and by anything else that needs to render Memoria content with a consistent look.
 
 Format follows [open-design](https://github.com/nexu-io/open-design)'s 9-section DESIGN.md schema so the same file can drive open-design's render pipeline directly. Humans who already use open-design can import any of its 150 built-in design systems by replacing this file.
 
@@ -61,7 +61,7 @@ All three agent callouts share **one accent** and are differentiated by **icon, 
 
 ## Font families
 
-- Interface: <font name>        # Obsidian UI; default Lexend
+- Interface: <font name>        # Obsidian UI; default Inter
 - Body: <font name>             # note prose; serif or sans depending on intent
 - Heading: <font name>          # heading hierarchy
 - Mono: <font name>             # code, citekeys, structured data

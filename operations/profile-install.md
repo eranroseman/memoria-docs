@@ -18,7 +18,7 @@ How the seven Hermes profiles get from the vault into `~/.hermes/profiles/`, and
 2. Stages the profile files to a temp dir.
 3. Substitutes `{{VAULT_PATH}}` in `mcp.json` with the vault's absolute path (forward-slash form), written UTF-8 no-BOM.
 4. Runs `hermes profile install <staged> --alias memoria-<name> --force --yes`.
-5. On first install only, copies `.env.EXAMPLE` → `.env` (never overwrites an existing `.env`).
+5. On first install only, Hermes writes `.env.EXAMPLE` to the installed profile directory; `install.ps1` copies it to `.env` (never overwrites an existing `.env`).
 
 Author-owned files (`SOUL.md`, `config.yaml`, `mcp.json`, `skills/`, `cron/`) are overwritten on every run; the human-owned `.env` is preserved.
 

@@ -123,18 +123,7 @@ See [vault/README.md](../vault/README.md) for the full layout, note types, templ
 
 ## Human channels
 
-Memoria's primary UI is **Obsidian** (focused desktop work). Beyond it are two secondary channels — **CLI** and **Telegram** — and one non-human integration path, the **API server**. The rule that keeps the design coherent: **each access path owns one mode**; using one for the wrong mode (Telegram for desktop work, CLI for daily ops) produces drift.
-
-| Access path | Mode | Use it for |
-| --- | --- | --- |
-| **Obsidian** (primary UI) | Desktop, focused, deliberate | Daily triage, reading, authoring, agent conversations on the active note. Its components — dashboards, workspaces, callouts, status line, command palette, the Agent Client pane — are in [obsidian-ui/README.md](../obsidian-ui/README.md). |
-| **CLI** (`hermes …`) | Desktop, occasional, precise | Forensic queries, profile administration, manual dispatch. |
-| **Telegram** | Mobile, async, lightweight | Fleeting capture, source-URL capture, urgent push notifications, on-the-go Socratic. |
-| **API server** (port 8642) | Programmatic, integration (not human) | File-system watchers, Zotero hooks, git post-commit, cross-machine dispatch. |
-
-Inside Obsidian, the UI breaks into components (dashboards, workspaces, callouts, the status line, the command palette, the Agent Client pane, and other plugin UI). See [obsidian-ui/README.md](../obsidian-ui/README.md) for what each is for and the render discipline behind them.
-
-**For per-path detail** — when to use CLI vs dashboards, the two distinct uses of Telegram (notifications vs mobile capture), the deliberately-narrowed Telegram toolset, what the API is and isn't for, and the access-path failure modes — see [human-channels.md](human-channels.md).
+Memoria's primary UI is Obsidian; CLI and Telegram are secondary channels; port 8642 is the non-human API path. The defining discipline is that each access path owns exactly one mode — misuse produces drift. See [human-channels.md](human-channels.md) for the per-path breakdown: when to use CLI vs dashboards, the two distinct Telegram uses, the deliberately-narrowed Telegram toolset, what the API is and isn't for, and the access-path failure modes.
 
 ## On-disk layout
 
@@ -176,35 +165,11 @@ Cards never close on a worker's say-so. The card lives until the human changes t
 
 ## Memory tiers
 
-Memory spans two **Hermes-native** layers — working context (session-bound) and profile memory (`MEMORY.md` + `USER.md`, frozen-snapshot per profile), plus on-demand SQLite **session search** — and two substrates **Memoria adds**: board memory (the handoff payload, card-bound, travels between profiles) and vault memory (project files for cross-lane state; append-only audit logs for the operational record). Confusing the scopes is the source of most "the agent forgot" and "the agent remembered something it shouldn't have" bugs.
-
-**See [architecture/memory-tiers.md](memory-tiers.md)** for the full substrate table, the rules that keep memory from bleeding across lanes, and why the thin-control-over-thick-state split matters.
+Memoria operates across five distinct memory scopes — two Hermes-native (working context, profile memory) and three Memoria-added (session search, board handoff payload, vault files) — each with different lifespans and owners. Confusing them is the source of most "the agent forgot" and "the agent remembered something it shouldn't have" bugs. See [architecture/memory-tiers.md](memory-tiers.md) for the full substrate table, the rules that keep memory from bleeding across lanes, and why the thin-control-over-thick-state split matters.
 
 ## Permission enforcement: the policy MCP
 
-Profile permissions and lane scopes are not just documentation — they are enforced at the tool layer by a **policy MCP** that intercepts every vault write. Prompts are advisory; the policy MCP catches misrouted writes at the file-system level, before they happen.
-
-The MCP guards eight distinct actions (`read`, `write`, `append`, `move`, `delete`, `mkdir`, `auto_fix`, `report`) and returns one of four decisions per request:
-
-| Decision | Meaning |
-| --- | --- |
-| `allow` | Action proceeds; logged only if the lane requires it. |
-| `allow_with_log` | Action proceeds; audit entry mandatory. |
-| `deny` | Action blocked; the worker must escalate. |
-| `dry_run` | Action logged and reported but not performed; surfaced for human approval. |
-
-Two structural rules sit above the lane configuration:
-
-- **Review-gated zones are never auto-written.** Writes to the four [review-gated zones](../glossary.md#system-and-architecture) degrade to `dry_run` regardless of lane policy.
-- **Linter auto-fix is class-gated** to `safe-and-unambiguous` or `authorized-targeted` (see [profiles/linter.md](../profiles/linter.md#auto-fix-policy)).
-
-Every allowed write produces an append-only audit entry in `00-meta/02-logs/audit.jsonl` with SHA-256 `before_hash` and `after_hash` for tamper detection and reversibility. The MCP — not the worker — computes the hashes; hash failures cause `deny`.
-
-### Skill-conditional policy
-
-Lane-overrides are the baseline policy a profile carries. A small set of skills tighten that baseline further — the currently-shipped example is `counter-outline` (Writer-loaded; narrows write scope to scratch-only). The mechanism, frontmatter contract, and composition semantics are in [architecture/policy-mcp.md](../architecture/policy-mcp.md#skill-conditional-policy); the catalog of restrictive skills is in [profiles/README.md](../profiles/README.md#skills-with-restrictive-policy).
-
-**Full mechanism details** — decision protocol, request/response contracts, action vocabulary, audit log schema, SHA-256 implementation rules — are in [architecture/policy-mcp.md](../architecture/policy-mcp.md). This summary covers what the architecture relies on; the reference doc is the source of truth.
+Profile permissions and lane scopes are enforced at runtime by a policy MCP that intercepts every vault write, returning one of four decisions (`allow`, `allow_with_log`, `deny`, `dry_run`). Review-gated zones always degrade to `dry_run`; every allowed write is audited with SHA-256 hashes for tamper detection. See [architecture/policy-mcp.md](policy-mcp.md) for the full decision protocol, action vocabulary, request/response contracts, audit log schema, SHA-256 implementation rules, and skill-conditional policy mechanism.
 
 ## Control plane
 
@@ -228,7 +193,7 @@ Memoria draws on a broad survey of contemporary AI-research systems (LitSearch, 
 
 ## Capability stack
 
-The minimum capability stack to operate Memoria is eight components: Hermes (seven profiles), the Hermes Kanban, Obsidian, Zotero + Better BibTeX, the external enrichment APIs (OpenAlex, Semantic Scholar, PubMed, Crossref, Unpaywall, ORCID, ROR), git, the Obsidian REST API for vault read/write (with ACP as the complementary editor agent pane), and Pandoc for export.
+The minimum capability stack to operate Memoria is eight components: Hermes (seven profiles), the Hermes Kanban, Obsidian, Zotero + Better BibTeX, the external enrichment APIs (OpenAlex, Semantic Scholar, PubMed, Crossref, Unpaywall, ORCID, ROR), git, the Obsidian REST API for vault read/write (with the Agent Client pane (ACP) as the complementary editor-level agent interface), and Pandoc for export.
 
 On top of that base, **pre-built skills** (K-Dense `paper-lookup` / `pyzotero` / `citation-management`; Obsidian `obsidian-paper-note`; Hermes built-in `llm-wiki`) cover most enrichment and ingest work; the agent should use them rather than writing API clients from scratch. **Model routing** — Claude for synthesis, cheap models (via OpenRouter or similar) for bulk/mechanical tasks — keeps the discovery loop's `$1–3/day` budget achievable.
 

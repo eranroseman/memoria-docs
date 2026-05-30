@@ -6,7 +6,7 @@ topic: plugins
 
 # quickadd
 
-QuickAdd is the plugin that registers Memoria's [command palette catalog](../../obsidian-ui/command-palette.md) entries. [Templater](templater.md) is the templating layer QuickAdd invokes for capture commands. The two together cover every Memoria command that writes a new note or modifies frontmatter.
+QuickAdd is the plugin that registers Memoria's [command palette catalog](../../obsidian-ui/command-palette.md) entries. [Templater](templater-obsidian.md) is the templating layer QuickAdd invokes for capture commands. The two together cover every Memoria command that writes a new note or modifies frontmatter.
 
 Setup pattern: a QuickAdd "Macro" per Memoria command. The macro composes:
 

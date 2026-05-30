@@ -31,7 +31,7 @@ Adding a `review_mode: systematic-review` flag plus PRISMA-style fields (inclusi
 
 **Always-on PRISMA schema**: rejected — most paper-notes wouldn't carry meaningful values, and dashboards would have to filter the empty fields constantly.
 
-**Build now in case it's needed**: rejected — premature schema is harder to remove than to add.
+**Build now in case it's needed**: See [adopt-on-demand cluster rationale](adopt-on-demand-for-reviews.md).
 
 ## Related
 

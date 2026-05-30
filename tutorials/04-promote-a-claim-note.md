@@ -12,8 +12,8 @@ By the end you will have authored one `claim-note` from a source, grown its `mat
 
 ## Steps
 
-1. **Discuss the source (optional but recommended).** Open the paper-note, then `Cmd-P → Memoria: ask about this note` to think it through with the Socratic profile (write-denied — the thinking stays yours). See [workflows/upstream/discuss.md](../workflows/upstream/discuss.md).
-2. **Write the claim note.** `Cmd-P → Memoria: write claim note`, or create one in `30-synthesis/01-claims/` from the `claim-note` template. State one durable claim in your own words; it starts at `maturity: seedling`, `lifecycle: current`.
+1. **Discuss the source (optional but recommended).** Open the paper-note, then `Ctrl/Cmd+P → Memoria: ask about this note` to think it through with the Socratic profile (write-denied — the thinking stays yours). See [workflows/upstream/discuss.md](../workflows/upstream/discuss.md).
+2. **Write the claim note.** `Ctrl/Cmd+P → Memoria: write claim note`, or create one in `30-synthesis/01-claims/` from the `claim-note` template. State one durable claim in your own words; it starts at `maturity: seedling`, `lifecycle: current`.
 3. **Link it.** Cite the supporting paper-note(s) under `sources:`; record typed links in the `relations:` frontmatter (`supports` / `contradicts`) where they apply. See [vault/linking-patterns.md](../vault/linking-patterns.md).
 4. **Grow maturity.** As more sources corroborate the claim and you link it from other notes, advance `seedling → budding → evergreen`. See [workflows/upstream/distill.md](../workflows/upstream/distill.md).
 5. **Promote to reference.** Once `maturity: evergreen`, promote a stable claim into `30-synthesis/02-reference/` as a `reference-note`. This is a **human-gated** move — agents cannot write the synthesis zone (the policy MCP degrades their writes to `dry_run`). See [workflows/upstream/promote.md](../workflows/upstream/promote.md).

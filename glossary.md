@@ -71,7 +71,7 @@ Terms used across the Memoria design docs. Pulled from the README to keep the do
   | **verdict band** | PASS / REVIEW / FAIL | Linter | structural rollup gating scheduled work |
   | Verifier trace result | `verify-clean` / `verify-needs-revision` / `verify-needs-attention` | Verifier | per-draft claim-trace outcome; maps to the human's `verdict` (ADR-1) |
 
-- **Structural detector** — the Linter's eight deterministic, zero-LLM drift checks, each named by a descriptive slug (legacy `M1`–`M8` codes shown in parentheses for transition): `profile-install-drift` (M1; vault source vs deployed copy under `~/.hermes/profiles/`), `vault-hash-drift` (M2; non-MCP write / audit-log SHA-chain break), `skeleton-drift` (M3), `dashboard-field-drift` (M4), `command-vocab-drift` (M5), `plugin-config-drift` (M6; working `.obsidian/plugins/<plugin>/data.json` vs git HEAD), `orphan-working-files` (M7; `.tmp.*`, `.bak`, editor backups outside transient zones), `extract-path-broken` (M8; paper-note's `extract_path` points to a missing file). See `.memoria/profiles/memoria-linter/M-detectors.md` in the starter vault.
+- **Structural detector** — the Linter's eight deterministic, zero-LLM drift checks, each named by a descriptive slug (formerly identified as M1–M8 codes; now identified solely by descriptive slug): `profile-install-drift` (M1; vault source vs deployed copy under `~/.hermes/profiles/`), `vault-hash-drift` (M2; non-MCP write / audit-log SHA-chain break), `skeleton-drift` (M3), `dashboard-field-drift` (M4), `command-vocab-drift` (M5), `plugin-config-drift` (M6; working `.obsidian/plugins/<plugin>/data.json` vs git HEAD), `orphan-working-files` (M7; `.tmp.*`, `.bak`, editor backups outside transient zones), `extract-path-broken` (M8; paper-note's `extract_path` points to a missing file). See `.memoria/profiles/memoria-linter/M-detectors.md` in the starter vault.
 - **Graceful degradation** — dashboard discipline for handling a missing query dependency (a frontmatter field, an aggregator note, an unresolved design decision): an empty result paired with a markdown explanation, not a stack trace.
 
 ## The Obsidian UI and channels
@@ -113,6 +113,10 @@ Terms used across the Memoria design docs. Pulled from the README to keep the do
 - **Fleeting note** — raw capture awaiting promotion or discard; lives in `10-inbox/01-fleeting/`.
 - **Answer note** (`answer-note`) — an agent-drafted, cited answer to a research question; lives in `10-inbox/02-answers/`. An unreviewed inbox draft awaiting human approval; promoted to a `claim-note` if accepted, not durable knowledge itself.
 - **Deliverable** — finished manuscript, presentation, media asset, or release; lives in `50-deliverables/`.
+- **canvas** — spatial arrangement view backed by a `.canvas` JSON file. Lives in `40-workbench/*/03-canvas/`. See [[vault/note-types]].
+- **code-note** — record of a code artifact produced in a Coder-lane experiment. See [[vault/note-types]].
+- **draft** — pipeline output assembled from claim notes, headed to export via Pandoc. See [[vault/note-types]].
+- **project-note** — hub note for a downstream writing project at `40-workbench/<project>/`. See [[vault/note-types]].
 
 ## Disambiguations
 

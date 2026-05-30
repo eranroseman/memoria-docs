@@ -24,10 +24,10 @@ The on-disk folders are three — `required/`, `recommended/`, `reference/`:
 
 | Plugin | Purpose |
 | --- | --- |
-| [obsidian-local-rest-api](required/obsidian-local-rest-api.md) | Exposes the vault to Hermes for read/write via HTTP. Required for the [control plane](../architecture/control-plane.md). **Its `data.json` contains secrets — gitignore it.** |
-| [agent-client](required/agent-client.md) | Implements ACP (Agent Client Protocol) inside Obsidian. Routes human conversations with Hermes (and optionally Claude Code, Codex, Gemini CLI, Kilo Code) through a chat pane attached to the active note. Makes the Socratic profile invocable from a reading session. |
+| [obsidian-local-rest-api](required/obsidian-local-rest-api.md) | Exposes the vault to Hermes via HTTPS (port 27124; HTTP is off by default). Required for the [control plane](../architecture/control-plane.md). **Its `data.json` contains secrets — gitignore it.** |
+| [agent-client](required/agent-client.md) | Implements ACP (Agent Client Protocol) inside Obsidian. Routes human conversations with Hermes (and optionally Claude Code, Codex, Gemini CLI, Kilocode) through a chat pane attached to the active note. Makes the Socratic profile invocable from a reading session. |
 | [dataview](required/dataview.md) | Powers every dashboard. Without it, the dashboard layer in [obsidian-ui/README.md](../obsidian-ui/README.md) is non-functional. |
-| [templater-obsidian](required/templater.md) | Runs the safe-and-unambiguous frontmatter scripts the Memoria Linter relies on (see [linter.md](../profiles/linter.md#implementing-safe-and-unambiguous-fixes-via-templater)). |
+| [templater-obsidian](required/templater-obsidian.md) | Runs the safe-and-unambiguous frontmatter scripts the Memoria Linter relies on (see [linter.md](../profiles/linter.md#implementing-safe-and-unambiguous-fixes-via-templater)). |
 | [quickadd](required/quickadd.md) | Registers Memoria's command palette entries (see [command-palette.md](../obsidian-ui/command-palette.md)). |
 | [obsidian-citation-plugin](required/obsidian-citation-plugin.md) | Inserts citations from the BibTeX/BibLaTeX file Better BibTeX exports, and creates paper notes from a configured template. Memoria's primary Zotero-to-vault path for note creation today. |
 | [callout-manager](required/callout-manager.md) | Defines the `[!brief]`, `[!suggestions]`, and `[!verification]` callout types used by the [inline agent callouts](../obsidian-ui/callouts.md) (a first-class Obsidian-UI component). |
@@ -65,7 +65,7 @@ Plugins Memoria documents but does **not** install or recommend for daily use �
 | [zotlit](reference/zotlit.md) | Reads Zotero's SQLite database directly — faster for bulk imports. **Held as a future migration target, not currently used.** |
 | [zotero-integration](reference/zotero-integration.md) | Imports Zotero items and annotations via Zotero's local HTTP API (color-coded highlights, Nunjucks templates). **Not in use** — Memoria annotates in Obsidian, not Zotero; held as the alternative if that flips. |
 | [obsidian-kanban](reference/obsidian-kanban.md) | Renders a markdown Kanban file, but **can't render the Hermes board** (`kanban.db`, shown via Dataview) without an unadopted bridge — evaluated, not wired in. |
-| [obsidian-linter](reference/obsidian-linter.md) | Frontend Markdown formatter — deterministic, but writes on-save in the GUI, outside the Policy-MCP audit trail, and would be a second frontmatter authority. The Memoria Linter + markdownlint own this. **HTML-comment-strip footgun.** Demoted from `recommended/`; see [ADR-24](../decisions/24-obsidian-linter-reference-only.md). |
+| [obsidian-linter](reference/obsidian-linter.md) | Frontend Markdown formatter — deterministic, but writes on-save in the GUI, outside the policy MCP audit trail, and would be a second frontmatter authority. The Memoria Linter + markdownlint own this. **HTML-comment-strip footgun.** Demoted from `recommended/`; see [ADR-24](../decisions/24-obsidian-linter-reference-only.md). |
 
 Visual-style discipline — restraint about how the vault *looks*, independent of any specific plugin — lives in [obsidian-ui/ui-discipline.md](../obsidian-ui/ui-discipline.md).
 

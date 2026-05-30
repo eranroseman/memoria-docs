@@ -43,21 +43,21 @@ The Diátaxis modes ([explanation, reference, how-to, tutorial][diataxis]) descr
 | Folder | What it holds |
 | --- | --- |
 | [vision.md](vision.md) | Single-doc top-level explanation. Purpose, naming, what Memoria is and is not. |
-| [glossary.md](glossary.md) | ~40 cross-cutting terms grouped by domain. Cross-cutting; lives at root. |
+| [glossary.md](glossary.md) | ~70 cross-cutting terms grouped by domain. Cross-cutting; lives at root. |
 | [design-summary-template.md](design-summary-template.md) | The shared page skeleton the `dashboards/` and `profiles/` design summaries follow. Contributor reference; lives at root. |
 | [architecture/](architecture/) | Three-layer model, capability stack, on-disk layout, control plane, memory tiers. Includes `why-*.md` rationale docs (computational methods, pattern provenance, no autonomous synthesis). |
 | [kanban-board/](kanban-board/) | `README.md` (concept) + `states.md` (state machine, lanes, review gate) + `card-schema.md` (Hermes card fields, metadata overlay, handoff). |
 | [profiles/](profiles/) | `README.md` (the seven, lane permissions, delegation, anti-patterns) + `profile-commands.md` (operational command catalog) + per-profile design summaries + `why-coder-external-agent.md`. |
 | [vault/](vault/) | `README.md` (folder taxonomy, promotion map, pitfalls) + `note-types.md` (15 note types + lifecycles) + `frontmatter-schema.md` (frontmatter, controlled vocab) + `linking-patterns.md`. |
-| [workflows/](workflows/) | `README.md` (the two pipelines, role matrix) + `upstream/`, `downstream/`, `maintenance/` (one how-to per workflow, 18 total). |
+| [workflows/](workflows/) | `README.md` (the two pipelines, role matrix) + `upstream/`, `downstream/`, `maintenance/` (one how-to per workflow, 21 total). |
 | [obsidian-ui/](obsidian-ui/) | `README.md` (the Obsidian UI components) + per-component detail (`dashboards.md`, `workspaces.md`, `callouts.md`, `status-line.md`, `home.md`, `plugin-ui.md`) + `design-system.md` (visual-style template) + `command-palette.md` + `ui-discipline.md` (visual-style discipline). |
-| [dashboards/](dashboards/) | `README.md` (folder index) + one design summary per dashboard (Daily Health is the entry point; `skill-lifecycle.md` documents a *deferred* dashboard). Runtime Dataview queries live at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault), where the entry-point file is `index.md`. |
+| [dashboards/](dashboards/) | `README.md` (folder index) + one design summary per dashboard (Daily Health (runtime file: `index.md`) is the entry point; `skill-lifecycle.md` documents a *deferred* dashboard). Runtime Dataview queries live at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault), where the entry-point file is `index.md`. |
 | [operations/](operations/) | `README.md` + [failure-modes.md](operations/failure-modes.md) (Detect / Fix / Verify recipes). |
 | [obsidian-plugins/](obsidian-plugins/) | `README.md` (priority-ordered overview) + per-plugin configuration split by lifecycle into `required/` (8, system breaks without them), `recommended/` (11, quality-of-life installs), `reference/` (4, held-knowledge / not in the install set), plus top-level `plugin-configs-lifecycle.md` (config governance). |
 | [decisions/](decisions/) | 25 architecture decision records (ADRs) — 22 with their own file, 3 (ADR-1, 8, 11) index-only — + `_template.md` + `by-topic.md` (secondary index grouping ADRs by topic folder) + `adopt-on-demand-for-reviews.md` (shared rationale for the four deferred systematic-review ADRs 12 / 18 / 19 / 20). Cross-cuts all topics, so it sits at the top level. |
 | [roadmap/](roadmap/) | `README.md` (phased plan) + per-section detail (`timeline`, `deployment-options`, `autonomy-progression`, `success-metrics`, `design-tensions`, `future-directions`, `profile-compilation` (deferred), etc.) + `pilots/`. |
 | *(cross-cutting reference is distributed)* | Each cross-cutting reference doc lives next to what it explains: [obsidian-ui/command-palette.md](obsidian-ui/command-palette.md), [architecture/policy-mcp.md](architecture/policy-mcp.md), [architecture/computational-toolbox.md](architecture/computational-toolbox.md), [roadmap/profile-compilation.md](roadmap/profile-compilation.md) (**deferred**), [kanban-board/card-schema.md](kanban-board/card-schema.md), [vault/frontmatter-schema.md](vault/frontmatter-schema.md), [vault/linking-patterns.md](vault/linking-patterns.md), [profiles/profile-commands.md](profiles/profile-commands.md). |
-| [tutorials/](tutorials/) | Step-by-step walkthroughs in order ([README index](tutorials/README.md)): 01 set-up-from-zero, 02 ingest-and-classify, 03 run-the-linter, 04 promote-a-claim-note, 05 add-a-second-profile. |
+| [tutorials/](tutorials/) | Step-by-step walkthroughs in order ([README index](tutorials/README.md)): 01 set-up-from-zero, 02 ingest-and-classify-a-batch, 03 run-the-linter, 04 promote-a-claim-note, 05 add-a-second-profile. |
 | [implementation-status.md](implementation-status.md) | The shipped / accepted-pending / deferred ledger reconciling these docs with the starter vault. Cross-cutting; lives at root. |
 | **(runtime, in [memoria-vault](https://github.com/eranroseman/memoria-vault))** | Dashboards at `00-meta/01-dashboards/` (10 + `index.md` entry point); 15 note templates at `00-meta/03-templates/`; human-facing reference notes at `00-meta/04-reference/`; SOUL.md prompts at `.memoria/profiles/memoria-<name>/SOUL.md`; Linter detectors at `.memoria/profiles/memoria-linter/M-detectors.md`. See [implementation-status.md](implementation-status.md) for what is built vs deferred. |
 
@@ -87,7 +87,7 @@ Files and folders are **kebab-case** (`frontmatter-schema.md`, `obsidian-ui/`). 
 | --- | --- |
 | `README.md` | Universal convention for a folder index. |
 | `SOUL.md`, `AGENTS.md` | Hermes runtime conventions reused verbatim (the installer reads `SOUL.md`). |
-| `M-detectors.md` | The leading `M` maps to the detector IDs `M1`–`M8`; it's a prefix, not a typo. |
+| `M-detectors.md` | The leading `M` is a legacy prefix from the M1–M8 code era; slugs are now the IDs, but the filename is retained for referential stability. |
 | `_template.md` | Leading underscore marks the ADR skeleton so it sorts away from numbered records. |
 | `Home.md` | Obsidian convention for a vault front-door note (ADR-25). |
 

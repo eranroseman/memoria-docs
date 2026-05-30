@@ -29,7 +29,7 @@ Formal scoping reviews and systematic reviews often require inter-rater reliabil
 
 ## Alternatives considered
 
-**Single-rater always**: works for the default solo workflow but fails the reporting bar for formal reviews. Defensible only outside systematic-review contexts.
+**Single-rater always**: See [adopt-on-demand cluster rationale](adopt-on-demand-for-reviews.md).
 
 **Hermes as the second rater**: rejected explicitly — agent judgment doesn't satisfy inter-rater reliability protocols, which exist precisely to triangulate *human* disagreement.
 

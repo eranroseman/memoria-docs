@@ -21,6 +21,10 @@ The [workflows/README.md](../README.md) names a periodic retraction sweep; this 
 
 The **Verifier** detects and flags status changes (mechanical). The **human** decides what to do with the affected claims (judgment). No claim is rewritten automatically.
 
+## Commands
+
+`hermes -p memoria-verifier run retraction-sweep` (run periodically; the Verifier updates `pub_status` and surfaces affected claims on the contradictions dashboard for human review).
+
 ## Related
 
 - Stage: [verify](../downstream/verify.md) — the per-draft retraction check.

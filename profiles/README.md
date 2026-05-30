@@ -92,7 +92,7 @@ The **consolidated lane view** — what each lane may run (skills), what tools i
 Rules of thumb:
 
 - **Networked skills are lane-restricted.** Only Librarian can call `rest-passthrough`. The passthrough is the escape hatch (see [architecture/capability-stack.md](../architecture/capability-stack.md#rest-passthrough--the-escape-hatch)); confining it to one lane keeps external I/O auditable.
-- **Socratic and Mapper are read-only.** Any `decision: allow` for `profile: memoria-socratic` or `profile: memoria-mapper` on a `write` action outside its declared scratch path is a configuration bug — surfaced by the [audit-log dashboard](../dashboards/audit-log.md).
+- **Socratic is write-denied; Mapper and Verifier are canonically read-only.** Socratic has `policy.allow.write: []` — no writes anywhere. Mapper and Verifier have `canonical_read_only_mode` — any `decision: allow` for `profile: memoria-mapper` or `profile: memoria-verifier` on a `write` action outside their declared scratch paths is a configuration bug — surfaced by the [audit-log dashboard](../dashboards/audit-log.md).
 - **No lane writes to review-gated zones.** The four [review-gated zones](../glossary.md#system-and-architecture) are policy-MCP `dry_run` for every lane. Promotion is always synchronous with human attention.
 
 ## Invocation levels (cadence)
@@ -168,7 +168,7 @@ The four blocks:
 
 - **`policy.allow`** — skills the lane may load and paths it may write. Patterns are glob-style relative to the vault root.
 - **`policy.deny`** — explicit blocks. Deny wins over allow.
-- **`policy.require`** — invariants the worker must honor. Common values: `audit_log` (every action logged), `timeout_required` (no unbounded calls), `source_tracking` (writes carry a provenance trail), `read_only_mode` (no writes at all — used by Socratic and Mapper), `review_gated_write` (writes to review-gated zones always degrade to `dry_run`).
+- **`policy.require`** — invariants the worker must honor. Common values: `audit_log` (every action logged), `timeout_required` (no unbounded calls), `source_tracking` (writes carry a provenance trail), `read_only_mode` (no writes at all — used by Socratic only), `canonical_read_only_mode` (no writes to canonical vault zones; project-scratch writes to declared paths in `40-workbench/` are allowed — used by Mapper and Verifier), `review_gated_write` (writes to review-gated zones always degrade to `dry_run`).
 - **`routing.write_scope`** — the authoritative short-list, usually narrower than `policy.allow.write`. Used by the dispatch rules to decide where a worker's output should land by default.
 - **`routing.invocation`** — how the lane is invoked. `dispatched` (default; the Kanban dispatcher pulls cards from this lane's queue) or `interactive_only` (the lane is never queue-dispatched; only synchronous human invocation reaches it). Socratic uses `interactive_only` so a misconfigured cron job can't queue work onto a write-denied conversational profile.
 
@@ -177,10 +177,10 @@ The four blocks:
 | Profile | Lane-override file | Notes |
 | --- | --- | --- |
 | Librarian | `.memoria/lane-overrides/librarian.yaml` | May call external APIs through approved skills. |
-| Mapper | `.memoria/lane-overrides/mapper.yaml` | `read_only_mode` for the vault; project-scratch writes only. |
-| Socratic | `.memoria/lane-overrides/socratic.yaml` | Hard `policy.allow.write: []` — write-denied across the vault. `routing.invocation: interactive_only` — never queue-dispatched. |
+| Mapper | `.memoria/lane-overrides/mapper.yaml` | `canonical_read_only_mode` — no canonical writes; project-scratch writes only (`40-workbench/*/01-map/`). |
+| Socratic | `.memoria/lane-overrides/socratic.yaml` | Hard `policy.allow.write: []` — write-denied across the vault (`read_only_mode`). `routing.invocation: interactive_only` — never queue-dispatched. |
 | Writer | `.memoria/lane-overrides/writer.yaml` | May draft and refine; no direct external API; review-gated-zone writes degrade to `dry_run`. |
-| Verifier | `.memoria/lane-overrides/verifier.yaml` | `read_only_mode` for the vault; verification-report writes only. |
+| Verifier | `.memoria/lane-overrides/verifier.yaml` | `canonical_read_only_mode` — no canonical writes; verification-report and gap-candidate writes only (`40-workbench/*/05-verification/`, `10-inbox/03-candidates/`). |
 | Coder | `.memoria/lane-overrides/coder.yaml` | Writes to `40-workbench/*/06-code/` only. |
 | Linter | `.memoria/lane-overrides/linter.yaml` | Dry-run by default; `auto_fix` is class-gated by the policy MCP; owns `00-meta/02-logs/` for session and audit-trail housekeeping. |
 

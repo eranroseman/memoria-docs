@@ -15,7 +15,7 @@ By the end of this tutorial you will have:
 
 This is the **minimum viable system** ([roadmap/README.md](../roadmap/README.md#minimum-viable-system)) path. You can grow from here. Don't worry about the full seven-profile setup yet; it earns its place once your review queue is a bottleneck.
 
-> **Status — read this first (v0.1 scaffold).** Steps 1–3 work against the starter vault today. **Steps 4–7 — installing the profiles, connecting the policy MCP, and running the agent-driven ingest — require the v0.2 profile wiring (`config.yaml`, `mcp.json`, `policy_mcp.py`, lane-override YAMLs) that the current scaffold does not ship yet.** `install.ps1` detects the missing files and skips the profiles, so the ingest and audit-log steps won't run until that wiring lands. Read Steps 4–7 as the intended flow, and see [implementation-status.md](../implementation-status.md) for exactly what is built today.
+> **Status.** See [README](README.md#status).
 
 New to terms like *lane*, *card*, *profile*, or *comparative-brief*? Keep the [glossary](../glossary.md) open in a second tab — this tutorial uses a few of them before the architecture docs define them in full.
 
@@ -52,11 +52,14 @@ You should see the vault skeleton (`00-meta/`, `10-inbox/`, `20-sources/`, `30-s
 
 In Obsidian, **Open vault → Open folder as vault**, point at the folder you cloned into. The vault name Obsidian shows is whatever your folder is called.
 
-Install the three load-bearing community plugins (Settings → Community plugins → Browse):
+Install the required community plugins (Settings → Community plugins → Browse):
 
 - `obsidian-local-rest-api` — Hermes uses this to write into the vault
-- `dataview` — drives every dashboard
-- `templater-obsidian` — runs safe-and-unambiguous frontmatter scripts
+- `agent-client` — connects Obsidian command palette actions to Hermes profiles
+- `obsidian-citation-plugin` — reads `library.bib` for in-note citations
+- `callout-manager` — renders the `[!brief]` and other Memoria callout types with correct icons and colors
+
+`dataview` and `templater-obsidian` are optional enhancements (not load-bearing for the v0.1 core path).
 
 After install, copy the example REST API config so Hermes can authenticate (this is the only plugin whose `data.json` is gitignored because it contains generated secrets — every other plugin's settings ship in place):
 
@@ -71,7 +74,7 @@ Restart Obsidian. You should see "Local REST API: started" in the bottom-right s
 
 ## Step 3 — Wire up Zotero
 
-In Zotero, **Edit → Preferences → Better BibTeX**:
+In Zotero, **Tools → Preferences → Better BibTeX** (Zotero 7; in Zotero 5/6 this was Edit → Preferences → Better BibTeX):
 
 - **Citation key formula**: `[auth.lower][year][title:lower:condense:6]` (matches Memoria's expected `mamykina2010sense` shape — see [ADR-04](../decisions/04-citekey-naming-convention.md)).
 - **Automatic export**: configure auto-export to `.memoria/library.bib` inside the vault. This is the authoritative `.bib` Memoria reads.
@@ -105,7 +108,7 @@ notepad ~/.hermes/profiles/memoria-librarian/.env
 ANTHROPIC_API_KEY=sk-ant-...
 OPENROUTER_API_KEY=sk-or-...
 OPENALEX_EMAIL=you@example.com
-OBSIDIAN_REST_API_KEY=<the 32-char token from Step 2>
+MEMORIA_OBSIDIAN_API_KEY=<the 64-char hex apiKey from Step 2>
 ```
 
 Confirm the install succeeded:
@@ -118,7 +121,7 @@ You should see all seven `memoria-*` profiles in the output. This tutorial drive
 
 ## Step 5 — Confirm the policy MCP is connected
 
-> **Requires v0.2 wiring.** The policy MCP (`.memoria/mcp/policy_mcp.py`) and the lane-override YAMLs do not ship in the v0.1 scaffold, so this step and Steps 6–7 cannot run yet — they describe the intended flow once the wiring lands. Track status in [implementation-status.md](../implementation-status.md).
+> **Status.** See [README](README.md#status).
 
 The policy MCP reads lane-override YAML files at startup. Under direct profile management those files live at `.memoria/lane-overrides/` in the vault, and the installer pointed each profile's `mcp.json` at the policy MCP code (`.memoria/mcp/policy_mcp.py`) plus the lane-overrides directory via the `{{VAULT_PATH}}` substitution. No copy step needed.
 
@@ -175,7 +178,7 @@ Open the paper-note (`20-sources/01-papers/<citekey>.md`) in Obsidian. The top s
 
 You've exercised all three Memoria layers:
 
-- **Board** — implicit; the ingest ran as a single card flowing through `ready → running → archived`.
+- **Board** — implicit; the ingest ran as a single card flowing through `ready → running → done (→ archived after review)`.
 - **Workers** — Librarian claimed the card, called the policy MCP for each write, wrote a paper-note.
 - **Vault** — the paper-note now lives in `20-sources/01-papers/`, and the audit log records what happened.
 
@@ -195,7 +198,7 @@ When you start to feel the absence of capabilities — comparative scope reports
 
 The most common first-time failures are:
 
-- **`install.ps1` errors** — check that `.memoria/profiles/memoria-librarian/` exists in the cloned vault and contains `SOUL.md`, `config.yaml`, `mcp.json`. If any are missing the vault checkout is incomplete; re-clone or `git pull`.
+- **`install.ps1` errors** — check that `.memoria/profiles/memoria-librarian/` exists in the cloned vault and contains `SOUL.md` (only `SOUL.md` is required in v0.1; `config.yaml` and `mcp.json` are v0.2 wiring not yet present). If `SOUL.md` is missing the vault checkout is incomplete; re-clone or `git pull`.
 - **`hermes profile install` fails** — confirm `hermes profile list` works at all (Hermes is installed) and that `~/.hermes/profiles/` is writable.
 - **Obsidian REST API connection refused** — confirm Obsidian is running and the plugin is enabled. The plugin binds to `127.0.0.1` by default; if Hermes is on a different machine, you'll hit this.
 - **`[!brief]` callout looks unstyled** — it still renders with Obsidian's default callout styling; install the **Callout Manager** plugin and import the Memoria callout set for the proper icons and colors ([obsidian-plugins/required/callout-manager.md](../obsidian-plugins/required/callout-manager.md)). It does not silently fail without it.

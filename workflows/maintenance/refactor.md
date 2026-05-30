@@ -11,7 +11,7 @@ topic: workflows
 
 ## Steps
 
-1. Hermes finds duplicate or similar notes.
+1. The Verifier runs `find-duplicates` to identify duplicate or similar notes.
 2. Human reviews candidate pairs.
 3. Human merges, splits, or archives.
 4. Backlinks and MOCs are updated.

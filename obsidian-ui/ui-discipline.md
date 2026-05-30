@@ -12,7 +12,7 @@ Plugin choice is only half the UX. The other half is restraint about how the vau
 
 - **One accent color for callouts.** Pick a single accent (Memoria's default is a muted blue) and use it for all three callout types: `[!brief]`, `[!suggestions]`, `[!verification]`. Differentiate by icon, not by color. Rainbow callouts train the eye to ignore them all.
 - **Monospace for code blocks and identifiers; system font for prose.** Don't get clever with custom font picks — Obsidian's defaults are already legible. Configure once in Settings → Appearance, then leave it.
-- **Heading hierarchy enforced.** The Memoria Linter (the structural one, not the Obsidian Linter) flags notes with no H1, H4 used without H3, or jumps of more than one heading level. This isn't pedantry — Dataview queries that filter on heading content break when the hierarchy is inconsistent.
+- **Heading hierarchy enforced.** The Memoria Linter (the structural one, not the Obsidian Linter) flags notes with no H1, H4 used without H3, or jumps of more than one heading level (planned M-detector; not yet implemented). This isn't pedantry — Dataview queries that filter on heading content break when the hierarchy is inconsistent.
 - **No emoji in note titles.** They break filename portability across operating systems and look like noise after a year. Emoji in note *bodies* is fine; titles are filenames.
 
 ## UI chrome

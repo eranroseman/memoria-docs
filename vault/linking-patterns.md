@@ -73,7 +73,7 @@ code-note
   → item-note           (dependencies)
 ```
 
-Single arrows (`→`) point from the paper note carrying the link. Double arrows (`↔`) are bidirectional — both notes carry pointers.
+Single arrows (`→`) indicate a one-directional link; the note on the left (the source) carries the pointer. Double arrows (`↔`) are bidirectional — both notes carry pointers.
 
 **Co-authorship is not a direct link.** Two `person-note`s linked because they co-authored a paper would duplicate the paper note's author list and force every paper to spawn new edges. Instead, co-authorship is expressed *indirectly* through shared `paper-note` authorship: querying "papers by A" ∩ "papers by B" surfaces the relationship without a maintained edge. Advisor/advisee or other persistent relationships *are* direct edges — they outlast any single paper.
 

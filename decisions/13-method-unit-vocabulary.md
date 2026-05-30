@@ -15,7 +15,7 @@ superseded_by: []
 
 ## Context
 
-Original question: tag claim notes with methodological patterns (Idea2Story-style — e.g., `methods-units: [micro-randomized-trial, EMA]`) to enable methodological querying?
+Original question: tag claim notes with methodological patterns (Idea2Story-style — pipeline that chains from raw idea through claim extraction to story assembly — e.g., `methods-units: [micro-randomized-trial, EMA]`) to enable methodological querying?
 
 ## Decision
 

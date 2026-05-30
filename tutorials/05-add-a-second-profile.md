@@ -8,7 +8,7 @@ topic: tutorials
 
 By the end you will have installed a second lane (Mapper is the usual next one) and exercised it. The graduated-start principle: add a profile when you *feel* the absence of what it does, not before.
 
-> **Requires the v0.2 wiring.** Installing a profile needs its `config.yaml` / `mcp.json` / `distribution.yaml`, which `install.ps1` requires and the v0.1 scaffold doesn't ship yet — see [implementation-status.md](../implementation-status.md). Follow this as the intended flow.
+> **Status.** See [README](README.md#status).
 
 **Prerequisite:** [Tutorial 01](01-set-up-from-zero.md) (Librarian installed) and a corpus worth mapping ([Tutorial 02](02-ingest-and-classify-a-batch.md)).
 
@@ -27,7 +27,7 @@ By the end you will have installed a second lane (Mapper is the usual next one) 
    See [operations/profile-install.md](../operations/profile-install.md).
 2. **Fill its secrets.** Copy `.env.EXAMPLE` to `~/.hermes/profiles/memoria-mapper/.env` and fill it.
 3. **Confirm it registered:** `hermes profile list` shows `memoria-mapper`.
-4. **Exercise it.** `Cmd-P → Memoria: scope this project` (or `Memoria: find related notes` for a quick transient query). The Mapper produces a `corpus-map.md` in `40-workbench/<project>/01-map/`. See [workflows/downstream/assess.md](../workflows/downstream/assess.md).
+4. **Exercise it.** `Ctrl/Cmd+P → Memoria: scope this project` (or `Memoria: find related notes` for a quick transient query). The Mapper produces a `corpus-map.md` in `40-workbench/<project>/01-map/`. See [workflows/downstream/assess.md](../workflows/downstream/assess.md).
 
 ## What to check
 

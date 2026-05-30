@@ -6,7 +6,7 @@ topic: plugins
 
 # Plugin config lifecycle
 
-How Memoria's Obsidian plugin `data.json` files are shipped, kept in sync with the design, and audited for drift. The actual config files live in the starter vault at `.obsidian/plugins/<plugin>/` — this is a governance doc, not a folder of configs. The per-plugin reference for what each setting means lives alongside this file (e.g., [obsidian-linter.md](reference/obsidian-linter.md), [agent-client.md](required/agent-client.md), [obsidian-citation-plugin.md](required/obsidian-citation-plugin.md)).
+How Memoria's Obsidian plugin `data.json` files are shipped, kept in sync with the design, and audited for drift. The actual config files live in the starter vault at `.obsidian/plugins/<plugin>/` — this is a governance doc, not a folder of configs. The per-plugin reference for what each setting means lives alongside this file (e.g., [agent-client.md](required/agent-client.md), [obsidian-citation-plugin.md](required/obsidian-citation-plugin.md)).
 
 ## Where configs live
 
@@ -16,7 +16,6 @@ Under direct profile management, the plugin configs ship **inside the starter va
 memoria-vault/
 └── .obsidian/
     └── plugins/
-        ├── obsidian-linter/data.json
         ├── obsidian-citation-plugin/data.json
         ├── agent-client/data.json.example
         ├── obsidian-local-rest-api/data.json.example
@@ -39,7 +38,6 @@ The filename suffix is the contract. Each one signals a different relationship t
 
 | Plugin | Ships | Why this suffix |
 |---|---|---|
-| `obsidian-linter` | `data.json` | All settings are Memoria-standard — the `foldersToIgnore` list, the four on-save rules, and the `yaml-key-sort` keyOrder match the frontmatter schema. No per-human variance. |
 | `obsidian-citation-plugin` | `data.json` | The `literatureNoteContentTemplate` embeds Memoria's paper-note frontmatter, `_proposed_classification`, and `_enrichment` blocks. Changes here are schema migrations. |
 | `agent-client` | `data.json.example` | Configures four ACP profiles in the picker, all with `autoAllowPermissions: false`. The `command` paths inside each agent entry use `{{HOME}}` placeholders the human must replace with their absolute paths. |
 | `obsidian-local-rest-api` | `data.json.example` | The real `data.json` contains generated secrets (enumerated in [obsidian-local-rest-api](required/obsidian-local-rest-api.md)) and must be gitignored; the plugin regenerates them on first launch. The `.example` documents the non-secret shape. |
@@ -63,7 +61,7 @@ The filename suffix is the contract. Each one signals a different relationship t
 
 A shipped config (in `memoria-vault/.obsidian/plugins/<plugin>/`) needs to be updated when **either**:
 
-1. **A Memoria design change shifts the standard settings.** Examples: the frontmatter schema gains a field → `obsidian-linter/data.json`'s `keyOrder` must include it; the `_enrichment` block schema changes → `obsidian-citation-plugin.json`'s `literatureNoteContentTemplate` must change.
+1. **A Memoria design change shifts the standard settings.** Examples: the `_enrichment` block schema changes → `obsidian-citation-plugin/data.json`'s `literatureNoteContentTemplate` must change.
 2. **The underlying plugin's `data.json` schema migrates.** A settings key gets renamed, removed, or replaced. When a plugin upgrade is accepted, diff a freshly-saved `data.json` from a clean install against the committed version and reconcile differences explicitly.
 
 Update path: edit the file in `memoria-vault/.obsidian/plugins/<plugin>/`, commit. The next `git pull` propagates the change to anyone using the starter vault.
@@ -93,7 +91,6 @@ Enforcement per shipped file:
 
 | File | Enforcement specifics |
 |---|---|
-| `obsidian-linter/data.json` | Strict. `lintOnSave`, `foldersToIgnore`, full rule set, `yaml-key-sort` `keyOrder` all checked. |
 | `obsidian-citation-plugin/data.json` | Strict. Full `literatureNoteContentTemplate` checked — drift means the paper-note schema has shifted. |
 | `obsidian-local-rest-api/data.json.example` | Partial. `enableInsecureServer`, `port`, `insecurePort` enforced. `apiKey`, `crypto.*` excluded as placeholders. |
 | `agent-client/data.json.example` | Partial. `defaultAgentId`, `autoAllowPermissions`, `autoMentionActiveNote`, `chatViewLocation` enforced. `command` paths excluded (contain `{{HOME}}`). `savedSessions`, `lastUsedModels` excluded as runtime state. |
@@ -113,3 +110,7 @@ The detector never auto-fixes. Two paths the human chooses between:
 - **The drift is deliberate.** Stage and commit: `git add .obsidian/plugins/<plugin>/data.json && git commit -m "update <plugin> config: <reason>"`. HEAD now reflects the new authoritative setting; the next lint pass is clean.
 
 The detector's contract: it reports the *fact* of drift, not which side is right. That decision is the human's. The `.example` variant has the same remediation paths applied to the working `data.json` derived from the example — either copy the example again (revert) or update the `.example` to reflect the new authoritative shape (commit).
+
+## Plugins removed from lifecycle enforcement
+
+Removed from lifecycle enforcement post-ADR-24: see [ADR-24](../decisions/24-obsidian-linter-reference-only.md).

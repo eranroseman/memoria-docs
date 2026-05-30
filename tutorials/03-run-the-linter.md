@@ -8,7 +8,7 @@ topic: tutorials
 
 By the end you will have run a lint pass over your sources, read the report, and understood the verdict band (PASS / REVIEW / FAIL) that gates scheduled work.
 
-> **Requires the v0.2 wiring.** The Linter profile runs under the policy MCP — see [implementation-status.md](../implementation-status.md). Follow this as the intended flow.
+> **Status.** See [README](README.md#status).
 
 **Prerequisite:** [Tutorial 02](02-ingest-and-classify-a-batch.md) complete (a batch of classified sources).
 
@@ -22,7 +22,7 @@ By the end you will have run a lint pass over your sources, read the report, and
    ```
 
    Dry-run is the default — the Linter reports, it does not fix (except the `safe-and-unambiguous` and `authorized-targeted` classes). See [profiles/linter.md](../profiles/linter.md).
-3. **Read the report.** Findings carry a severity (`LOW`/`MEDIUM`/`HIGH`/`CRITICAL`) and roll up to a **verdict band**: PASS (no HIGH/CRITICAL), REVIEW (some MEDIUM), FAIL (any HIGH+). The [eight M-detectors](../profiles/linter.md#the-eight-m-detectors) catch silent-failure modes (broken `extract_path`, dashboard field drift, plugin-config drift, …).
+3. **Read the report.** Findings carry a severity (`LOW`/`MEDIUM`/`HIGH`/`CRITICAL`) and roll up to a **verdict band**: PASS (only LOW/INFO), REVIEW (any MEDIUM, no HIGH/CRITICAL), FAIL (any HIGH or CRITICAL). The [eight M-detectors](../profiles/linter.md#the-eight-m-detectors) catch silent-failure modes (broken `extract_path`, dashboard field drift, plugin-config drift, …).
 4. **Act on findings.** Most are a per-item human decision; auto-fixable ones the Linter offers to apply within its class gate.
 
 ## What to check

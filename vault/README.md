@@ -59,8 +59,8 @@ Folders encode **lifecycle stage**, not subject area. The top-level number indic
     ├── mcp/                   ← policy_mcp.py, tasks_mcp.py, requirements.txt
     ├── lane-overrides/        ← per-lane YAML the policy MCP reads at startup
     ├── csl/                   ← Pandoc citation styles
-    ├── library.bib            ← Zotero BibTeX export
-    └── tool-registry.yaml     ← machine-read tool config
+    ├── library.bib            ← Zotero BibTeX export  # exported from Zotero by user — not pre-created
+    └── tool-registry.yaml     ← machine-read tool config  # scaffolded by install.ps1 on first run — not pre-created
 ```
 
 The vault is a single repo, opened directly by Obsidian. The numbered top-level folders are human-visible workspace; `.obsidian/` and `.memoria/` (both dot-prefixed and therefore auto-hidden by Obsidian's vault scanner) hold tooling. `.memoria/profiles/` is the source of truth for the seven Hermes profiles — `install.ps1` copies these verbatim into `~/.hermes/profiles/memoria-<name>/` at install time. See [architecture/on-disk-layout.md](../architecture/on-disk-layout.md) for the full picture, including the install flow and the source-vs-runtime relationship.
@@ -143,7 +143,7 @@ The design folder is the *engineering* spec — it describes how to build and re
 
 ### Drift discipline
 
-When the design changes — a new profile added, a lane-override rule updated, a schema field introduced — the corresponding skeleton note must be updated. The Linter's structural-drift check (see [profiles/linter.md](../profiles/linter.md)) flags skeleton notes whose `updated_at` is older than the corresponding design file. Treat skeleton drift the same way as code-doc drift: pay it down promptly.
+When the design changes — a new profile added, a lane-override rule updated, a schema field introduced — the corresponding skeleton note must be updated. The Linter's structural-drift check (see [profiles/linter.md](../profiles/linter.md)) flags skeleton notes whose `updated` is older than the corresponding design file. Treat skeleton drift the same way as code-doc drift: pay it down promptly.
 
 ## Common pitfalls
 

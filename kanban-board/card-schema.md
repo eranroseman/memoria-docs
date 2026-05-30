@@ -4,6 +4,9 @@ audience: operator
 topic: board
 ---
 
+> [!warning] Status: Deferred (Phase 4)
+> The Kanban board does not exist in the starter vault. This document describes the planned design. See `board-export.md` for implementation notes.
+
 # Card schema and handoff
 
 The board **is** the Hermes built-in Kanban. Its task schema is fixed and not user-customizable, so Memoria does not define its own card columns — it uses Hermes' built-in fields and stores everything Memoria-specific inside the free-form `metadata` JSON. This page lists the real Hermes fields Memoria relies on, the `metadata` conventions Memoria layers on top, the entity vocabulary the board tracks, and the handoff pattern. For the conceptual narrative see [README.md](README.md); for the state machine and the review gate see [states.md](states.md).
@@ -71,6 +74,7 @@ Because the Hermes schema can't be extended, Memoria's review gate and provenanc
 | `review_requested_at` | timestamp | When the worker handed off for review. |
 | `reviewed_at` | timestamp | When the human (or an agent, for its recommendation) acted on the review. |
 | `promote_target` | path | Where the output should land **if approved** (e.g. `30-synthesis/01-claims/xyz.md`). |
+| `retry_count` | int | Number of times the card has been re-dispatched after a recoverable failure. Incremented by the dispatcher on each retry; reset to `0` when a human revises the handoff and re-dispatches after a `blocked` state. Used by the board-export projection to surface retry-watch data on the [`board-state` dashboard](../dashboards/board-state.md). |
 | `supersedes` | task_id | On a revision card, the original card it replaces (the original is archived with `metadata.archive_reason: superseded`). |
 | `archive_reason` | enum | On an archived card, why it was archived: `superseded` (replaced by a successor card) or `discarded` (rejected with no successor). Hermes archiving is a status transition with no native reason field, so Memoria records the reason here rather than in `outcome`. |
 

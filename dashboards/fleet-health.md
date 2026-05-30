@@ -23,7 +23,7 @@ Track whether the Hermes fleet is healthy: cost per task trending up, success ra
 - **Reads from a new note type kept in `00-meta/08-metrics/`.** `lane-metric` notes (one per lane per period) and `skill-metric` notes (one per skill per period). These aren't among the 15 canonical note types — they're operational telemetry, not knowledge. A scheduled Hermes task aggregates the audit log and board's task history into these notes.
 - **Trust score combines audit deny rate, drift incidents, secret hits, retry rate, success rate, and (for lanes that produce inline `[!suggestions]` callouts) accept/reject ratios.** Bands: 90+ healthy, 70–89 watch, <70 act. Ratio sub-thresholds: >90% accept = rubber-stamping, <20% accept = prompt drift; both down-weight the lane.
 - **Trust score is shaped like ClawArena's CRS and tracks `pass^k`, not single-shot success.** Composition mirrors completion × robustness (success-cohesion / failure-dispersion), and the lane score trends **`pass^k`** consistency across repeated runs — τ-bench shows reliability collapses run-over-run (pass^1 ≈ 61% → pass^8 ≈ 25%) in a way a flat success average hides. See [roadmap/evaluation.md](../roadmap/evaluation.md) (Observability).
-- **When to enable.** After Phase 6 in [the roadmap](../roadmap/future-directions.md). Before then, board-state and audit-log catch issues directly without aggregation overhead.
+- **When to enable.** Phase 6 (post-MVS) per [the roadmap](../roadmap/future-directions.md). Before then, board-state and audit-log catch issues directly without aggregation overhead.
 - **Graceful degradation.** Until the metrics aggregator exists, the dashboard is a placeholder with explanatory text rather than empty tables.
 
 ## Related

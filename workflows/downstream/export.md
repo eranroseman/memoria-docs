@@ -37,6 +37,8 @@ pandoc 40-workbench/<project>/04-drafts/{chapter}.md --citeproc \
   -o 50-deliverables/01-manuscripts/{chapter}.docx
 ```
 
+> **Note:** You must supply your own CSL file at `.memoria/csl/apa.csl`. Download from [citationstyles.org](https://citationstyles.org) or use another CSL style of your choice. The `.memoria/csl/` directory is intentionally empty in the starter vault.
+
 ## Card lifecycle
 
 `ready` (the `export` card opens when [Revise](revise.md) closes) → `running` (Coder runs Pandoc) → `archived` with the deliverable written to `50-deliverables/`. The card cannot enter `running` while the upstream `verify` card is in a non-clean state.

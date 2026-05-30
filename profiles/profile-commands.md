@@ -16,7 +16,7 @@ The Core commands column in the [Lane permissions matrix](README.md#lane-permiss
 | `classify` | Re-propose `_proposed_classification` when a note still needs review. | Librarian | No |
 | `obsidian-paper-note` | Full ingest pipeline including PDF extraction (via Marker). | Librarian | No |
 | `export prior-labels` | Export vault papers as ASReview priors for pre-ingest screening. | Librarian | N/A |
-| `scope-project` | Map the corpus for a project: cluster density, recency distribution, source diversity, gap analysis. Writes `corpus-map.md` to the project's `map/` folder. | Mapper | No (writes to project scratch only) |
+| `scope-project` | Map the corpus for a project: cluster density, recency distribution, source diversity, gap analysis. Writes `corpus-map.md` to the project's `01-map/` folder. | Mapper | No (writes to project scratch only) |
 | `gap-report` | Identify thin-coverage topics adjacent to a project brief; surfaces where the corpus is weak so the human can direct further reading. | Mapper | No |
 | `cluster-map` | Render a density / recency map for an arbitrary topic across the corpus. | Mapper | No |
 | `comparative-brief` | When a new source enters the queue, generate a brief comparing it against existing claims — overlap, contradiction, new constructs. Drives the inline `[!brief]` callout. | Mapper | No |

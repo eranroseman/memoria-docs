@@ -29,7 +29,7 @@ Adding `funding`, `coi` (conflict of interest), `risk_of_bias`, `population`, `i
 
 ## Alternatives considered
 
-**Always-on schema**: rejected — quality fields on every paper-note (including theory and tooling) would mostly sit empty.
+**Always-on schema**: See [adopt-on-demand cluster rationale](adopt-on-demand-for-reviews.md).
 
 **Per-project schema branch** (a fork of the paper-note template): rejected — additive fields are cheaper than maintaining two templates.
 

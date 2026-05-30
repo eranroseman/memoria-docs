@@ -8,7 +8,7 @@ topic: tutorials
 
 By the end you will have 5–10 sources in `20-sources/01-papers/`, each classified into canonical metadata, and the first `[!brief]` comparative reads with a real corpus to compare against.
 
-> **Requires the v0.2 wiring.** The agent ingest pipeline depends on the policy MCP and profile `mcp.json` that the current scaffold does not ship — see [implementation-status.md](../implementation-status.md). Follow this as the intended flow.
+> **Status.** See [README](README.md#status).
 
 **Prerequisite:** [Tutorial 01](01-set-up-from-zero.md) complete (vault open, Librarian installed, Zotero + Better BibTeX wired).
 

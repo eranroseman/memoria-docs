@@ -29,7 +29,7 @@ The narrative spine (minimum viable system, graduated start, expansion-threshold
 | [evaluation.md](evaluation.md) | Two-layer evaluation (vault-native gold set + external benchmarks by adoption mode); the design changes the benchmark review warrants (claim supersession, verify entailment, reasoning-augmented query); and what the literature validates |
 | [evaluation-benchmarks.md](evaluation-benchmarks.md) | The full capability-mapped benchmark taxonomy: scoping principles, per-capability tables (arXiv IDs, verdicts, repos, adoption mode), out-of-scope categories, and the suggested minimal suite |
 | [profile-compilation.md](profile-compilation.md) | **(deferred)** Kustomize-style profile compiler — `memoria-base` + per-profile overrides, build-time validation, drift detection (forward-looking; not the current direct-managed model) |
-| [decisions/](../decisions/) | 23 architecture decision records (ADRs); see [decisions/README.md](../decisions/README.md) for the index |
+| [decisions/](../decisions/) | 25 numbered decision records (ADRs 1–25); see [decisions/README.md](../decisions/README.md) for the index |
 | [pilots/](pilots/) | Active pilots with explicit rollback criteria. Currently: [E1 — Open Notebook as comparative-brief back-end](pilots/01-open-notebook.md) |
 | [non-llm-tools.md](non-llm-tools.md) | The non-LLM tools that Memoria uses to do its job, and the jobs they do |
 

@@ -22,7 +22,7 @@ The mode shifts are deliberate. Trying to do reading, drafting, and human classi
 
 - **One mode per workspace.** Don't bind a workspace to a topic ("the JITAI workspace") or a project ("the dissertation workspace"). Modes are durable; topics change.
 - **Three is the working set.** Adding a fourth means the human forgets which hotkey maps to which mode. If a fourth mode genuinely emerges, it earns its workspace by displacing one of the three, not by extending the set.
-- **Workspaces travel with the vault.** Memoria *will* ship pre-configured `.obsidian/workspaces.json` definitions (not yet in the starter vault — see [implementation-status.md](../implementation-status.md)); if the human changes a layout, save it back to the workspace so the configuration survives `git pull` on another machine.
+- **Workspaces travel with the vault.** `.obsidian/workspaces.json` is deferred. Until it ships, create workspaces manually using Obsidian's Manage Workspaces command; save any layout changes back to the workspace so the configuration survives `git pull` on another machine.
 
 The three `Cmd-1/2/3` bindings are configured under Settings → Hotkeys (the Workspaces core plugin must be enabled first — see the prerequisite callout above).
 

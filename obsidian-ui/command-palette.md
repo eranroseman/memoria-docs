@@ -118,7 +118,7 @@ The `Cmd-P → "M"` filter convention works from the moment the first three comm
 
 ## Related
 
-- [`obsidian-plugins.md`](../obsidian-plugins/required/quickadd.md) — QuickAdd and Templater plugin details.
-- [`obsidian-plugins.md`](../obsidian-plugins/recommended/cmdr.md) — Commander plugin for putting top commands on buttons.
+- [`quickadd.md`](../obsidian-plugins/required/quickadd.md) — QuickAdd and Templater plugin details.
+- [`cmdr.md`](../obsidian-plugins/recommended/cmdr.md) — Commander plugin for putting top commands on buttons.
 - [`obsidian-ui/README.md`](README.md) — the Obsidian UI components (dashboards, workspaces, callouts, status line, Agent Client pane) that this command palette sits alongside. The palette is itself one of those components — Obsidian's keyboard component; see the [glossary](../glossary.md#the-obsidian-ui-and-channels) for components vs. the CLI / Telegram channels.
 - [`workflows/README.md`](../workflows/README.md) — workflows the commands trigger (workflow Discuss, Assess, Frame, Verify).

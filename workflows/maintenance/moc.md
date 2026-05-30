@@ -26,6 +26,10 @@ Create one when a cluster of claim-notes crosses the thresholds in [vault/linkin
 
 The **human** authors and curates MOCs (synthesis is a review-gated, human-only zone). Agents may *propose* a MOC or candidate members; the policy MCP degrades any agent write to `30-synthesis/03-moc/` to `dry_run`.
 
+## Commands
+
+No CLI command — performed directly in the vault or via the Obsidian interface.
+
 ## Related
 
 - Reference: [vault/linking-patterns.md](../../vault/linking-patterns.md) — MOC tiers and creation thresholds.

@@ -22,6 +22,14 @@ topic: workflows
 
 The **Librarian** proposes classification (writing `_proposed_classification` during ingest). The human owns all promotion decisions.
 
+## Card lifecycle
+
+`done` (card arrives here from Ingest with `review_status: requested`) → `running` (human opens the note and begins review) → `done` (classification promoted to main YAML, `lifecycle: current` set, `triage_completed` written) → `archived` (card closed after human review is complete).
+
+## Commands
+
+No CLI command — performed directly in the vault or via the Obsidian interface.
+
 ## Example
 
 `mamykina2010sense.md` is at `lifecycle: proposed` with `_proposed_classification: { topic: [receptivity-detection], methods: [field-study] }` → human opens the note, agrees with `topic`, refines `methods: [field-study, qualitative-interview]` for accuracy → promotes both fields into the main YAML and deletes the `_proposed_classification` block → sets `lifecycle: current` and `triage_completed: 2026-05-25` → writes 2–3 sentences in the Key findings section. The note is now canonical for queries and dashboards.

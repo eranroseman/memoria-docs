@@ -84,14 +84,14 @@ qmd search "known term" --vault {vault-path}
 
 ```bash
 cd {vault-path}
-qmd index .
+qmd embed
 # Full rebuild — 1–5 minutes for 500+ notes; 10–15 minutes for 2000+ notes
 ```
 
 **Verify.**
 
 ```bash
-qmd search "known term"   # returns expected notes
+qmd search "known term" --vault {vault-path}   # returns expected notes
 hermes -p memoria-writer run draft "known topic"   # returns vault results with citekeys
 ```
 
@@ -139,10 +139,11 @@ Sorted by severity (most urgent first), then by topic. The **Severity** column u
 | --- | --- | --- | --- |
 | **Obsidian Linter corrupts frontmatter** | CRITICAL | The Obsidian Linter running on agent-maintained folders | Exclude `10-inbox/`, `20-sources/`, `30-synthesis/02-reference/` in the Obsidian Linter's `foldersToIgnore` — see [obsidian-plugins/README.md](../obsidian-plugins/README.md). |
 | **`_proposed_classification` or `_enrichment` deleted** | CRITICAL | An Obsidian Linter rule or plugin upgrade introduced an HTML-comment stripper that ran on save | **Never enable any rule that strips HTML comments.** Currently no such rule exists in Obsidian Linter v1.31.2, but the precaution is forward-looking — diff the rule registry before accepting any plugin upgrade. See [obsidian-plugins/README.md](../obsidian-plugins/README.md). |
-| Enrichment block empty after ingest | HIGH | API keys not set in environment (silent — ingest "succeeded" but with degraded data) | `echo $OPENALEX_EMAIL`; check per-profile `.env` |
+| Enrichment block empty after ingest | HIGH | Polite-pool email not set (`OPENALEX_EMAIL` missing in `.env`) (silent — ingest "succeeded" but with degraded data) | `echo $OPENALEX_EMAIL`; check per-profile `.env` |
 | Dataview queries returning nothing | HIGH | `study_design` or `topic` vocabulary inconsistency — query returns empty table that looks like "nothing to do" | Check values in notes match the schema vocabulary exactly (see [frontmatter-schema.md](../vault/frontmatter-schema.md)). |
 | `qmd` search index stale — `draft` finds no notes | HIGH | Index not rebuilt after notes changed (silent — search returns nothing, looks like no matches) | See the **Stale `qmd` index** recipe (#4) above. |
 | `audit.jsonl` growing without bound | HIGH | memoria-linter log rotation not running (silent until disk fills) | Check [memoria-linter log rotation](../profiles/linter.md#log-rotation); it rotates weekly. |
+| Broken frontmatter YAML | MEDIUM | YAML parse errors cause downstream enrichment to fail | See the **Broken frontmatter** recipe (#3) above. |
 | Obsidian-agent-client can't connect | MEDIUM | ACP server not running or tunnel down | `systemctl --user status hermes-acp` and `hermes-tunnel` |
 | `_proposed_classification` not appearing | MEDIUM | `classify` skill not installed or not in lane's allow list | `hermes skills install classify`; check `.memoria/lane-overrides/librarian.yaml` |
 | Syncthing + `.bib` race condition | MEDIUM | VPS reads `.bib` while Syncthing is mid-transfer | Use Git pull for `.bib` distribution on the `always-on` option, not Syncthing — see [sync-and-coordination.md](../roadmap/sync-and-coordination.md#bib-watcher-always-on-only). |

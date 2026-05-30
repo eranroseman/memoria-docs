@@ -9,16 +9,16 @@ topic: architecture
 The board defines *what state* a card is in. The policy MCP defines *where* a worker may write. But the system also needs a daily-use surface for the human to *trigger* discrete actions — queue a task, run an active card, audit a write, push registry state into a note. The control plane has three thin layers between the human and Hermes:
 
 ```text
-Obsidian Command Palette  ──►  Hermes API  ──►  MCP servers  ──►  Hermes
-       (UI)                       (hermes gateway)          (policy + tasks)   (worker)
+Obsidian (Command Palette / Agent Client pane)  ──►  Hermes API  ──►  MCP servers  ──►  Hermes
+                    (UI)                            (hermes gateway)  (policy + tasks)   (worker)
 ```
 
 Each layer has exactly one job. None of them owns business logic except the MCP servers.
 
 | Layer | What it does | What it doesn't do |
 | --- | --- | --- |
-| **Command Palette** (Obsidian plugin) | Reads frontmatter from the active note. POSTs a small JSON payload to the Hermes API. Shows a status notice. | No database access. No policy evaluation. No task state changes. |
-| **Hermes API** | Hermes's built-in HTTP API (`hermes gateway`, `127.0.0.1:8642`); receives the POST and triggers the operation — add a card, run a task, query the audit log — dispatching into the MCP-gated worker. Upstream Hermes, not custom Memoria code. | No persistent state. No business rules. |
+| **Command Palette / Agent Client pane** (Obsidian) | The two human entry points inside Obsidian. The Command Palette reads frontmatter from the active note and POSTs a small JSON payload to the Hermes API. The **Agent Client pane (ACP)** — the editor-level agent interaction surface — provides a conversational interface to Hermes alongside the active note. Both show a status notice on completion. | No database access. No policy evaluation. No task state changes. |
+| **Hermes API** | Hermes's built-in HTTP API (`hermes gateway`, `127.0.0.1:8642` — command and default port are per upstream Hermes docs; verify current values at hermes-agent.nousresearch.com/docs); receives the POST and triggers the operation — add a card, run a task, query the audit log — dispatching into the MCP-gated worker. Upstream Hermes, not custom Memoria code. | No persistent state. No business rules. |
 | **MCP servers** | `policy_mcp` checks permissions, writes the audit log. `tasks_mcp` updates the board, records handoffs, dispatches to Hermes. | No UI. No direct vault writes outside their declared tool surface. |
 | **Hermes** | Runs the actual skill, writes the vault note, returns a structured result. | No board management — reports completion through the task MCP. |
 

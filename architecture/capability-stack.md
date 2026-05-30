@@ -14,7 +14,7 @@ The minimum capability stack to operate Memoria:
 4. **Zotero + Better BibTeX** for the bibliographic backbone.
 5. **External APIs**: OpenAlex, Semantic Scholar, PubMed, Crossref, Unpaywall, ORCID, ROR for enrichment.
 6. **Git** for vault history.
-7. **The Obsidian Local REST API** to let Hermes read/write the vault. (The **Agent Client Protocol (ACP)** is the *complementary* editor-level agent pane — not an alternative; see the table below.)
+7. **The Obsidian Local REST API** to let Hermes read/write the vault. (The **Agent Client pane (ACP)** is the *complementary* editor-level agent interaction surface — not an alternative; see the table below.)
 8. **Pandoc** for export.
 
 **Optional, adopt-when-needed: agent-side retrieval.** When the agent needs semantic recall over the vault (the Mapper's corpus queries, the search skills), Memoria uses **`qmd`** ([tobi/qmd](https://github.com/tobi/qmd) — local BM25 + vector + LLM-rerank over Markdown) as its retrieval substrate. It is *not* in the minimum stack — add it when corpus size makes keyword search insufficient. It is distinct from the human-side **Smart Connections** plugin (see [glossary: qmd](../glossary.md#computational-methods) and [obsidian-plugins/recommended/smart-connections.md](../obsidian-plugins/recommended/smart-connections.md)).

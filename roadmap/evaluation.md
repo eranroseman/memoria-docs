@@ -41,7 +41,7 @@ Deliberately **out of scope** (and tracked as such in the workspace taxonomy): a
 
 `vault-eval` graduates into the runtime rather than staying an external script, reusing existing machinery (decision recorded in [ADR-23](../decisions/23-vault-eval-integration.md)):
 
-- **Vault:** gold tasks live in `00-meta/05-eval/`; results append to `00-meta/08-metrics/eval/`; the Linter's broken-link detector guards gold-item target paths.
+- **Vault:** gold tasks live in `00-meta/05-eval/`; results append to `00-meta/08-metrics/eval/`; the Linter's broken-link detector guards gold-item target paths. (These directories will be created on first eval run; pre-create with `.keep` stubs if running evaluation scripts manually.)
 - **Workers:** the board dispatches a scheduled `eval` card (quarterly + on-demand, like the discovery loop); workflow profiles execute each gold task via their real commands (`verify`-eval reuses the Verifier's `cite-check`); eval-context writes are non-committing, Policy-MCP-scoped to a scratch path; the Linter scores and records the verdict.
 - **Observability:** per-workflow scores trend in `00-meta/08-metrics/` and surface on a dashboard — **diagnostic, not gating** (unlike `drift-watch`'s structural FAIL).
 

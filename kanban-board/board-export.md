@@ -1,7 +1,7 @@
 ---
 mode: reference
 audience: operator
-topic: kanban-board
+topic: board
 ---
 
 # Board export and aggregation

@@ -89,7 +89,7 @@ By default, [profile memory](../architecture/memory-tiers.md#the-substrates) (`M
 ~/.hermes/profiles/memoria-<name>/memories/    # where Hermes reads and writes
 ```
 
-**Setup (`link-memory.ps1` at the vault root — run once per machine, and again after every `install.ps1`).** Directory junctions need no admin on Windows and are transparent to Hermes:
+**Setup (`link-memory.ps1` at the vault root — run once per machine, and again after every `install.ps1`).** (not yet authored; create manually or wait for the v0.2 install script — see implementation-status.md) Directory junctions need no admin on Windows and are transparent to Hermes:
 
 ```powershell
 $Vault    = $PSScriptRoot                              # vault root (the git repo)

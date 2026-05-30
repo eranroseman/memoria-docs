@@ -6,7 +6,7 @@ topic: plugins
 
 # obsidian-homepage — startup front door
 
-[obsidian-homepage](https://github.com/mirnovov/obsidian-homepage) opens a chosen note on launch instead of Obsidian's default "reopen last session." Memoria uses it to open the [`Home.md` front door](../../obsidian-ui/home.md) every session (see [ADR-25](../../decisions/25-homepage-front-door.md)). It is **view-management only — it opens a view and writes no note content**, so unlike a formatter it never touches the Policy-MCP / audit trail. `recommended/`, not required: without it, pin `Home.md` manually.
+[obsidian-homepage](https://github.com/mirnovov/obsidian-homepage) opens a chosen note on launch instead of Obsidian's default "reopen last session." Memoria uses it to open the [`Home.md` front door](../../obsidian-ui/home.md) every session (see [ADR-25](../../decisions/25-homepage-front-door.md)). It is **view-management only — it opens a view and writes no note content**, so unlike a formatter it never touches the policy MCP / audit trail. `recommended/`, not required: without it, pin `Home.md` manually.
 
 **Authoritative config:** shipped at `.obsidian/plugins/homepage/data.json` in the starter vault.
 

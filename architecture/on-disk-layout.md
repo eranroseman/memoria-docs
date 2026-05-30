@@ -6,6 +6,9 @@ topic: architecture
 
 # On-disk layout: starter vault and Hermes runtime
 
+> [!warning] Scaffold vs. Complete Install
+> This layout shows the target on-disk structure. Several items marked below are not yet present in the v0.1 starter vault. Items annotated `# v0.2` or `# deferred` are planned but not yet created.
+
 The system spans **two filesystem locations**: the starter vault (versioned, distributable, holds all install material) and the user's Hermes runtime (per-user, holds installed profile directories copied from the vault by the installer).
 
 ## Starter vault (versioned, distributable)
@@ -20,10 +23,10 @@ Numbered-prefix subdirectories (e.g., `01-templates`, `02-csl`, `01-papers`) are
 <vault-root>/                           # any folder name; human picks at clone time
 ├── README.md                           # human-facing: clone, run install
 ├── install.ps1                         # Windows installer
-├── install.sh                          # macOS / Linux installer
+├── install.sh                          # macOS/Linux — v0.2
 │
 ├── 00-meta/                            # vault skeleton (human-visible in Obsidian)
-│   ├── 01-dashboards/                  # 12 dashboards (Daily Health index, board-state, contradictions, drift-watch, audit-log, …)
+│   ├── 01-dashboards/                  # 11 shipped dashboards (Daily Health as index.md, board-state, contradictions, drift-watch, audit-log, …; skill-lifecycle deferred)
 │   ├── 02-logs/                        # audit.jsonl, board-state.jsonl, lint-findings.jsonl, cron-history.jsonl
 │   ├── 03-templates/                   # 15 note templates (claim-note, paper-note, …)
 │   ├── 04-reference/                   # human-facing reference notes (design-system, schema-reference, …)
@@ -56,7 +59,7 @@ Numbered-prefix subdirectories (e.g., `01-templates`, `02-csl`, `01-papers`) are
 │
 ├── .obsidian/                          # Obsidian config (auto-hidden by Obsidian)
 │   ├── plugins/
-│   │   ├── obsidian-linter/data.json
+│   │   ├── obsidian-linter/data.json   # post-v0.1 (reference-only per ADR-24; not installed)
 │   │   ├── obsidian-citation-plugin/data.json
 │   │   ├── agent-client/data.json.example
 │   │   ├── obsidian-local-rest-api/data.json.example
@@ -80,20 +83,20 @@ Numbered-prefix subdirectories (e.g., `01-templates`, `02-csl`, `01-papers`) are
     │   ├── memoria-verifier/
     │   ├── memoria-coder/
     │   └── memoria-linter/             # also holds M-detectors.md alongside SOUL.md
-    ├── profile-memory/                 # learned MEMORY.md/USER.md, junctioned into ~/.hermes (opt-in multi-machine sync)
+    ├── profile-memory/                 # learned MEMORY.md/USER.md, junctioned into ~/.hermes (opt-in multi-machine sync) — created on first multi-machine sync opt-in
     │   └── memoria-<name>/
     ├── mcp/                            # Memoria-specific MCP servers (Python)
-    │   ├── policy_mcp.py
-    │   ├── tasks_mcp.py
+    │   ├── policy_mcp.py               # not yet authored (v0.2)
+    │   ├── tasks_mcp.py               # not yet authored (v0.2)
     │   └── requirements.txt
     ├── lane-overrides/                 # YAML files the policy MCP reads at startup (named {lane}.yaml)
-    │   ├── librarian.yaml
-    │   ├── mapper.yaml
-    │   ├── socratic.yaml
-    │   ├── writer.yaml
-    │   ├── verifier.yaml
-    │   ├── coder.yaml
-    │   └── linter.yaml
+    │   ├── librarian.yaml              # not yet authored (v0.2)
+    │   ├── mapper.yaml                 # not yet authored (v0.2)
+    │   ├── socratic.yaml               # not yet authored (v0.2)
+    │   ├── writer.yaml                 # not yet authored (v0.2)
+    │   ├── verifier.yaml               # not yet authored (v0.2)
+    │   ├── coder.yaml                  # not yet authored (v0.2)
+    │   └── linter.yaml                 # not yet authored (v0.2)
     ├── csl/                            # Pandoc citation style files
     ├── library.bib                     # Zotero BibTeX export
     └── tool-registry.yaml              # machine-read tool config

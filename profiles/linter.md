@@ -83,12 +83,12 @@ Rotation is classed as `authorized-targeted` in the [auto-fix table](#auto-fix-p
 
 ## Implementing safe-and-unambiguous fixes via Templater
 
-Linter delegates `safe-and-unambiguous` auto-fixes to [Templater](../obsidian-plugins/required/templater.md) rather than writing them directly. Templater already handles frontmatter parsing, atomic file updates, and Obsidian's open-buffer reconciliation — all of which Linter would otherwise have to re-implement carefully and risk getting wrong.
+Linter delegates `safe-and-unambiguous` auto-fixes to [Templater](../obsidian-plugins/required/templater-obsidian.md) rather than writing them directly. Templater already handles frontmatter parsing, atomic file updates, and Obsidian's open-buffer reconciliation — all of which Linter would otherwise have to re-implement carefully and risk getting wrong.
 
 The pattern:
 
 1. Linter detects a fixable finding (e.g., missing `created` on a fleeting note with `_creation_marker:` present).
-2. Linter invokes a Templater script via the plugin's headless API, passing the file path and fix parameters.
+2. Linter invokes a Templater script by triggering it through Templater's documented plugin API (e.g., `app.plugins.plugins['templater-obsidian'].templater.append_template_to_file`), passing the file path and fix parameters. *(Status: design intent — specific invocation API TBD; Templater does not expose a headless API independent of the Obsidian runtime.)*
 3. Templater performs the edit using its existing safe-edit primitives (preserves cursor position, reconciles with open buffers, atomic write).
 4. Linter records the fix in the audit log; the policy MCP audits the Templater call as Linter's own write.
 

@@ -31,7 +31,7 @@ Pre-ingest screening differs from `find` in scale (200–5000 candidates vs. 10�
 
 **Use `find` for both**: rejected — `find` is optimized for low-volume ongoing leads, not 500-candidate one-time database exports. The workflow shapes are different.
 
-**Build a unified pipeline**: rejected — would dilute both. PRISMA needs explicit criteria; find thrives on implicit relevance.
+**Build a unified pipeline**: See [adopt-on-demand cluster rationale](adopt-on-demand-for-reviews.md).
 
 ## Related
 

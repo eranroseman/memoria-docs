@@ -29,6 +29,10 @@ Human owns authorship and judgment. The Writer can suggest links after the claim
 
 The `socratic-processing` capability used to be documented here as a pattern inside distill (loaded as a skill onto Writer). It's been promoted to its own stage and workflow ([Discuss](discuss.md)) — and the underlying capability is now owned by the dedicated Socratic profile, whose write-denied lane policy makes the protection architectural rather than skill-load-dependent. The queue of "paper notes thought about but not yet written into claims" becomes board-visible. Distill now strictly produces claim notes; discussion strictly produces thinking.
 
+## Card lifecycle
+
+`todo` (claim idea captured after discussion) → `ready` (human decides to write the claim) → `running` (claim note being authored) → `done` (claim note filed at `maturity: seedling`, similarity check passed) → `archived` (card closed; claim note matures independently via cross-links).
+
 ## Command
 
 `hermes run draft "..."` (after discussion is done).
@@ -54,7 +58,7 @@ Before a new `claim-note` is filed, `hermes -p memoria-verifier run similarity-c
 
 ## Example
 
-Human reads `mamykina2010sense.md` and extracts one durable claim: "JITAI receptivity decreases under high cognitive load." Runs `hermes run similarity-check "receptivity decreases under cognitive load"` → no near-duplicate above 0.8 → creates `30-synthesis/01-claims/receptivity-decreases-under-high-cognitive-load.md` at `maturity: seedling` → cites `[[mamykina2010sense]]` in the body, adds a one-line "Connections" section. Over the next month, two more sources confirm and one contradicts; cross-links accumulate → `maturity` advances to `budding`.
+Human reads `mamykina2010sense.md` and extracts one durable claim: "JITAI receptivity decreases under high cognitive load." Runs `hermes -p memoria-verifier run similarity-check "receptivity decreases under cognitive load"` → no near-duplicate above 0.8 → creates `30-synthesis/01-claims/receptivity-decreases-under-high-cognitive-load.md` at `maturity: seedling` → cites `[[mamykina2010sense]]` in the body, adds a one-line "Connections" section. Over the next month, two more sources confirm and one contradicts; cross-links accumulate → `maturity` advances to `budding`.
 
 ## Related
 

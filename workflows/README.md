@@ -169,7 +169,7 @@ Workflows are listed in execution order within each pipeline. Refer to a workflo
 | --- | --- | --- |
 | [Assess](downstream/assess.md) | Map the corpus for a project; decide if it's ready to write. | Mapper (`scope-project`); human decides |
 | [Frame](downstream/frame.md) | Generate 2–3 competing project framings before drafting; commit to one. | Writer (with `counter-outline`, scratch-only); Socratic (with `lens-reading`); human chooses |
-| [Write](downstream/write.md) | Build manuscripts from synthesized knowledge (umbrella). | Human; Hermes assists |
+| [Write](downstream/write.md) | Build manuscripts from synthesized knowledge (umbrella). | Human; Writer assists |
 | [Verify](downstream/verify.md) | Trace draft claims back to claim notes; spawn gap cards for failed traces. | Verifier; human decides |
 | [Revise](downstream/revise.md) | Close the gap-loop: address verification findings before export. | Human |
 | [Export](downstream/export.md) | Run Pandoc to produce the final, frozen deliverable. | Coder runs Pandoc; human decides to ship |
@@ -181,7 +181,7 @@ Workflows are listed in execution order within each pipeline. Refer to a workflo
 | Workflow | Goal | Main owner |
 | --- | --- | --- |
 | [Lint](maintenance/lint.md) | Keep structure, links, queues healthy. | Linter; human decides on fixes |
-| [Refactor](maintenance/refactor.md) | Keep notes atomic and remove duplication. | Hermes identifies; human decides |
+| [Refactor](maintenance/refactor.md) | Keep notes atomic and remove duplication. | Verifier identifies; human decides |
 | [Retraction Sweep](maintenance/retraction-sweep.md) | Stop retracted / superseded sources from influencing synthesis. | Verifier flags; human decides |
 | [Maintain MOCs](maintenance/moc.md) | Create and grow Maps of Content as clusters mature. | Human authors; agents propose |
 
@@ -289,7 +289,7 @@ Memoria runs on rhythms layered by frequency. The skeleton cadence: **daily** ca
 
 **Reading session (1–2 hours, when scheduled).** Switch to the Reading & Processing workspace (`Cmd-2`). Open [`discuss-queue.md`](../dashboards/discuss-queue.md): which paper note is ripest for processing? Read the source with the `[!brief]` callout in mind. When ready to process, ask Socratic about the active note (`Cmd-P → Memoria: ask about this note`) — the ACP pane opens on the right with the Socratic profile, which is architecturally write-denied. The conversation runs; the human writes the claim note themselves in `30-synthesis/01-claims/` (in their own words, in the left pane) as the conversation progresses. Save. The git hook fires; Librarian's enrichment runs overnight; the link suggestions appear in tomorrow's morning glance.
 
-**Walking (whenever a thought hits).** Telegram: `/fleeting <thought>` drops the text into `10-inbox/01-fleeting/` with a timestamp. The thought is captured; the human doesn't have to remember it through to the next desk session. It surfaces in tomorrow's [`discuss-queue.md`](../dashboards/discuss-queue.md) (or the weekly fleeting-triage step) for action. Source-URL capture works the same way: paste the link, get a confirmation, the actual ingest happens overnight.
+**Walking (whenever a thought hits).** Telegram: `/fleeting <thought>` drops the text into `10-inbox/01-fleeting/` with a timestamp. The thought is captured; the human doesn't have to remember it through to the next desk session. It surfaces in tomorrow's [`reading-pipeline.md`](../dashboards/reading-pipeline.md) (or the weekly fleeting-triage step) for action. Source-URL capture works the same way: paste the link, get a confirmation, the actual ingest happens overnight.
 
 **Writing session (project work).** Switch to the Drafting workspace (`Cmd-3`). Open the draft. The `[!verification]` callout at the top shows Verifier's last claim-trace report. Write. The Writer ACP pane is available on the right if local critique is wanted, but it's optional — most drafting happens in the human's head, with the pane silent. On significant edits, save and `git commit`. Verifier picks up the draft automatically ([Verify](downstream/verify.md)). Gap cards from Verifier appear in tomorrow's morning queue. If the gap loop suggests more reading before the draft can stabilize, switch back to a reading session.
 

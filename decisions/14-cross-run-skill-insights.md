@@ -15,7 +15,7 @@ superseded_by: []
 
 ## Context
 
-Have Hermes maintain a `00-meta/skill-insights/` log of patterns learned across projects — e.g., "X classifier underperforms when Y" — surfaced in future planning sessions? This is the MetaClaw / CORAL pattern from autonomous research systems.
+Have Hermes maintain a `00-meta/skill-insights/` log of patterns learned across projects — e.g., "X classifier underperforms when Y" — surfaced in future planning sessions? This is the MetaClaw / CORAL pattern from autonomous research systems (MetaClaw: multi-round claim extraction framework that iteratively refines what counts as a learnable signal; CORAL: cross-run aggregation and learning pattern that pools those signals across separate project runs into a queryable log).
 
 ## Decision
 

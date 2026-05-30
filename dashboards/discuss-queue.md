@@ -14,7 +14,7 @@ List every fully-classified (`lifecycle: current`) paper note that hasn't yet ha
 
 ## What this dashboard is not
 
-- **Not [`reading-pipeline`](reading-pipeline.md).** Reading-pipeline is broader — papers still in active processing (`lifecycle: proposed`) plus claim-note maturity; discuss-queue is the narrow slice of fully-classified (`lifecycle: current`) notes still awaiting Socratic processing. Reading-pipeline asks "what's in flight?"; discuss-queue asks "what owes me a Socratic conversation?"
+- **Not [`reading-pipeline`](reading-pipeline.md).** See also: [reading-pipeline](reading-pipeline.md) for the full contrast between the two dashboards.
 - **Not a generic to-do list.** The implied next action is specifically *Socratic processing* (workflow Discuss) — invoke the Socratic profile, work through the questions, then write a claim note. Surfacing the queue without the implied next action would just be a list.
 - **Not Mapper's territory.** Discuss-queue is per-source upstream work. Mapper's outputs (corpus-map, gap-report, comparative-brief) operate across sources at a different abstraction.
 

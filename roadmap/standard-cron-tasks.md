@@ -6,7 +6,7 @@ topic: roadmap
 
 # Standard cron tasks
 
-Memoria ships with four standard scheduled tasks. Each is declared in the relevant profile's `cron/` folder (see [roadmap/profile-compilation.md](../roadmap/profile-compilation.md)) and dispatched by the Hermes Kanban according to the schedule. All four are **read-mostly or write-to-logs only** — they produce reports the human reads on a cadence, not edits the human has to review per-task.
+Memoria ships with four standard scheduled tasks. Each is declared in the relevant profile's `cron/` folder (see [architecture/on-disk-layout.md](../architecture/on-disk-layout.md)) and dispatched by the Hermes Kanban according to the schedule. All four are **read-mostly or write-to-logs only** — they produce reports the human reads on a cadence, not edits the human has to review per-task.
 
 ```yaml
 cron:

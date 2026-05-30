@@ -12,22 +12,22 @@ Each dashboard lives in its own file under [`dashboards/`](../dashboards/). The 
 
 ## Dashboards by use frequency
 
-Every dashboard exists in the vault. The question is how often it's opened.
+Every dashboard except `skill-lifecycle` (deferred) exists in the vault. The question is how often it's opened.
 
 | Frequency | Dashboard | Purpose |
 | --- | --- | --- |
-| **Daily** | [Daily Health](../dashboards/daily-health.md) | Always-on health monitor. Open before any large operation. |
+| **Daily** | [Daily Health](../dashboards/daily-health.md) (ships in vault as `00-meta/01-dashboards/index.md`) | Always-on health monitor. Open before any large operation. |
 | **Reading session** | [`discuss-queue`](../dashboards/discuss-queue.md) | "What should I think about today?" — paper notes classified but not yet processed via Socratic. The upstream-discipline dashboard. |
 | **Weekly** | [`weekly-review`](../dashboards/weekly-review.md) | Weekly ritual entry point (see [workflows/README.md](../workflows/README.md) workflow Lint). |
 | **Weekly** | [`reading-pipeline`](../dashboards/reading-pipeline.md) | "What to read next?" — papers by processing stage. |
-| **Weekly** | [`loose-ends`](../dashboards/loose-ends.md) | Catch TODO / tmp / draft filenames and leftover junk. |
+| **Weekly** | [`loose-ends`](../dashboards/loose-ends.md) | Catch TODO / tmp / untitled filenames and leftover junk — no `draft`. |
 | **Weekly** | [`drift-watch`](../dashboards/drift-watch.md) | Linter's structural detector findings + [verdict band](../glossary.md#observability-and-verdicts). Open when the lint pass passed but something still feels off. |
 | **Per board op** | [`board-state`](../dashboards/board-state.md) | Active cards, review queue, retry watch. |
 | **Forensic** | [`audit-log`](../dashboards/audit-log.md) | Policy-MCP write decisions. Open when something feels off. |
 | **Planning** | [`open-questions`](../dashboards/open-questions.md) | Research agenda view — surface all explicit Open Questions sections. |
 | **Planning** | [`contradictions`](../dashboards/contradictions.md) | Surface claim notes that disagree (human-set `relations.contradicts`) — a synthesis starting point. |
 | **Scale-dependent** | [`skill-lifecycle`](../dashboards/skill-lifecycle.md) | Hermes skill registry view. Deferred — maybe later if needed; see [roadmap/future-directions.md](../roadmap/future-directions.md#skill-governance). |
-| **Scale-dependent** | [`fleet-health`](../dashboards/fleet-health.md) | Cost and reliability trends for the worker fleet. Post-MVS only — see [roadmap/future-directions.md](../roadmap/future-directions.md). |
+| **Scale-dependent** | [`fleet-health`](../dashboards/fleet-health.md) | Cost and reliability trends for the worker fleet. Phase 6 (post-MVS) — see [roadmap/future-directions.md](../roadmap/future-directions.md). |
 
 The "scale-dependent" dashboards are designed to be present from day one but only carry meaningful data once the corpus is large enough that human eyes stop noticing slow regressions. Until then they're inert.
 

@@ -4,6 +4,9 @@ audience: operator
 topic: board
 ---
 
+> [!warning] Status: Deferred (Phase 4)
+> The Kanban board does not exist in the starter vault. This document describes the planned design. See `board-export.md` for implementation notes.
+
 # Board, states, and the review gate
 
 The Kanban board is Memoria's **control plane** — the shared state machine across profiles and sessions. Every long-lived piece of work lives on the board until a human approves it into the vault.
