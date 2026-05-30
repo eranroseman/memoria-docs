@@ -10,7 +10,7 @@ The vault is where durable knowledge lives. This document covers the conceptual 
 
 For reference content, see the sibling docs:
 
-- [templates.md](templates.md) — the 15 note types, their lifecycles, and the templates that ship with the vault.
+- [note-types.md](note-types.md) — the 15 note types, their lifecycles, and the templates that ship with the vault.
 - [frontmatter-schema.md](frontmatter-schema.md) — frontmatter field categorization, controlled vocabularies, and the agent/human namespace split.
 - [linking-patterns.md](linking-patterns.md) — link types, the expected cross-link graph, and MOC creation thresholds.
 
@@ -44,8 +44,7 @@ Folders encode **lifecycle stage**, not subject area. The top-level number indic
 │   ├── 02-reference/
 │   └── 03-moc/
 ├── 40-workbench/
-│   └── 01-projects/
-│       └── <project>/        # map/ framing/ canvas/ drafts/ verification/ code/
+│   └── <project>/            # 01-map/ 02-framing/ 03-canvas/ 04-drafts/ 05-verification/ 06-code/
 ├── 50-deliverables/
 │   ├── 01-manuscripts/
 │   ├── 02-presentations/
@@ -94,20 +93,20 @@ Coarse access summary. The authoritative per-profile permissions live in [profil
 | `30-synthesis/01-claims/` | Durable claims in the human's own words. | Write | Read; suggest links only. |
 | `30-synthesis/02-reference/` | Stable reference pages. | Review / edit | Draft and limited updates. |
 | `30-synthesis/03-moc/` | Maps of Content; navigation hubs. | Write | Read; suggest only. |
-| `40-workbench/01-projects/<project>/` | One folder per project; all working artifacts nest inside. | Write | Read / write. |
-| `40-workbench/01-projects/*/map/` | Corpus maps, gap reports, cluster maps, comparative briefs. | Review | Write (Mapper scratch). |
-| `40-workbench/01-projects/*/framing/` | Competing project framings (Writer `counter-outline`; Socratic lens captures). | Write | Write (scratch). |
-| `40-workbench/01-projects/*/canvas/` | Argument mapping, spatial planning. | Write | Read only or limited assist. |
-| `40-workbench/01-projects/*/drafts/` | Manuscripts in progress. | Write | Read only unless asked. |
-| `40-workbench/01-projects/*/verification/` | Per-claim verification reports. | Review | Write (Verifier scratch). |
-| `40-workbench/01-projects/*/code/` | Code artifacts and scripts (including Jupyter notebooks). | Write | Read / write. |
+| `40-workbench/<project>/` | One folder per project; all working artifacts nest inside. | Write | Read / write. |
+| `40-workbench/*/01-map/` | Corpus maps, gap reports, cluster maps, comparative briefs. | Review | Write (Mapper scratch). |
+| `40-workbench/*/02-framing/` | Competing project framings (Writer `counter-outline`; Socratic lens captures). | Write | Write (scratch). |
+| `40-workbench/*/03-canvas/` | Argument mapping, spatial planning. | Write | Read only or limited assist. |
+| `40-workbench/*/04-drafts/` | Manuscripts in progress. | Write | Read only unless asked. |
+| `40-workbench/*/05-verification/` | Per-claim verification reports. | Review | Write (Verifier scratch). |
+| `40-workbench/*/06-code/` | Code artifacts and scripts (including Jupyter notebooks). | Write | Read / write. |
 | `50-deliverables/` | Final manuscripts, slides, submission-ready exports. | Write | Read / write on explicit export tasks. |
 | `90-assets/` | Machine-extracted markdown and non-PDF binary attachments. `90-assets/extracts/<citekey>.md` holds Marker output from ingest; other binaries (figures, datasets, supplementary materials) live alongside as needed. **PDFs do not live here** — they stay in Zotero's storage and are reached via `pdf_uri` on the paper-note. | Hidden / managed | Read only. |
 | `95-archive/` | Deprecated, superseded, or archived notes. | Read only | Read only. |
 
 ### Lifecycle organizes knowledge; project organizes work
 
-As established above, the numbered folders encode lifecycle stage rather than subject — a BCI paper lives in `20-sources/01-papers/`, not a `BCI/` folder, and its topics live in frontmatter. `40-workbench/` is the one deliberate exception: its unit is the **project**, not the lifecycle stage. A project folder (`01-projects/<project>/`) holds every working artifact for one effort — `map/`, `framing/`, `canvas/`, `drafts/`, `verification/`, `code/` — so the whole effort is co-located and archives as a unit.
+As established above, the numbered folders encode lifecycle stage rather than subject — a BCI paper lives in `20-sources/01-papers/`, not a `BCI/` folder, and its topics live in frontmatter. `40-workbench/` is the one deliberate exception: its unit is the **project**, not the lifecycle stage. A project folder (`<project>/`) holds every working artifact for one effort — `01-map/`, `02-framing/`, `03-canvas/`, `04-drafts/`, `05-verification/`, `06-code/` — so the whole effort is co-located and archives as a unit.
 
 This doesn't violate the principle, because the principle is really an *anti-duplication* rule for many-to-many data: a source has many topics, so it can't live in one topic folder. Workbench artifacts are single-project (a draft belongs to exactly one manuscript), so the duplication problem never arises. A **project is not a topic** — it's a bounded, transient effort that gets archived when it ships. Durable knowledge still lives in the lifecycle layers (`20-sources/`, `30-synthesis/`) and carries its topics in frontmatter.
 
@@ -135,7 +134,7 @@ A freshly-cloned vault ships with a small set of plain-language human notes in `
 | `00-meta/04-reference/profile-policies.md` | Plain-language summary of who-can-write-where. Tracks the lane-override YAML files and the [Lane permissions matrix](../profiles/README.md#lane-permissions-matrix). | Human (sync with lane-override changes) |
 | `00-meta/04-reference/schema-reference.md` | Canonical list of every frontmatter field used in the vault, with type and allowed values. The source of truth that templates and the Linter point at. | Human + Linter (Linter flags drift) |
 | `00-meta/04-reference/dataview-cheatsheet.md` | Reference patterns for dashboard authors — TABLE / LIST / TASK / FROM / WHERE / SORT / FLATTEN / LIMIT examples. | Human (rarely changes) |
-| `00-meta/04-reference/performance-checklist.md` | Dashboard performance discipline (see [obsidian-ui/persistent.md](../obsidian-ui/persistent.md#performance-discipline)). | Human (rarely changes) |
+| `00-meta/04-reference/performance-checklist.md` | Dashboard performance discipline (see [obsidian-ui/dashboards.md](../obsidian-ui/dashboards.md#performance-discipline)). | Human (rarely changes) |
 | `00-meta/04-reference/safe-mode.md` | The three core workflows (ingest, review, export) with minimal commands and fallbacks when something is broken. Open this when Hermes, the ACP connection, or the watcher is down. Pairs with [operations/failure-modes.md](../operations/failure-modes.md) for the Detect/Fix/Verify recipes. | Human (rarely changes) |
 | `00-meta/04-reference/obsidian-config.md` | Plain-language summary of which Obsidian community plugins Memoria uses and the load-bearing settings the human should not change. Mirrors [obsidian-plugins/README.md](../obsidian-plugins/README.md). | Human (sync with plugin changes) |
 | `00-meta/04-reference/design-system.md` | Canonical visual-style source for the vault — palette, typography, spacing, layout, components, motion, voice, brand, anti-patterns. Format follows [open-design](https://github.com/nexu-io/open-design)'s 9-section DESIGN.md schema so the same file can drive open-design's render pipeline. Read by CSS-snippet generators, by Pandoc export configs, and by open-design when rendering deliverables. Templated by [obsidian-ui/design-system.md](../obsidian-ui/design-system.md). | Human (edits define the brand); design-system schema versioned independently |
@@ -181,7 +180,7 @@ These failure modes recur. Treat them as anti-patterns to actively avoid.
 - Do not store a `paper-note` under `40-workbench/`, or a `claim-note` in the inbox.
 - Do not use `30-synthesis/02-reference/` for unstable work-in-progress.
 - Do not use `30-synthesis/01-claims/` for source summaries.
-- Do not use `40-workbench/01-projects/*/drafts/` as a general notes folder.
+- Do not use `40-workbench/*/04-drafts/` as a general notes folder.
 - If a note could fit more than one type, choose the **most specific epistemic role**.
 - If a note's purpose changes substantively, create a new note rather than mutating the old one. Link the new note to the old for provenance.
 

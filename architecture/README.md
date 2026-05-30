@@ -84,7 +84,7 @@ The review overlay (`metadata.review_status`) rides on `done`: `requested` → `
 
 The key rule: a `done` card awaiting review is a real state, not a label. A card can be worked on, blocked, reviewed, rejected, and retried without losing history or confusing completion with approval.
 
-See [kanban-board/README.md](../kanban-board/README.md) for the conceptual model and [kanban-board/states.md](../kanban-board/states.md) for the full state machine, the crosswalk from Memoria's older state names, and the review gate rules.
+See [kanban-board/README.md](../kanban-board/README.md) for the conceptual model and [kanban-board/states.md](../kanban-board/states.md) for the full state machine, the worker-lane exit contracts, and the review gate rules.
 
 ## Layer 2: Workers (Hermes profiles)
 
@@ -117,7 +117,7 @@ The vault stores durable knowledge. Folders encode lifecycle stage, not subject 
 | `90-assets/` | Attachments and binary assets. |
 | `95-archive/` | Deprecated, superseded notes. |
 
-The grouping is load-bearing. `20-sources/{01-papers, 02-items, 03-entities}` says "everything that describes something external." `30-synthesis/{01-claims, 02-reference, 03-moc}` says "everything that expresses the human's thinking." `40-workbench/01-projects/<project>/{map, framing, canvas, drafts, verification, code}` says "things being worked on" — one folder per project, all its working artifacts inside. This makes ownership and access policy easier to enforce.
+The grouping is load-bearing. `20-sources/{01-papers, 02-items, 03-entities}` says "everything that describes something external." `30-synthesis/{01-claims, 02-reference, 03-moc}` says "everything that expresses the human's thinking." `40-workbench/<project>/{01-map, 02-framing, 03-canvas, 04-drafts, 05-verification, 06-code}` says "things being worked on" — one folder per project, all its working artifacts inside. This makes ownership and access policy easier to enforce.
 
 See [vault/README.md](../vault/README.md) for the full layout, note types, templates, and linking patterns.
 

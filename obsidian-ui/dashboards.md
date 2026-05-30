@@ -25,6 +25,7 @@ Every dashboard exists in the vault. The question is how often it's opened.
 | **Per board op** | [`board-state`](../dashboards/board-state.md) | Active cards, review queue, retry watch. |
 | **Forensic** | [`audit-log`](../dashboards/audit-log.md) | Policy-MCP write decisions. Open when something feels off. |
 | **Planning** | [`open-questions`](../dashboards/open-questions.md) | Research agenda view — surface all explicit Open Questions sections. |
+| **Planning** | [`contradictions`](../dashboards/contradictions.md) | Surface claim notes that disagree (human-set `relations.contradicts`) — a synthesis starting point. |
 | **Scale-dependent** | [`skill-lifecycle`](../dashboards/skill-lifecycle.md) | Hermes skill registry view. Deferred — maybe later if needed; see [roadmap/future-directions.md](../roadmap/future-directions.md#skill-governance). |
 | **Scale-dependent** | [`fleet-health`](../dashboards/fleet-health.md) | Cost and reliability trends for the worker fleet. Post-MVS only — see [roadmap/future-directions.md](../roadmap/future-directions.md). |
 

@@ -4,17 +4,19 @@ audience: operator
 topic: board
 ---
 
-# Board schema and handoff (reference)
+# Card schema and handoff
 
 The board **is** the Hermes built-in Kanban. Its task schema is fixed and not user-customizable, so Memoria does not define its own card columns — it uses Hermes' built-in fields and stores everything Memoria-specific inside the free-form `metadata` JSON. This page lists the real Hermes fields Memoria relies on, the `metadata` conventions Memoria layers on top, the entity vocabulary the board tracks, and the handoff pattern. For the conceptual narrative see [README.md](README.md); for the state machine and the review gate see [states.md](states.md).
 
 The authoritative schema is the upstream Hermes Kanban reference ([tools-reference#kanban-toolset](https://hermes-agent.nousresearch.com/docs/reference/tools-reference#kanban-toolset), [cli-commands#hermes-kanban](https://hermes-agent.nousresearch.com/docs/reference/cli-commands#hermes-kanban)). If a field below conflicts with the live docs, the live docs win.
 
+> **Version note.** The Hermes field list, the `status` enum, and the `outcome` enum below track a specific Hermes release and can drift across versions. Reconcile against the live tools-reference before relying on exact names or values. *Last reconciled with the live Hermes docs on 2026-05-29: the `status` and `outcome` enums, the field list, `workspace` values, the `kanban_*` tools, and the `hermes kanban` subcommands all match.*
+
 ## Hermes built-in card fields
 
 These are real, fixed columns on every Hermes Kanban task. Memoria reads and writes them through the kanban toolset and CLI; it cannot rename or add to them.
 
-| Field | Type | Purpose | Memoria use |
+| Field | Type | Purpose | Memoria use / notes |
 | --- | --- | --- | --- |
 | `task_id` | string | Unique identifier (e.g. `t_abcd`). | The card identity; referenced from `metadata` and handoff payloads. |
 | `title` | string (required) | Short task name. | One line describing the card's goal. |
@@ -28,7 +30,7 @@ These are real, fixed columns on every Hermes Kanban task. Memoria reads and wri
 | `workspace` | enum | `scratch`, `dir:<path>`, or `worktree:<path>`. | Where the worker operates. |
 | `branch` | string | Optional git branch. | Used by the Coder lane. |
 | `max_runtime_seconds` | int | Per-run wall-clock ceiling. | Lane timeout. |
-| `max_retries` | int | Circuit-breaker override for recoverable failures. | Replaces the old `retry_count` notion — Hermes counts retries in run history, not a card field. |
+| `max_retries` | int | Circuit-breaker override for recoverable failures. | Hermes counts retries in run history, not as a card field. |
 | `idempotency_key` | string | Deduplication key for retried automation. | Prevents duplicate cards from upstream triggers. |
 | `parents` | array | Parent task IDs (dependency edges via `kanban_link`). | Inter-card dependencies. |
 
@@ -38,7 +40,11 @@ These are real, fixed columns on every Hermes Kanban task. Memoria reads and wri
 triage · todo · ready · running · blocked · done · archived
 ```
 
-These seven values are the only legal `status` values. Memoria's conceptual states (`queued`, `delivered`, `accepted`, …) are **not** stored here — they map onto this enum plus the review overlay. See the [state crosswalk in states.md](states.md#crosswalk-old-memoria-states).
+These seven values are the only legal `status` values. Memoria's review semantics are **not** extra `status` values — they live in the `metadata` review overlay (see [states.md](states.md)).
+
+## Card dependencies
+
+Cards can depend on other cards through the built-in `parents` array (edges created with `kanban_link`). Hermes uses these edges for execution ordering — a child becomes dispatchable once its parents complete — so Memoria expresses "do B after A" by linking B's `parents` to A, not by scheduling. Use it only for genuine ordering constraints (e.g. a `verify` card that must wait for the `draft` card it checks). Routing and review are *not* dependencies: they live in `assignee` and `metadata.review_status`.
 
 ## Run-level handoff fields
 
@@ -48,18 +54,18 @@ When a worker finishes or blocks, the payload lives on the **run**, not as task 
 | --- | --- | --- |
 | `summary` | `kanban_complete` | Human-readable completion note. Memoria writes the Blocker / Tried / Next prose here. |
 | `metadata` | `kanban_complete` | Free-form JSON: structured evidence (`changed_files`, `decisions`, `tests_run`, …) **and** Memoria's overlay fields below. |
-| `reason` | `kanban_block` | Why the task is blocked, for human input. Replaces the old `blocked_reason`. |
+| `reason` | `kanban_block` | Why the task is blocked, for human input. |
 | `outcome` | run | Hermes run-execution result — a closed, Hermes-defined enum per the [live Kanban docs](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban): `completed`, `blocked`, `crashed`, `gave_up`, `reclaimed`, `timed_out`, `spawn_failed`, `protocol_violation`. Records what happened on a *run*. **Archival reasons are not outcomes** — see `metadata.archive_reason` below. |
 | `error` | run | Failure detail when applicable. |
 | `worker_context` | run | Prior attempts (previous runs' outcome / summary / error / metadata) plus parent results. |
 
 ## Memoria overlay fields (inside `metadata`)
 
-Because the Hermes schema is fixed, Memoria's review gate and provenance live as **conventions inside the `metadata` JSON** — not as card columns. Workers and the policy MCP read and write these keys; dashboards query them via Dataview over exported card state.
+Because the Hermes schema can't be extended, Memoria's review gate and provenance live as **conventions inside the `metadata` JSON** — not as card columns. Workers and the policy MCP read and write these keys; dashboards query them via Dataview over exported card state.
 
 | `metadata` key | Type | Purpose |
 | --- | --- | --- |
-| `review_status` | enum | The human review lifecycle, independent of `status`: `unreviewed`, `requested`, `in-review`, `approved`, `rejected`. `approved` is the canonical human acceptance (the old `status: accepted`). |
+| `review_status` | enum | The human review lifecycle, independent of `status`: `unreviewed`, `requested`, `in-review`, `approved`, `rejected`. `approved` is the canonical human acceptance. |
 | `agent_verdict` | enum | Optional agent recommendation (Verifier, Linter): `approve`, `reject`, `escalate`, plus the Verifier triple `verify-clean` / `verify-needs-revision` / `verify-needs-attention`. Feeds, but does not replace, the human `review_status`. |
 | `review_owner` | string | Who owes the next review decision. |
 | `review_requested_at` | timestamp | When the worker handed off for review. |
@@ -69,23 +75,6 @@ Because the Hermes schema is fixed, Memoria's review gate and provenance live as
 | `archive_reason` | enum | On an archived card, why it was archived: `superseded` (replaced by a successor card) or `discarded` (rejected with no successor). Hermes archiving is a status transition with no native reason field, so Memoria records the reason here rather than in `outcome`. |
 
 `review_status` is deliberately separate from `status`. A card can be `status: running` while `review_status` is still `unreviewed`. This lets dashboards and dispatch logic query review independently. Both are **board-card concerns only** — notes never carry them. A note's lifecycle phase lives in `lifecycle` (with per-type refinements like `maturity`), whose value set is disjoint from the board's. See [frontmatter-schema.md](../vault/frontmatter-schema.md).
-
-## Crosswalk: old field names → Hermes reality
-
-Earlier drafts of this doc described a custom card schema. Those field names map onto Hermes as follows; other docs that still use the old names should be read through this table until they are updated.
-
-| Old Memoria field | Hermes reality |
-| --- | --- |
-| `status` | Unchanged — Hermes built-in, but uses the fixed enum above (not Memoria's nine states). |
-| `assignee` | Unchanged — Hermes built-in; **also the lane key**. |
-| `lane` | Dropped — derived from `assignee`; not a field. |
-| `blocked_reason` | `reason` (the `kanban_block` argument). |
-| `retry_count` | `max_retries` + run history; not a stored count. |
-| `handoff_note` | `summary` (the `kanban_complete` prose note). |
-| `task_packet` | `metadata` (the `kanban_complete` JSON payload). |
-| `last_updated` | No field — derived from the card event stream (`hermes kanban tail`). |
-| `promote_target` | `metadata.promote_target`. |
-| `review_status`, `review_owner`, `review_requested_at`, `reviewed_at` | `metadata.*` keys (see overlay table). |
 
 ## Entity vocabulary
 
@@ -105,8 +94,9 @@ The doc that surfaced this vocabulary (`memoria_task_registry_schema.md` in `raw
 
 Instead, the entities above are **projections of card state**, not separate stores:
 
-- **Aggregate views** for the [fleet-health dashboard](../dashboards/fleet-health.md) (deferred to Post-MVS) come from a scheduled aggregator that reads card history and writes `lane-metric` and `skill-metric` notes to `00-meta/08-metrics/` — both the aggregator and the folder arrive when the dashboard is stood up; see [future-directions.md §"Fleet observability"](../roadmap/future-directions.md#fleet-observability).
+- **Aggregate views** for the [fleet-health dashboard](../dashboards/fleet-health.md) (deferred to Post-MVS — after the minimum-viable system) come from a scheduled aggregator that reads card history and writes `lane-metric` and `skill-metric` notes to `00-meta/08-metrics/` — both the aggregator and the folder arrive when the dashboard is stood up; see [future-directions.md §"Fleet observability"](../roadmap/future-directions.md#fleet-observability).
 - **Audit trail** for individual actions comes from `00-meta/02-logs/audit.jsonl` (written by the policy MCP).
+- **Board snapshot** for the [`board-state` dashboard](../dashboards/board-state.md) is a periodically-exported view of open cards under `00-meta/board/`, so Dataview can query `status` and `metadata` without a live `kanban.db` connection. It is a **read-only projection** — `kanban.db` stays authoritative.
 - **Card detail** (task + current handoff + current verdict) lives on the card itself, in Hermes' `kanban.db`.
 
 This keeps the board as the single source of truth while still giving the design clear vocabulary for what the card tracks.

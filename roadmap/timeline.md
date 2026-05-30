@@ -69,9 +69,9 @@ The migration path always points the same direction: **start narrow, expand when
 **Steps.**
 
 1. Rename the system in the vault documentation and any AGENTS-style schema files. Keep `research-wiki` as an alias for migration.
-2. Define the defined card states, lane-to-profile mapping, and review gate rules in one schema document so Hermes and the board share the same contract.
+2. Define the card states, the worker lanes (one per profile), and the review gate rules in one schema document so Hermes and the board share the same contract.
 3. Confirm note-type names match the defined set in [vault/README.md](../vault/README.md): `fleeting-note`, `answer-note`, `paper-note`, `item-note`, `entity-*`, `claim-note`, `moc`, `reference-note`, `project-note`, `code-note`, `canvas`, `draft`, `deliverable`. Keep any older names as deprecated aliases during transition.
-4. Commit the design document set in the separate `memoria-docs/` repo.
+4. Commit the design document set (`developer-guide/`) as the shared source of truth.
 
 **Exit criteria.** The schema is the single source of truth. Anyone (including the agent) can read it and know what the states, types, and folders mean.
 
@@ -82,7 +82,7 @@ The migration path always points the same direction: **start narrow, expand when
 **Steps.**
 
 1. Confirm the folder structure matches [vault/README.md](../vault/README.md). Create any missing folders.
-2. Drop the 15 templates into `00-meta/03-templates/` (see [vault/templates.md](../vault/templates.md) for the full list).
+2. Drop the 15 templates into `00-meta/03-templates/` (see [vault/note-types.md](../vault/note-types.md) for the full list).
 3. Migrate any existing notes whose folder no longer matches their type.
 4. Set up `00-meta/index.md` and `00-meta/weekly-review.md` with the queries from [obsidian-ui/README.md](../obsidian-ui/README.md).
 5. Confirm Zotero + Better BibTeX exports to `.memoria/library.bib`.
@@ -116,7 +116,7 @@ The principle: **install only what the device's role can safely run** (structura
 **Steps.**
 
 1. Stand up the **Hermes built-in Kanban** (see [kanban-board/README.md](../kanban-board/README.md) for the mandated choice and the alternatives that were considered).
-2. Adopt the Hermes Kanban's fixed `status` enum — `triage`, `todo`, `ready`, `running`, `blocked`, `done`, `archived`. These are not configurable; map Memoria's lifecycle onto them (see [kanban-board/states.md](../kanban-board/states.md) for the crosswalk).
+2. Adopt the Hermes Kanban's fixed `status` enum — `triage`, `todo`, `ready`, `running`, `blocked`, `done`, `archived`. These are not configurable; map Memoria's lifecycle onto them (see [kanban-board/states.md](../kanban-board/states.md)).
 3. Define the review overlay in card `metadata`: `review_status`, `agent_verdict`, `review_owner`, `review_requested_at`, `reviewed_at`, `promote_target`, `supersedes`. (The execution fields — `status`, `assignee`, `reason`, `max_retries` — are Hermes built-ins, not Memoria's to define.)
 4. Configure dispatch logic so cards in `triage`, `done` (awaiting review), or `blocked` are not claimable by non-review workers.
 5. Configure retry behavior so recoverable failures reuse the same card (returned to `ready`) within `max_retries`.
@@ -149,7 +149,7 @@ The principle: **install only what the device's role can safely run** (structura
 1. Migrate the existing corpus into the new structure (one folder at a time, with Linter dry-runs at each stage).
 2. Add scheduled tasks: nightly enrichment refresh, weekly lint, monthly stale-note check.
 3. Add a board summary dashboard if the board is dense enough to warrant it.
-4. Set up Pandoc export pipeline for `40-workbench/01-projects/*/drafts/`.
+4. Set up Pandoc export pipeline for `40-workbench/*/04-drafts/`.
 5. Configure session logging to write to `00-meta/02-logs/` and commit weekly.
 
 **Exit criteria.** The system runs without daily babysitting. The human shows up for review and synthesis; everything else flows.

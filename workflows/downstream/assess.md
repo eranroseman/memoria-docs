@@ -15,10 +15,10 @@ First downstream stage; precondition for [Frame](frame.md).
 
 ## Steps
 
-1. The human creates a project folder: `40-workbench/01-projects/<project>/` with a `brief.md` describing the deliverable, audience, length, and framing constraints.
+1. The human creates a project folder: `40-workbench/<project>/` with a `brief.md` describing the deliverable, audience, length, and framing constraints.
 2. A `scope-project` card opens on the project. Mapper claims it.
 3. Mapper runs `scope-project` (see [profiles/README.md](../../profiles/README.md#lane-permissions-matrix)): retrieves all claim and reference notes matching the brief topic; computes cluster density, recency distribution, source diversity; identifies adjacent topics with thin coverage.
-4. The output is written to `40-workbench/01-projects/<project>/map/corpus-map.md` as a structured report.
+4. The output is written to `40-workbench/<project>/01-map/corpus-map.md` as a structured report.
 5. The card completes to `done` (`review_status: requested`). Human reads the corpus map and decides: proceed to [Frame](frame.md), or pause to read more (loops back to [Zotero Capture](../upstream/zotero-capture.md) / [Find](../upstream/find.md)).
 
 ## Owners

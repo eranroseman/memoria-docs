@@ -10,7 +10,7 @@ topic: profiles
 
 ## Mission
 
-Writer turns evidence into structured prose — answer drafts, reference-ready content, manuscript sections, and counter-outlines. The defining trait is **drafts, not canonical content**: every Writer output lands in a review state (`10-inbox/02-answers/`, `40-workbench/01-projects/*/drafts/`, or a `30-synthesis/02-reference/` draft awaiting approval) and never in `30-synthesis/01-claims/`. The human owns canonical synthesis; Writer is the composer whose work the human reviews, edits, and either promotes or discards.
+Writer turns evidence into structured prose — answer drafts, reference-ready content, manuscript sections, and counter-outlines. The defining trait is **drafts, not canonical content**: every Writer output lands in a review state (`10-inbox/02-answers/`, `40-workbench/*/04-drafts/`, or a `30-synthesis/02-reference/` draft awaiting approval) and never in `30-synthesis/01-claims/`. The human owns canonical synthesis; Writer is the composer whose work the human reviews, edits, and either promotes or discards.
 
 ## What this profile is not
 
@@ -23,7 +23,7 @@ Writer turns evidence into structured prose — answer drafts, reference-ready c
 
 - **Review-gated-zone writes degrade to `dry_run`.** Writer's lane-override declares writes to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, and `50-deliverables/` as `dry_run` — the writes don't fail loudly, they become board comments for the human to act on. This is the policy-level enforcement of "canonical synthesis is human-owned"; even an aggressive Writer cannot corrupt the canonical layer.
 - **Synthesis is generative, end-to-end.** Writer's method class is **generative**: composing prose, structuring arguments, suggesting alternative outlines — none of these have deterministic derivations from inputs. LLM-required throughout, with one exception: the `query` step is deterministic vault search before drafting begins.
-- **The `counter-outline` skill is restrictive by design.** When loaded during the Frame stage, `counter-outline` adds policy.deny rules that narrow Writer's write scope to `40-workbench/01-projects/<project>/framing/` only. This is the definitive example of skill-conditional policy: a skill *tightens* the host lane, never loosens it.
+- **The `counter-outline` skill is restrictive by design.** When loaded during the Frame stage, `counter-outline` adds policy.deny rules that narrow Writer's write scope to `40-workbench/<project>/02-framing/` only. This is the definitive example of skill-conditional policy: a skill *tightens* the host lane, never loosens it.
 - **No external API access.** Unlike Librarian (network-heavy) or Verifier (Zotero/CrossRef for retraction checks), Writer doesn't reach the outside world. Its inputs are entirely the human's existing vault — sources, claim notes, MOCs. This keeps the cost surface predictable and prevents prompt-injection-via-fetched-content.
 
 ## Permissions and commands

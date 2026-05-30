@@ -22,7 +22,7 @@ The always-on **system-health** view, opened every morning. Four sections, each 
 
 - **Cron status is unique to Daily Health.** No other dashboard shows cron run history; this is the one section without a deeper counterpart.
 - **30-second budget.** The four sections are designed so a healthy day reads as four empty tables and closes. Anything non-empty is a signal to act on or click through to the deeper view.
-- **Graceful degradation.** Until the metrics aggregator, the board's markdown card files, the lint-findings JSONL feed, and the cron-history JSONL feed exist, the four queries return empty. The placeholders state what would populate them, so an empty result is interpretable as "feature not yet wired" rather than "nothing wrong" — see [obsidian-ui/persistent.md graceful-degradation discipline](../obsidian-ui/persistent.md#graceful-degradation).
+- **Graceful degradation.** Until the metrics aggregator, the board's markdown card files, the lint-findings JSONL feed, and the cron-history JSONL feed exist, the four queries return empty. The placeholders state what would populate them, so an empty result is interpretable as "feature not yet wired" rather than "nothing wrong" — see [obsidian-ui/dashboards.md graceful-degradation discipline](../obsidian-ui/dashboards.md#graceful-degradation).
 
 ### Dashboard-of-dashboards pattern
 

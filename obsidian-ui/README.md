@@ -14,13 +14,14 @@ There is no separate abstract "surface taxonomy" stacked on top of these. A comp
 
 | Component | What it is | Cadence | Detail |
 | --- | --- | --- | --- |
-| **Dashboards** | Dataview queries rendered as notes. Opened deliberately, read, closed. | Seconds to minutes per visit; multiple times per day | [persistent.md](persistent.md) |
-| **Workspaces** | Saved Obsidian layouts bound to a hotkey (`Cmd-1/2/3`); one per cognitive mode. | Whole sessions (reading, drafting, triage) | [modal.md](modal.md) |
-| **Callouts** | Agent output rendered in-place inside a note, where the context lives. | Visible whenever the note is open | [inline.md](inline.md) |
-| **Status line** | A glanceable Dataview widget in a pinned note — **not** the OS status bar. | Continuously visible while Obsidian is open | [ambient.md](ambient.md) |
+| **Dashboards** | Dataview queries rendered as notes. Opened deliberately, read, closed. | Seconds to minutes per visit; multiple times per day | [dashboards.md](dashboards.md) |
+| **Workspaces** | Saved Obsidian layouts bound to a hotkey (`Cmd-1/2/3`); one per cognitive mode. | Whole sessions (reading, drafting, triage) | [workspaces.md](workspaces.md) |
+| **Callouts** | Agent output rendered in-place inside a note, where the context lives. | Visible whenever the note is open | [callouts.md](callouts.md) |
+| **Status line** | A glanceable Dataview widget in a pinned note — **not** the OS status bar. | Continuously visible while Obsidian is open | [status-line.md](status-line.md) |
 | **Command palette** | The keyboard component — every Memoria action bound to `Cmd-P → Memoria:`. | Instant; many times per day | [command-palette.md](command-palette.md) |
 | **Agent Client pane** | The ACP chat pane — the UI for conversing with a Hermes profile on the active note. | Per conversation; persistent for Socratic, transient for the others | [agent-client.md](../obsidian-plugins/required/agent-client.md) |
-| **Other plugin UI** | UI contributed by the other community plugins Memoria uses (PDF++, Kanban, citation, …). | Varies | [obsidian-plugins/](../obsidian-plugins/README.md) |
+| **Home** | The startup front-door note (Dataview) that leads with Daily Health and links the dashboards, board, and quick actions. Opened on launch by the homepage plugin — a launchpad, not one of the dashboards. | Once per session on launch, plus on demand | [home.md](home.md) |
+| **Other plugin UI** | Additional editor / search / reading / visual affordances from the required & recommended plugins (PDF++ passages, Smart Connections, supercharged-links, hover-editor, …) — beyond the named components above. | Varies | [plugin-ui.md](plugin-ui.md) |
 
 ## Which component for which output
 
@@ -32,6 +33,7 @@ The first four components form a gradient by how much they **interrupt**: a dash
 - **Whether anything needs attention at all** → the status line.
 - **A state change to issue** → the command palette.
 - **A conversation about the active note** → the Agent Client pane.
+- **Where a session starts** → Home (the startup front door).
 
 That decision list *is* the design discipline the old persistent / modal / inline / ambient names used to carry — kept as a rule of thumb instead of a vocabulary the reader has to memorize.
 
@@ -46,11 +48,13 @@ Two rules apply to every component, not just one type.
 
 Each component has its own file with the rules, catalogs, and layouts specific to it:
 
-- **[Dashboards — persistent.md](persistent.md):** the dashboard catalog by frequency (eleven in total: Daily / Reading-session / Weekly / Per-board-op / Forensic / Planning / Scale-dependent), the design rules (one decision per query, filter boring cases, sort oldest-first), the Dataview performance discipline, and the graceful-degradation pattern for queries whose dependency is missing.
-- **[Workspaces — modal.md](modal.md):** the per-workspace layout table (Human / Reading & Processing / Drafting on `Cmd-1/2/3`), the prerequisite (the Workspaces core plugin must be enabled), and the design rules (one mode per workspace, three is the working set, workspaces travel with the vault).
-- **[Callouts — inline.md](inline.md):** the per-callout producer table (`[!brief]`, `[!suggestions]`, `[!verification]` from Mapper, Librarian, and Verifier), example shape, design rules (producer-owned + human-curated, collapsed vs expanded defaults, never overwrite human edits), and the per-callout deterministic/LLM split with weights.
-- **[Status line — ambient.md](ambient.md):** the composite line shape, implementation notes (Dataview, not a custom plugin), and the design rules (show state not decisions, glance-readable in under a second, no interruptive transitions, two producers is the working set).
-- **[Command palette — command-palette.md](command-palette.md):** the standard command catalog, the `Memoria:` naming convention, and the session-persistent-vs-transient invocation discipline.
-- **[Agent Client — agent-client.md](../obsidian-plugins/required/agent-client.md):** the ACP pane configuration, the four profiles in the picker, mode-switching hotkeys, and the persistent-vs-transient session distinction.
+- **[Dashboards](dashboards.md):** the dashboard catalog by frequency (twelve in total: Daily / Reading-session / Weekly / Per-board-op / Forensic / Planning / Scale-dependent), the design rules (one decision per query, filter boring cases, sort oldest-first), the Dataview performance discipline, and the graceful-degradation pattern for queries whose dependency is missing.
+- **[Workspaces](workspaces.md):** the per-workspace layout table (Human / Reading & Processing / Drafting on `Cmd-1/2/3`), the prerequisite (the Workspaces core plugin must be enabled), and the design rules (one mode per workspace, three is the working set, workspaces travel with the vault).
+- **[Callouts](callouts.md):** the per-callout producer table (`[!brief]`, `[!suggestions]`, `[!verification]` from Mapper, Librarian, and Verifier), example shape, design rules (producer-owned + human-curated, collapsed vs expanded defaults, never overwrite human edits), and the per-callout deterministic/LLM split with weights.
+- **[Status line](status-line.md):** the composite line shape, implementation notes (Dataview, not a custom plugin), and the design rules (show state not decisions, glance-readable in under a second, no interruptive transitions, two producers is the working set).
+- **[Command palette](command-palette.md):** the standard command catalog, the `Memoria:` naming convention, and the session-persistent-vs-transient invocation discipline.
+- **[Agent Client](../obsidian-plugins/required/agent-client.md):** the ACP pane configuration, the four profiles in the picker, mode-switching hotkeys, and the persistent-vs-transient session distinction.
+- **[Home](home.md):** the startup front-door note — what it surfaces (Daily Health glance, navigation, quick actions), the thin / pure-consumer rule, and a runtime Dataview scaffold.
+- **[Other plugin UI](plugin-ui.md):** the editor / search / reading / visual affordances the required & recommended plugins add, which plugin powers each named component, and the reference-only / headless plugins that contribute no UI.
 
 Two files here aren't components: [design-system.md](design-system.md) is the visual-style source every component renders against, and [ui-discipline.md](ui-discipline.md) is the restraint about how the vault *looks* overall (one accent color, hidden chrome, enforced heading hierarchy).

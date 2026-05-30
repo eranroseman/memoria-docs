@@ -6,7 +6,7 @@ topic: plugins
 
 # callout-manager
 
-Defines the three Memoria-specific callout types used by the [inline agent callouts](../../obsidian-ui/inline.md):
+Defines the three Memoria-specific callout types used by the [inline agent callouts](../../obsidian-ui/callouts.md):
 
 - `[!brief]` — Mapper's comparative read on a new paper note.
 - `[!suggestions]` — Librarian's link candidates pending human approval.

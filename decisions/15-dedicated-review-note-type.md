@@ -29,7 +29,7 @@ Add a `review-note` type for storing reviewer judgments with provenance, separat
 
 ## Alternatives considered
 
-**Adopt now**: rejected — adds a note type to the 15 ([vault/templates.md](../vault/templates.md#note-types)) for a benefit that isn't currently felt.
+**Adopt now**: rejected — adds a note type to the 15 ([vault/note-types.md](../vault/note-types.md#note-types)) for a benefit that isn't currently felt.
 
 **Use the audit log directly** (no new type, but query the JSONL more): the current approach. Works for now.
 

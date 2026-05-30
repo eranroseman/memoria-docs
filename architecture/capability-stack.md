@@ -44,14 +44,14 @@ Hermes-side skills that operate inside the vault via the Obsidian Local REST API
 
 ### REST passthrough — the escape hatch
 
-A single reusable Hermes skill that wraps any REST endpoint. Used when an API matters once or twice but doesn't justify a dedicated skill yet. Lane-gated to the Library lane only via the policy MCP (see [profiles/README.md](../profiles/README.md#lane-override-files)).
+A single reusable Hermes skill that wraps any REST endpoint. Used when an API matters once or twice but doesn't justify a dedicated skill yet. Lane-gated to the Librarian lane only via the policy MCP (see [profiles/README.md](../profiles/README.md#lane-override-files)).
 
 | Aspect | Value |
 | --- | --- |
 | Skill name | `rest-passthrough` |
 | Inputs | `{base_url, path, method, headers, query, body, timeout, bearer_env}` |
 | Output shape | `{ok: bool, status: int, summary: str, data: any, error?: str}` |
-| Lane access | Library only |
+| Lane access | Librarian only |
 | Network policy | `external_api_policy: explicit_only` — must be invoked with explicit URL, not via prompt-driven URL synthesis |
 | Auth | Reads bearer tokens from environment variables; no secrets in the skill itself |
 

@@ -13,7 +13,7 @@ This reference is the authoritative how-to. The summary in [profiles/README.md](
 ## The two-agent boundary
 
 - The Coder profile scaffolds the `code-note` with vault context (motivating sources, project links, purpose).
-- The external coding agent reads the vault as a second workspace folder (read-only via `external_directory`); it edits code in `40-workbench/01-projects/*/code/`.
+- The external coding agent reads the vault as a second workspace folder (read-only via `external_directory`); it edits code in `40-workbench/*/06-code/`.
 - The human reviews `code-note` updates and commits as a review gate.
 
 No orchestration infrastructure required — the two agents coordinate through the markdown handoff, not through subprocess dispatch. This keeps the Coder profile narrow (scaffold + document) and lets the specialized coding tool do what it does best.
@@ -24,7 +24,7 @@ The split between "code lives in the vault" and "code lives in its own repo" dep
 
 ### Small scripts and analysis code
 
-Open the vault root in VS Code. The coding agent gets direct access to the paper notes and reference pages that motivated the code. Put the agent's instruction file (`CLAUDE.md`, `.kilocode/rules/`, `.cursorrules`, depending on tool) in `40-workbench/01-projects/<project>/code/` so the agent's context starts there rather than at the vault root.
+Open the vault root in VS Code. The coding agent gets direct access to the paper notes and reference pages that motivated the code. Put the agent's instruction file (`CLAUDE.md`, `.kilocode/rules/`, `.cursorrules`, depending on tool) in `40-workbench/<project>/06-code/` so the agent's context starts there rather than at the vault root.
 
 ### Real projects with their own lifecycle
 
@@ -48,11 +48,11 @@ The first folder is the project repo (where the agent reads and writes); the sec
 
 ### Rule of thumb
 
-If the project has `requirements.txt`, `pyproject.toml`, `package.json`, or another dependency manifest, it gets its own repo. Single scripts or notebooks live inside the vault at `40-workbench/01-projects/<project>/code/` and open with the vault root.
+If the project has `requirements.txt`, `pyproject.toml`, `package.json`, or another dependency manifest, it gets its own repo. Single scripts or notebooks live inside the vault at `40-workbench/<project>/06-code/` and open with the vault root.
 
 ## The `code-note` always lives in the vault
 
-The `code-note` markdown file lives in the vault at `40-workbench/01-projects/<project>/code/<project>.md` regardless of where the actual code lives. When code is in an external repo, the code-note carries a `repo:` frontmatter field pointing at the repo path. This keeps provenance traceable from the vault even when the executable artifact is elsewhere.
+The `code-note` markdown file lives in the vault at `40-workbench/<project>/06-code/<project>.md` regardless of where the actual code lives. When code is in an external repo, the code-note carries a `repo:` frontmatter field pointing at the repo path. This keeps provenance traceable from the vault even when the executable artifact is elsewhere.
 
 See `00-meta/03-templates/code-note.md` (in the starter vault) for the frontmatter shape.
 
@@ -68,9 +68,9 @@ The standard external rendering agent is **[open-design](https://github.com/nexu
 | --- | --- | --- |
 | Artifact type | Code (scripts, modules, repos) | Visual deliverables (decks, posters, infographics, web pages) |
 | Hermes-side profile | Coder | Writer (renders from drafts) or Coder (renders from code-note specs) |
-| Vault destination | `40-workbench/01-projects/*/code/` for code-notes; external repos for real projects | `50-deliverables/<project>/` for finished artifacts |
+| Vault destination | `40-workbench/*/06-code/` for code-notes; external repos for real projects | `50-deliverables/<project>/` for finished artifacts |
 | Shared filesystem read | Vault read-only via `external_directory` (existing pattern) | Same — open-design reads the vault for paper-notes, claim-notes, design-system.md |
-| Shared filesystem write | `40-workbench/01-projects/*/code/` only | `50-deliverables/<project>/` only |
+| Shared filesystem write | `40-workbench/*/06-code/` only | `50-deliverables/<project>/` only |
 | Handoff artifact | `code-note` markdown with `repo:` frontmatter | `deliverable` note with `export_path:`, `design_system:`, and `render_command:` frontmatter (see `00-meta/03-templates/deliverable.md` (in the starter vault)) |
 | Design source | (none — code is its own spec) | [`00-meta/04-reference/design-system.md`](../obsidian-ui/design-system.md) — the portable DESIGN.md that defines palette, typography, spacing, layout, etc. |
 | Review gate | Human reviews `code-note` updates and commits | Human reviews the rendered artifact (HTML preview, PDF) and accepts |

@@ -23,7 +23,7 @@ Plugin choice is only half the UX. The other half is restraint about how the vau
 
 ## Workspace layout discipline
 
-Workspace design rules (one mode per workspace, three is the working set, no topic-binding) are defined in [modal.md](modal.md#design-rules-for-workspaces). The visual-style angle: those rules *are* visual restraint — a fourth workspace is visual proliferation by another name, and a topic-bound workspace conflates cognitive mode with project context. Trust the workspace rules; don't reintroduce the proliferation they prevent.
+Workspace design rules (one mode per workspace, three is the working set, no topic-binding) are defined in [workspaces.md](workspaces.md#design-rules-for-workspaces). The visual-style angle: those rules *are* visual restraint — a fourth workspace is visual proliferation by another name, and a topic-bound workspace conflates cognitive mode with project context. Trust the workspace rules; don't reintroduce the proliferation they prevent.
 
 ## The deeper rule
 

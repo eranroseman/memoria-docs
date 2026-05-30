@@ -49,7 +49,7 @@ Two structural rules sit above the lane configuration:
 
 ## Skill-conditional policy
 
-Lane-overrides are the baseline policy a profile carries through a session. A small set of skills need to *tighten* that baseline. The currently-shipped example: `counter-outline` (loaded by Writer during the Frame stage) must narrow Writer's write scope from `40-workbench/01-projects/*/drafts/**` to `40-workbench/01-projects/*/framing/**` only — so the human can't accidentally use Writer-with-counter-outline to write actual drafts. Skill-conditional policy is the mechanism.
+Lane-overrides are the baseline policy a profile carries through a session. A small set of skills need to *tighten* that baseline. The currently-shipped example: `counter-outline` (loaded by Writer during the Frame stage) must narrow Writer's write scope from `40-workbench/*/04-drafts/**` to `40-workbench/*/02-framing/**` only — so the human can't accidentally use Writer-with-counter-outline to write actual drafts. Skill-conditional policy is the mechanism.
 
 (For why `socratic-processing` and `lens-reading` are now native to the Socratic profile rather than restrictive skills — and the one-way promotion rule that motivates the choice — see the [restrictive-skills note in profiles/README.md](../profiles/README.md#skills-with-restrictive-policy).)
 
@@ -68,7 +68,7 @@ policy:
       - "30-synthesis/**"
       - "50-deliverables/**"
       - "10-inbox/**"
-      - "40-workbench/01-projects/*/drafts/**"
+      - "40-workbench/*/04-drafts/**"
   require:
     - audit_log
 ---
@@ -101,7 +101,7 @@ A worker that tries to evade skill-conditional policy by loading and unloading t
 
 ### Memoria's restrictive skills
 
-One skill currently ships with a skill-conditional `policy.deny` block: `counter-outline` (Writer-loaded; scratch-only writes to `40-workbench/01-projects/*/framing/`). The catalog and rationale live in [profiles/README.md](../profiles/README.md#skills-with-restrictive-policy). New restrictive skills are added by editing the host lane's `policy.allow.skills` list and dropping the `SKILL.md` (with the additive `policy.deny` block in its frontmatter); the review is that the deny rules don't contradict the host lane's allow rules into uselessness. The richer lifecycle governance overlay ([roadmap/skill-governance.md](../roadmap/skill-governance.md)) is deferred.
+One skill currently ships with a skill-conditional `policy.deny` block: `counter-outline` (Writer-loaded; scratch-only writes to `40-workbench/*/02-framing/`). The catalog and rationale live in [profiles/README.md](../profiles/README.md#skills-with-restrictive-policy). New restrictive skills are added by editing the host lane's `policy.allow.skills` list and dropping the `SKILL.md` (with the additive `policy.deny` block in its frontmatter); the review is that the deny rules don't contradict the host lane's allow rules into uselessness. The richer lifecycle governance overlay ([roadmap/skill-governance.md](../roadmap/skill-governance.md)) is deferred.
 
 When a capability needs **strict** write-denial that survives all host profiles, promote it to its own profile (as `socratic-processing` and `lens-reading` were promoted into the Socratic profile). Skill-conditional policy is the right tool for "narrow this profile's writes for one specific kind of work"; profile-level lane policy is the right tool for "this capability has no business writing anywhere, ever, full stop."
 
@@ -115,7 +115,7 @@ The MCP is invoked over MCP-standard JSON. Every request carries full identity; 
 {
   "profile": "memoria-coder",
   "action": "write",
-  "path": "40-workbench/01-projects/project-x/code/main.py",
+  "path": "40-workbench/project-x/06-code/main.py",
   "reason": "implement parser fix",
   "task_id": "TASK-2026-05-25-014",
   "flags": {

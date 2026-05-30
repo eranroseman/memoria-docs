@@ -64,11 +64,11 @@ assess ──► frame ──► [arrange] ──► outline ──► draft ─
 
 | Stage | Goal | Primary owner | Output |
 | --- | --- | --- | --- |
-| **Assess** | Map the corpus for a project (what's ready, thin, missing) and decide whether to proceed or read more first. | Mapper (`scope-project`); human decides | `40-workbench/01-projects/<project>/map/corpus-map.md` |
-| **Frame** | Generate 2–3 competing project framings before drafting; choose one. | Writer (with `counter-outline`, scratch-only); Socratic (with `lens-reading`) for lens-based explorations | `40-workbench/01-projects/<project>/framing/*.md` |
-| **Arrange** *(optional)* | Arrange relevant claim notes spatially on a Canvas; identify gaps. | Human | `40-workbench/01-projects/<project>/canvas/{section}.canvas` |
+| **Assess** | Map the corpus for a project (what's ready, thin, missing) and decide whether to proceed or read more first. | Mapper (`scope-project`); human decides | `40-workbench/<project>/01-map/corpus-map.md` |
+| **Frame** | Generate 2–3 competing project framings before drafting; choose one. | Writer (with `counter-outline`, scratch-only); Socratic (with `lens-reading`) for lens-based explorations | `40-workbench/<project>/02-framing/*.md` |
+| **Arrange** *(optional)* | Arrange relevant claim notes spatially on a Canvas; identify gaps. | Human | `40-workbench/<project>/03-canvas/{section}.canvas` |
 | **Outline** | Linearize the framing (and Canvas if used) into a heading scaffold. | Human (Writer-assisted) | Outline block in draft note |
-| **Draft** | Write the prose with inline citekeys. | Human (Writer support) | `40-workbench/01-projects/<project>/drafts/{chapter}.md` |
+| **Draft** | Write the prose with inline citekeys. | Human (Writer support) | `40-workbench/<project>/04-drafts/{chapter}.md` |
 | **Verify** | Trace every substantive claim back to a claim note; flag unsupported claims. | Verifier; human decides per claim | `[!verification]` callout at top of draft + gap cards in upstream queue |
 | **Revise** | Address verification findings; close the gap-loop or accept softened claims. | Human | Updated draft; closed `[!verification]` callout |
 | **Export** | Run Pandoc to produce the final, frozen artifact (Word / PDF / HTML). | Coder (Pandoc); human decides to ship | `50-deliverables/` (the deliverable) |

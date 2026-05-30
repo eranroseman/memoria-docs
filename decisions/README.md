@@ -43,13 +43,15 @@ The **Resolution / location** column records the one-line outcome for every deci
 | 18 | [Evidence quality fields layer](18-evidence-quality-fields.md) | `proposed` | Per-project activation when a protocol or journal requires it. |
 | 19 | [Pre-ingest screening layer (PRISMA + ASReview)](19-pre-ingest-screening.md) | `proposed` | Adopt when starting a formal scoping or systematic review. |
 | 20 | [Dual-rater workflow for inter-rater reliability](20-dual-rater-workflow.md) | `proposed` | Activate only when the chapter / paper requires it. |
-| 21 | [Shared candidate frontmatter format](21-shared-candidate-frontmatter.md) | `proposed` | Defer. Would standardize a `type: candidate-note` schema across candidate sources and add `candidate-note` as a 16th note type (the current 15 are authoritative in [vault/templates.md](../vault/templates.md#note-types)). |
+| 21 | [Shared candidate frontmatter format](21-shared-candidate-frontmatter.md) | `proposed` | Defer. Would standardize a `type: candidate-note` schema across candidate sources and add `candidate-note` as a 16th note type (the current 15 are authoritative in [vault/note-types.md](../vault/note-types.md#note-types)). |
 | 22 | [Claim supersession relation](22-claim-supersession.md) | `accepted` (2026-05) | `superseded_by: [[newer-claim]]` typed relation on claim-notes; currency derived from the link, human-set; `query`/`write` filter superseded claims; Linter FAMA-style check. One relation adopted ahead of ADR-9. |
 | 23 | [vault-eval as a maintenance capability](23-vault-eval-integration.md) | `accepted` (2026-05) | Diagnostic eval from existing machinery: board-dispatched `eval` card, non-committing Policy-MCP writes, Linter scoring; gold tasks in `00-meta/05-eval/`, results in `00-meta/08-metrics/eval/`. Diagnostic, not gating. |
+| 24 | [obsidian-linter is reference-only](24-obsidian-linter-reference-only.md) | `accepted` (2026-05) | obsidian-linter is documented but not installed/recommended — a GUI on-save formatter writes outside the Policy-MCP audit trail and would be a second frontmatter authority; the Memoria Linter + markdownlint own this. Moved `recommended/` → `reference/`. |
+| 25 | [Homepage front-door note](25-homepage-front-door.md) | `accepted` (2026-05) | Ship a vault-root `Home.md` Dataview front door, auto-opened by obsidian-homepage (`recommended/`, view-only). A launchpad that surfaces the dashboards; obsidian-startpage rejected (plugin-rendered, not a note). |
 
 ## Numbering gaps and the graveyard
 
-The index above is gap-free — every number 1–23 has a row — but the *directory* is not, and a reader browsing the files will notice the missing numbers. They are accounted for here so the gaps read as intentional, not as lost work:
+The index above is gap-free — every number 1–25 has a row — but the *directory* is not, and a reader browsing the files will notice the missing numbers. They are accounted for here so the gaps read as intentional, not as lost work:
 
 - **No `01.md`, `08.md`, `11.md`.** ADRs 1, 8, and 11 are recorded **index-only**: `accepted`, but small enough to resolve in the Resolution column without a standalone file. The missing files are deliberate.
 - **Retired ADRs keep their files.** ADRs 5, 7, and 13 reached `retired` (withdrawn without replacement) but their files remain as history — see the `retired` rows above and the grouped view in [by-topic.md](by-topic.md).

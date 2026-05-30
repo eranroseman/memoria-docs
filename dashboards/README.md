@@ -6,9 +6,9 @@ topic: dashboards
 
 # Dashboards
 
-Dashboards are Dataview queries rendered as notes — the **dashboard** component from [obsidian-ui/README.md](../obsidian-ui/README.md). Each one answers a single recurring question (what's blocked, what's drifting, what's ready to read) and is meant to be opened, glanced at, and closed. This folder holds one design summary per dashboard; the runtime Dataview queries ship at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault).
+Dashboards are Dataview queries rendered as notes — the **dashboard** component from [obsidian-ui/README.md](../obsidian-ui/README.md). Each one answers a single recurring question (what's blocked, what's drifting, what's ready to read) and is meant to be opened, glanced at, and closed. This folder holds one design summary per dashboard — each following the shared [design-summary page template](../design-summary-template.md) — while the runtime Dataview queries ship at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault).
 
-[`daily-health`](daily-health.md) is the entry point — opened every morning, it summarizes the red signals from the deeper dashboards and is the page you click through from. For the design rules every dashboard follows (one decision per query, filter the boring cases, sort oldest-first) and the Dataview performance discipline, see [obsidian-ui/persistent.md](../obsidian-ui/persistent.md).
+[`daily-health`](daily-health.md) is the entry point — opened every morning, it summarizes the red signals from the deeper dashboards and is the page you click through from. For the design rules every dashboard follows (one decision per query, filter the boring cases, sort oldest-first) and the Dataview performance discipline, see [obsidian-ui/dashboards.md](../obsidian-ui/dashboards.md).
 
 ## All dashboards at a glance
 

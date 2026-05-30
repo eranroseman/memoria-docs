@@ -21,10 +21,10 @@ Coder is the documentary front for an external coding agent (Aider, Kilocode, Cl
 
 ## Design decisions
 
-- **Two-agent boundary by design, not by accident.** Memoria's Coder doesn't try to be a coding agent because there are already good coding agents and reimplementing them would just create a worse copy. Instead, Coder owns the *connective tissue* between Memoria's audit and review discipline and the external agent's coding capabilities. The vault is the external agent's read-only context; `40-workbench/01-projects/*/code/` is its write zone; the `code-note` is the handoff.
-- **Confined to `40-workbench/01-projects/*/code/`.** Coder's writes never touch `20-sources/`, `30-synthesis/01-claims/`, or any review-gated zone — even as a side effect. This is enforced at the policy MCP layer, not just by convention. Code changes that need to update synthesis or sources go through Writer + human review, not through Coder.
+- **Two-agent boundary by design, not by accident.** Memoria's Coder doesn't try to be a coding agent because there are already good coding agents and reimplementing them would just create a worse copy. Instead, Coder owns the *connective tissue* between Memoria's audit and review discipline and the external agent's coding capabilities. The vault is the external agent's read-only context; `40-workbench/*/06-code/` is its write zone; the `code-note` is the handoff.
+- **Confined to `40-workbench/*/06-code/`.** Coder's writes never touch `20-sources/`, `30-synthesis/01-claims/`, or any review-gated zone — even as a side effect. This is enforced at the policy MCP layer, not just by convention. Code changes that need to update synthesis or sources go through Writer + human review, not through Coder.
 - **Per-task commits, no mega-commits.** Coder's `commit` command commits one logical change per call. This makes the audit trail granular (one card = one commit = one diff to review) and keeps revert scope small.
-- **Repo-vs-vault routing rule.** Small scripts that belong to the vault live in `40-workbench/01-projects/*/code/`; larger projects earn their own repo and live outside the vault, with a `code-note` in the vault as the index. The threshold and the `repo:` frontmatter convention live in [profiles/why-coder-external-agent.md](why-coder-external-agent.md).
+- **Repo-vs-vault routing rule.** Small scripts that belong to the vault live in `40-workbench/*/06-code/`; larger projects earn their own repo and live outside the vault, with a `code-note` in the vault as the index. The threshold and the `repo:` frontmatter convention live in [profiles/why-coder-external-agent.md](why-coder-external-agent.md).
 
 ## Permissions and commands
 

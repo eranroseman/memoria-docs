@@ -18,7 +18,7 @@ Load-bearing settings:
 - `defaultAgentId: "memoria-socratic"` — Memoria's ACP default is **Socratic**. The human falls into it without choosing; the other three are reached via [mode-switching hotkeys](#mode-switching-hotkeys) or via the [transient palette verbs](../../obsidian-ui/command-palette.md#interactive-retrieval-3-commands--transient-acp).
 - `autoAllowPermissions: false` — **never set to `true`.** When `false`, every tool call the ACP agent makes prompts the human for approval before executing. Setting this to `true` bypasses human approval on every ACP write, which is exactly the failure mode the policy MCP exists to prevent at the Hermes side. The two layers (ACP approval + policy MCP enforcement) compose; turning either off breaks the composition.
 - `autoMentionActiveNote: true` — automatically passes the active note's path and frontmatter to the agent as context. This is what makes "ask about the current note" work from one keystroke.
-- `chatViewLocation: "right-tab"` — places the ACP pane on the right, matching the [Reading & Processing workspace](../../obsidian-ui/modal.md) assumption.
+- `chatViewLocation: "right-tab"` — places the ACP pane on the right, matching the [Reading & Processing workspace](../../obsidian-ui/workspaces.md) assumption.
 - `windowsWslMode: true` — required when the agent commands live inside WSL (the typical Memoria deployment on Windows). The plugin translates Windows paths to `/mnt/c/...` style paths for the subprocess.
 
 ## Picker labels and descriptions

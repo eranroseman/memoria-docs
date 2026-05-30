@@ -48,6 +48,13 @@ Persistent dashboards and how the human sees board / vault state.
 
 - [16-contradictions-dashboard.md](16-contradictions-dashboard.md) — Contradictions / tensions dashboard · **accepted**
 - [23-vault-eval-integration.md](23-vault-eval-integration.md) — vault-eval as a maintenance capability · **accepted**
+- [25-homepage-front-door.md](25-homepage-front-door.md) — Homepage front-door note, auto-opened by obsidian-homepage · **accepted**
+
+## Plugins & tooling
+
+Obsidian community plugins and external formatters — what's in the install set and why.
+
+- [24-obsidian-linter-reference-only.md](24-obsidian-linter-reference-only.md) — obsidian-linter is reference-only, not a control-plane formatter · **accepted**
 
 ## Retired
 

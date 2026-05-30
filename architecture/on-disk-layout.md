@@ -45,8 +45,7 @@ Numbered-prefix subdirectories (e.g., `01-templates`, `02-csl`, `01-papers`) are
 │   ├── 02-reference/                        # reference notes
 │   └── 03-moc/                         # Maps of Content
 ├── 40-workbench/
-│   └── 01-projects/                    # one folder per project; all working artifacts nest inside
-│       └── <project>/                  # map/ framing/ canvas/ drafts/ verification/ code/
+│   └── <project>/                      # one folder per project: 01-map/ 02-framing/ 03-canvas/ 04-drafts/ 05-verification/ 06-code/
 ├── 50-deliverables/
 │   ├── 01-manuscripts/                 # papers, articles, preprints
 │   ├── 02-presentations/               # slides, talks, posters
@@ -88,11 +87,11 @@ Numbered-prefix subdirectories (e.g., `01-templates`, `02-csl`, `01-papers`) are
     │   ├── tasks_mcp.py
     │   └── requirements.txt
     ├── lane-overrides/                 # YAML files the policy MCP reads at startup (named {lane}.yaml)
-    │   ├── library.yaml
-    │   ├── mapping.yaml
+    │   ├── librarian.yaml
+    │   ├── mapper.yaml
     │   ├── socratic.yaml
     │   ├── writer.yaml
-    │   ├── verify.yaml
+    │   ├── verifier.yaml
     │   ├── coder.yaml
     │   └── linter.yaml
     ├── csl/                            # Pandoc citation style files

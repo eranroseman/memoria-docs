@@ -20,7 +20,7 @@ The on-disk folders are three — `required/`, `recommended/`, `reference/`:
 - **`recommended/`** — quality-of-life installs the human adds when the friction is felt. The finer labels below (core, deployment-conditional, niche) are editorial groupings *within* this folder, not separate directories.
 - **`reference/`** — plugins documented for the record but **not** part of the install set (evaluated alternatives, future-migration targets).
 
-### Required (7) — Memoria breaks without these
+### Required (8) — Memoria breaks without these
 
 | Plugin | Purpose |
 | --- | --- |
@@ -30,32 +30,33 @@ The on-disk folders are three — `required/`, `recommended/`, `reference/`:
 | [templater-obsidian](required/templater.md) | Runs the safe-and-unambiguous frontmatter scripts the Memoria Linter relies on (see [linter.md](../profiles/linter.md#implementing-safe-and-unambiguous-fixes-via-templater)). |
 | [quickadd](required/quickadd.md) | Registers Memoria's command palette entries (see [command-palette.md](../obsidian-ui/command-palette.md)). |
 | [obsidian-citation-plugin](required/obsidian-citation-plugin.md) | Inserts citations from the BibTeX/BibLaTeX file Better BibTeX exports, and creates paper notes from a configured template. Memoria's primary Zotero-to-vault path for note creation today. |
-| [callout-manager](required/callout-manager.md) | Defines the `[!brief]`, `[!suggestions]`, and `[!verification]` callout types used by the [inline agent callouts](../obsidian-ui/inline.md) (a first-class Obsidian-UI component). |
+| [callout-manager](required/callout-manager.md) | Defines the `[!brief]`, `[!suggestions]`, and `[!verification]` callout types used by the [inline agent callouts](../obsidian-ui/callouts.md) (a first-class Obsidian-UI component). |
+| [obsidian-git](required/obsidian-git.md) | Drives git commits from inside Obsidian — and git is load-bearing: the `post-commit` hook fires the [Verify](../workflows/downstream/verify.md) / [Revise](../workflows/downstream/revise.md) workflows, and git is the reversibility, audit, and history layer on every deployment. (Its `autoPush`/backup *settings* are deployment-conditional.) |
 
 ### Recommended (11) — install when the friction is felt
 
-The **core six** — most humans want these early:
+The **core eight** — most humans want these early:
 
 | Plugin | Purpose |
 | --- | --- |
-| [obsidian-linter](recommended/obsidian-linter.md) | Frontend Markdown formatter. **Has a dangerous footgun.** |
+| [obsidian-homepage](recommended/obsidian-homepage.md) | Opens the `Home.md` front door on startup (deterministic landing) + a home command/ribbon. View-only — writes nothing; see [ADR-25](../decisions/25-homepage-front-door.md). |
 | [smart-connections](recommended/smart-connections.md) (+ `markdb-connect`) | Vector search across notes — **`smart-connections` is the Obsidian plugin**. The paired `markdb-connect` is a *Zotero* add-on (installed in Zotero, not under `.obsidian/plugins/`) that tags Zotero items having vault notes; see the linked file. |
+| [smart-lookup](recommended/smart-lookup.md) | Question-first semantic search (type a question, get relevant notes). Companion to Smart Connections — shares its index; the two are query-anchored vs. note-anchored. |
+| [omnisearch](recommended/omnisearch.md) | Fast fuzzy **full-text** search — the keyword counterpart to the semantic Smart\* pair. Memoria doesn't depend on it; settings are workflow-personal. |
 | [supercharged-links + obsidian-style-settings](recommended/supercharged-links.md) | Color-code internal links by note `type` so a link to a paper-note looks different from a link to a claim-note. |
 | [hover-editor](recommended/hover-editor.md) | Preview wikilinked notes in a popup without leaving the current note. |
 | [tag-wrangler](recommended/tag-wrangler.md) | Bulk-rename, merge, and inspect tags across the vault. Useful given Memoria's controlled-vocabulary discipline. |
 | [pdf-plus (PDF++)](recommended/pdf-plus.md) | Deep-linking from notes to specific PDF passages — passage-level precision for claim-level citation. Citekey-level citation works without it, so it's a high-value add, not a hard dependency. |
 
-The **narrower five** — also `recommended/`, but install only when the specific use case lands (one is deployment-conditional):
+The **narrower three** — also `recommended/`, but install only when the specific use case lands:
 
 | Plugin | Purpose |
 | --- | --- |
-| [obsidian-git](recommended/obsidian-git.md) | Auto-commits vault changes and pushes to a **GitHub** remote — Git is the version-history and offsite-backup layer (not device sync, which Syncthing or Obsidian Sync handle). **Deployment-conditional:** its `autoPush`/backup settings vary by deployment option. |
-| [obsidian-kanban](recommended/obsidian-kanban.md) | Visual Kanban rendering for `board-state` dashboard. |
 | [cmdr (Commander)](recommended/cmdr.md) | Bind frequently-used Memoria commands to physical buttons in the ribbon or status bar. |
 | [obsidian-outliner](recommended/obsidian-outliner.md) | Outline-aware editing for nested lists. |
 | [obsidian-excalidraw](recommended/obsidian-excalidraw.md) | Hand-drawn diagrams stored as `.excalidraw` files. |
 
-### Reference (3) — held knowledge, not in the install set
+### Reference (4) — held knowledge, not in the install set
 
 Plugins Memoria documents but does **not** install or recommend for daily use — evaluated alternatives and future-migration targets kept on record so the reasoning isn't lost.
 
@@ -63,7 +64,8 @@ Plugins Memoria documents but does **not** install or recommend for daily use �
 | --- | --- |
 | [zotlit](reference/zotlit.md) | Reads Zotero's SQLite database directly — faster for bulk imports. **Held as a future migration target, not currently used.** |
 | [zotero-integration](reference/zotero-integration.md) | Imports Zotero items and annotations via Zotero's local HTTP API (color-coded highlights, Nunjucks templates). **Not in use** — Memoria annotates in Obsidian, not Zotero; held as the alternative if that flips. |
-| [omnisearch](reference/omnisearch.md) | Fast fuzzy full-text search across the vault. Useful for humans, but **Memoria doesn't depend on it** — agent search goes through Hermes tools, not this plugin. Settings are workflow-personal. |
+| [obsidian-kanban](reference/obsidian-kanban.md) | Renders a markdown Kanban file, but **can't render the Hermes board** (`kanban.db`, shown via Dataview) without an unadopted bridge — evaluated, not wired in. |
+| [obsidian-linter](reference/obsidian-linter.md) | Frontend Markdown formatter — deterministic, but writes on-save in the GUI, outside the Policy-MCP audit trail, and would be a second frontmatter authority. The Memoria Linter + markdownlint own this. **HTML-comment-strip footgun.** Demoted from `recommended/`; see [ADR-24](../decisions/24-obsidian-linter-reference-only.md). |
 
 Visual-style discipline — restraint about how the vault *looks*, independent of any specific plugin — lives in [obsidian-ui/ui-discipline.md](../obsidian-ui/ui-discipline.md).
 

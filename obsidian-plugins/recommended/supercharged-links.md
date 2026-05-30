@@ -12,7 +12,7 @@ Used together. Supercharged Links reads frontmatter and applies CSS classes; Sty
 - Claim notes (`30-synthesis/01-claims/`) — primary accent.
 - Reference notes (`30-synthesis/02-reference/`) — secondary accent, denoting canonical status.
 - MOCs (`30-synthesis/03-moc/`) — italic + accent.
-- Workbench drafts (`40-workbench/01-projects/*/drafts/`) — muted.
+- Workbench drafts (`40-workbench/*/04-drafts/`) — muted.
 
 Load-bearing settings:
 

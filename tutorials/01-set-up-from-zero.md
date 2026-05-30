@@ -126,7 +126,7 @@ Get-Content ~/.hermes/profiles/memoria-librarian/mcp.json
 
 You should see the `policy` server pointing at this vault's `.memoria/mcp/policy_mcp.py` with an absolute path. If the path still contains `{{VAULT_PATH}}`, the installer didn't substitute it — re-run `install.ps1`.
 
-The default `.memoria/lane-overrides/library.yaml` allows writes to `10-inbox/` and `20-sources/` (these log as `decision: allow_with_log`), degrades any write to `30-synthesis/01-claims/` down to `dry_run`, and routes the audit log to `00-meta/02-logs/audit.jsonl`. You don't need to change anything.
+The default `.memoria/lane-overrides/librarian.yaml` allows writes to `10-inbox/` and `20-sources/` (these log as `decision: allow_with_log`), degrades any write to `30-synthesis/01-claims/` down to `dry_run`, and routes the audit log to `00-meta/02-logs/audit.jsonl`. You don't need to change anything.
 
 ## Step 6 — Ingest your first source
 

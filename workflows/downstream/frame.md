@@ -16,10 +16,10 @@ Between [Assess](assess.md) and outline (inside [Write](write.md)).
 ## Steps
 
 1. With `corpus-map.md` in hand from [Assess](assess.md), the human moves the project card to `framing`.
-2. Writer claims it with the `counter-outline` skill loaded. The skill's policy denies writes to `30-synthesis/**` and `50-deliverables/**`; outputs land only in `40-workbench/01-projects/<project>/framing/`.
+2. Writer claims it with the `counter-outline` skill loaded. The skill's policy denies writes to `30-synthesis/**` and `50-deliverables/**`; outputs land only in `40-workbench/<project>/02-framing/`.
 3. Writer generates 2–3 alternative project outlines, each prioritizing a different framing (chronological / mechanism-of-action / stakeholder-perspective / theoretical-lens). Files are named `framing/option-A.md`, `option-B.md`, `option-C.md`.
 4. Optionally, the human switches to the **Socratic profile** and runs the `lens-reading` command with one or more named lenses (e.g., `mamykina-lens`, `veinot-equity-lens`) to read the corpus through a specific theoretical frame. Because Socratic is write-denied, lens readings don't appear as files — they appear as ACP conversation outputs the human can copy (or summarize by hand) into `framing/lens-mamykina.md` while in Writer profile.
-5. The human compares the framings, picks one (or synthesizes across them), and commits the decision by creating `40-workbench/01-projects/<project>/framing/CHOSEN.md` with the selected outline and a brief rationale.
+5. The human compares the framings, picks one (or synthesizes across them), and commits the decision by creating `40-workbench/<project>/02-framing/CHOSEN.md` with the selected outline and a brief rationale.
 6. The card moves to `outlining` (continues into [Write](write.md)).
 
 ## Owners

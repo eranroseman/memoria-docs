@@ -14,7 +14,7 @@ Memoria uses three callout types, defined via [Callout Manager](../obsidian-plug
 | --- | --- | --- | --- |
 | `[!brief]` | Top of every paper note in `20-sources/01-papers/` | Mapper (via `comparative-brief`, triggered when a new source enters the queue) | Comparative read — what this source overlaps with, what it may contradict, what new constructs it introduces. Primes attention before reading the PDF. |
 | `[!suggestions]` | End of any note Librarian has run link suggestions against | Librarian (after `enrich` or weekly link pass) | Bounded (5 forward + 5 backward, hard cap) candidate links with Approve/Reject affordances. Collapsed by default to avoid rubber-stamping volume. The [fleet-health dashboard](../dashboards/fleet-health.md) tracks accept/reject ratios over time as a drift signal — a sustained accept rate above ~90% means the human is rubber-stamping; below ~20% means the candidate scoring needs tuning (see [the deterministic/LLM split below](#how-the-callout-content-is-produced-deterministic-narrowing--llm-enrichment)). |
-| `[!verification]` | Top of any draft in `40-workbench/01-projects/*/drafts/` | Verifier (auto-fired on draft commit) | Per-claim trace back to claim notes, with failed traces and a link to the per-claim verification report. |
+| `[!verification]` | Top of any draft in `40-workbench/*/04-drafts/` | Verifier (auto-fired on draft commit) | Per-claim trace back to claim notes, with failed traces and a link to the per-claim verification report. |
 
 Example shape for `[!brief]`:
 

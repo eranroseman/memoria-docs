@@ -43,7 +43,7 @@ Six use case categories cover what the CLI is for:
 
 **1. Card inspection.** When a card has been retried repeatedly over two days, the human wants to know why. `hermes kanban show card-<id>` returns full state, retry count, blocker reason, and handoff summary in one screen — faster than navigating to the board dashboard and clicking through.
 
-**2. Lane health checks.** `hermes lane status library` shows [trust score](../glossary.md#observability-and-verdicts), recent deny rate, last successful task, current queue depth. Run when something feels off but the dashboards haven't flagged anything yet.
+**2. Lane health checks.** `hermes lane status librarian` shows [trust score](../glossary.md#observability-and-verdicts), recent deny rate, last successful task, current queue depth. Run when something feels off but the dashboards haven't flagged anything yet.
 
 **3. Audit forensics.** `hermes audit --card <id>` or `hermes audit --lane mapper --since 24h` walks the audit log filtered to the slice the human cares about. Faster than opening the audit-log dashboard for narrow queries; the dashboard is for trends, the CLI is for specific traces.
 
@@ -60,7 +60,7 @@ Example commands across the categories:
 hermes kanban show card-2026-05-26-042
 
 # 2. Lane health
-hermes lane status library
+hermes lane status librarian
 
 # 3. Audit forensics
 hermes audit --card card-2026-05-26-042
@@ -155,7 +155,7 @@ Seven integration patterns cover what the API is used for:
 
 **3. Email-to-Memoria.** A custom mail filter forwards arXiv alerts to a script that extracts the arXiv ID and POSTs to the API. Subscription feeds become candidate-discovery cards automatically.
 
-**4. Git hooks.** On commit to `40-workbench/01-projects/*/drafts/`, a `post-commit` hook POSTs to the API to create a `verify` card. Verifier picks it up; the human gets a verification report by the time they next open the draft.
+**4. Git hooks.** On commit to `40-workbench/*/04-drafts/`, a `post-commit` hook POSTs to the API to create a `verify` card. Verifier picks it up; the human gets a verification report by the time they next open the draft.
 
 **5. Calendar integration.** If the human uses a research-block calendar, a script can check the calendar and create a daily card with "today's reading queue" pulled from [`discuss-queue.md`](../dashboards/discuss-queue.md). Useful for keeping rhythm against scheduled focus time.
 

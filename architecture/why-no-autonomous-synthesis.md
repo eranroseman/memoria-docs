@@ -52,7 +52,7 @@ The exemption is narrow by design. It applies only when **all** of the following
 
 - The work is in the Coder lane — not Librarian, Writer, Verifier, Mapper, Socratic, or Linter.
 - The success criterion is a verifiable scalar that exists *before* the loop starts. A fixture, a test, a benchmark. Not a metric the agent proposes mid-run; not an LLM-judge score.
-- Outputs land in `40-workbench/01-projects/<project>/code/experiments/<run-id>/` and require human review to promote into the project's working code. **The keep/revert decision is internal to the loop; the promotion decision still routes through the human review state.**
+- Outputs land in `40-workbench/<project>/06-code/experiments/<run-id>/` and require human review to promote into the project's working code. **The keep/revert decision is internal to the loop; the promotion decision still routes through the human review state.**
 
 The structural enforcement is unchanged. The policy MCP's review-gated-zone deny rule still blocks writes to `30-synthesis/01-claims/`, `30-synthesis/02-reference/`, `30-synthesis/03-moc/`, and `50-deliverables/`. The Coder lane's autonomy operates inside zones it has always been permitted to write to; the synthesis gate remains structurally untouched. The exemption is a clarification of where the boundary already was, not a relaxation of where it is.
 

@@ -24,10 +24,10 @@ The 15 note types, consolidated. **Created by** and **Edited by** name a Hermes 
 | `claim-note` | `30-synthesis/01-claims/` | Human | Human (Writer may suggest links) | Human | `current` (+ `maturity`) |
 | `reference-note` | `30-synthesis/02-reference/` | Writer (draft) | Writer + human | Human finalizes | `proposed` → `current` |
 | `moc` | `30-synthesis/03-moc/` | Human | Human (Writer may suggest membership) | Human | `current` / `dormant` / `archived` |
-| `project-note` | `40-workbench/01-projects/` | Human | Human (Coder may scaffold) | Human | `proposed` → `current` (+ `project_phase`) |
-| `code-note` | `40-workbench/01-projects/*/code/` | Coder or human | Coder or human | Human (review gate) | `proposed` → `current` → `archived` |
-| `canvas` | `40-workbench/01-projects/*/canvas/` | Human | Human | Human | `proposed` → `current` |
-| `draft` | `40-workbench/01-projects/*/drafts/` | Human | Human (Writer assists on request) | Human → `deliverable` on export | `proposed` → `current` (+ `draft_stage`) |
+| `project-note` | `40-workbench/` | Human | Human (Coder may scaffold) | Human | `proposed` → `current` (+ `project_phase`) |
+| `code-note` | `40-workbench/*/06-code/` | Coder or human | Coder or human | Human (review gate) | `proposed` → `current` → `archived` |
+| `canvas` | `40-workbench/*/03-canvas/` | Human | Human | Human | `proposed` → `current` |
+| `draft` | `40-workbench/*/04-drafts/` | Human | Human (Writer assists on request) | Human → `deliverable` on export | `proposed` → `current` (+ `draft_stage`) |
 | `deliverable` | `50-deliverables/` | Human (Coder may run export on explicit task) | Terminal — never edited | Terminal | `current` |
 
 Lifecycle states are operational: dashboards query them, promotion gates require them, the Linter validates them.
@@ -66,7 +66,7 @@ A handful of types have constraints worth calling out.
 
 ### Jupyter notebooks
 
-Jupyter notebooks (`.ipynb`) are treated as a `code-note` with `format: notebook`. The notebook file itself lives alongside the markdown note in `40-workbench/01-projects/*/code/`. The markdown note carries provenance, purpose, and links; the notebook holds the executable artifact. **Do not** create a separate `notebook-note` type — the discipline is the same (provenance, purpose, motivating literature), only the file format differs.
+Jupyter notebooks (`.ipynb`) are treated as a `code-note` with `format: notebook`. The notebook file itself lives alongside the markdown note in `40-workbench/*/06-code/`. The markdown note carries provenance, purpose, and links; the notebook holds the executable artifact. **Do not** create a separate `notebook-note` type — the discipline is the same (provenance, purpose, motivating literature), only the file format differs.
 
 ## Lifecycle
 
@@ -86,7 +86,7 @@ Every note carries one universal field, **`lifecycle`** — its durability phase
 | Note type | `lifecycle` range | Refinement (field within lifecycle) |
 | --- | --- | --- |
 | `fleeting-note` | `proposed` → `archived` (transient — never `current`) | — |
-| `answer-note` | `proposed` → `archived` (transient) | — (review tracked on the board card's `review_status`) |
+| `answer-note` | `proposed` → `archived` (transient) | — (none on the note; the review gate is a board-*card* concern — `review_status` lives on its card, not here: see [card-schema.md](../kanban-board/card-schema.md#memoria-overlay-fields-inside-metadata)) |
 | `paper-note` | `proposed` (pre-classification) → `current` (classified) | `pub_status` (orthogonal — publication state, not lifecycle) |
 | `item-note` | `proposed` → `current` | `maintenance_status`, `role_in_stack` (orthogonal) |
 | `person-note` / `organization-note` / `venue-note` | `proposed` → `current` | — |

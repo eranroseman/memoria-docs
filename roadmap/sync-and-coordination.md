@@ -50,7 +50,7 @@ The required care tightens with deployment option:
 | Pattern | When to check `.agent-lock` | Why |
 | --- | --- | --- |
 | **`local-only`** (single machine) | Never — only one machine writes | No race possible |
-| **`local-mesh`** (desktop + laptop) | Before editing hot zones (`10-inbox/`, `40-workbench/01-projects/<active>/`) on the laptop while the desktop is on | Race exists but only when both machines are active |
+| **`local-mesh`** (desktop + laptop) | Before editing hot zones (`10-inbox/`, `40-workbench/<active>/`) on the laptop while the desktop is on | Race exists but only when both machines are active |
 | **`obsidian-sync`** | Same as `local-mesh` if you have a VPS for cron; otherwise no | Depends on whether anything else is writing concurrently |
 | **`always-on`** (VPS + desktops + laptops) | Before any edit in zones the VPS is actively touching — `10-inbox/`, project-scratch for active projects, the current verify-cycle draft | VPS writes continuously; assume an edit collision is the default state unless you've checked |
 

@@ -6,134 +6,140 @@ topic: board
 
 # Board, states, and the review gate
 
-The Kanban board is the control plane for Memoria. It is the shared state machine across profiles and sessions. Every long-lived piece of work lives on the board until a human approves it into the vault.
+The Kanban board is Memoria's **control plane** — the shared state machine across profiles and sessions. Every long-lived piece of work lives on the board until a human approves it into the vault.
 
-This document covers the conceptual model: why the board exists, what the states mean, and how cards move through review and retry. Memoria tracks **two lifecycles** — *execution* (the Hermes built-in `status` enum) and *review* (a Memoria overlay in the card `metadata`). For the operational reference — the full state machine, lane exit contracts, review-gate rules, and verdict vocabulary — see [states.md](states.md). For the card schema and handoff format see [card-schema.md](card-schema.md). When a word here carries more than one sense — `review`, `verdict`, `promote`, `lane`, `canonical` — the [glossary](../glossary.md) pins which is meant.
+This document is the conceptual narrative: the dimensions a card carries, the life of a card end to end, how a card relates to a vault note, and why the human (not an agent) owns approval. For the operational reference see [states.md](states.md) (the full state machine, lanes, review-gate rules, WIP limits) and [card-schema.md](card-schema.md) (the Hermes fields, the `metadata` overlay, the handoff payload). When a word here carries more than one sense — `review`, `verdict`, `promote`, `lane`, `canonical` — the [glossary](../glossary.md) pins which is meant.
 
-## Why every distinction matters
+## The two lifecycles, and the agent layer between them
 
-Memoria's earlier drafts invented one nine-value `status` enum. Those distinctions are still meaningful — they just split across the two lifecycles. Each pairing below is worth keeping:
+A card carries three independent dimensions. Keeping them separate is the central design move of the board:
 
-- **`triage` vs `ready`** — separates specification from dispatch. A card in `triage` may be missing an `assignee`, a `promote_target`, or a coherent task description. `hermes kanban specify` turns it into a concrete spec (`triage → todo`); releasing that spec to `ready` is the explicit "I'm done thinking about scope" moment that the dispatcher waits for. This is the Hermes Triage state, driven by human action rather than an orchestrator — see [Cards born in `triage` vs cards born in `ready`](#cards-born-in-triage-vs-cards-born-in-ready) below.
-- **`ready` vs `running`** — separates dispatch from execution. Multiple cards can be `ready`; a profile holds one `running` card at a time.
-- **`blocked` vs awaiting review** — both stall the card, for different reasons. `blocked` is a decision the worker cannot make at all (the work itself can't proceed); a `done` card with `review_status: requested` is a check on already-completed work.
-- **`review_status: rejected` vs auto-retry** — `rejected` is a quality decision (the work was wrong); a retry is an execution problem (a tool failed, a query timed out). Rejection is human-driven and exits via discard-or-supersede; a retry is dispatcher-driven and re-attempts the same card by returning it to `ready`.
-- **`review_status: approved` vs `status: archived`** — separation matters when promotion involves moving files or running follow-on tasks. `approved` says "the work is good"; `archived` says "everything downstream has been handled."
+| Dimension | Field | Owner | Answers |
+| --- | --- | --- | --- |
+| **Execution** | `status` (Hermes built-in, fixed 7-value enum) | dispatcher + workers | *Where is the work?* (`triage → … → done → archived`) |
+| **Review** | `metadata.review_status` (Memoria overlay) | the **human** | *Has the human accepted it as canonical?* |
+| **Agent recommendation** | `metadata.agent_verdict` (Memoria overlay) | Verifier / Linter | *What does the checking agent advise?* |
 
-The key rule: cards never reach canonical on a worker's say-so. The card lives until the human changes the review state.
+Why three and not one:
 
-## Cards born in `triage` vs cards born in `ready`
+- **`status` can't carry approval.** It's a fixed Hermes enum with no "human-approved" value, and the schema can't be extended. Overloading `done` to mean both "worker finished" *and* "human accepted" would erase the gate — and *worker-done is never canonical* is the entire point.
+- **The agent recommendation is separate from the human decision** because they can disagree (an agent reports clean, the human rejects). Merging them would let an agent's view masquerade as the human's.
 
-The default for **human-created cards** is `triage`. The command-palette commands that create cards (`Memoria: new project`, `Memoria: ingest source` when invoked manually, etc.) write the card with `status: triage` so the human can review the auto-populated fields and adjust before dispatch.
+The review and agent dimensions only become meaningful once `status` reaches `done`; a `running` card is normally `review_status: unreviewed`. Full state machines and the field definitions: [states.md](states.md) and [card-schema.md](card-schema.md).
 
-The default for **cron-created cards and watcher-triggered cards** is `ready`. These cards are pre-specified by their cron config or trigger rule — there is no half-formed state to recover from, and the design intent is fire-and-forget. The nightly hygiene sweep, the weekly drift detector, file-system watchers on `library.bib`, and git-hook-fired verify cards all skip `triage` entirely.
+### Distinctions worth keeping
 
-The rule: **if the card is fully specified at creation time, start at `ready`; if a human still needs to shape it, start at `triage`.** The dispatcher ignores `triage` cards regardless of how they got there, so the distinction is visible only in the human's UI.
+Several pairings look similar but are deliberately split:
 
-## Post-rejection paths
+- **`triage` vs `ready`** — specification vs dispatch. A `triage` card may lack an `assignee`, a `promote_target`, or a clear task; `hermes kanban specify` turns it into a spec, and a human *releases* it to `ready`.
+- **`ready` vs `running`** — dispatch vs execution. Many cards can be `ready`; a profile holds one `running` card at a time.
+- **`blocked` vs awaiting review** — `blocked` means the work itself can't proceed; a `done` card awaiting review is a check on completed work.
+- **`rejected` vs auto-retry** — `rejected` is a *quality* decision (human-driven, exits via discard-or-supersede); a retry is an *execution* failure (dispatcher-driven, same card back to `ready`).
+- **`approved` vs `archived`** — `approved` says "the work is good"; `archived` says "everything downstream has been handled."
 
-A card with `review_status: rejected` is not "back to the worker." The human's judgment is "no, this work isn't right." What happens next is a separate decision made by the human with full context:
+## A card's life, end to end
+
+1. **A trigger creates the card.** Human actions (command palette) create it in `triage` so the human can adjust the auto-filled fields; cron jobs and file/git watchers create it directly in `ready` (fully specified, fire-and-forget — the nightly hygiene sweep, the weekly drift detector, the `library.bib` watcher, and git-hook verify cards all skip `triage`).
+   > Rule of thumb: **fully specified at creation → start at `ready`; a human still needs to shape it → start at `triage`.** The dispatcher ignores `triage` cards either way.
+2. **Spec and release.** The human path for a hand-created card is **`triage` → (`hermes kanban specify`) → `todo` → (human releases) → `ready`**. From `ready` the dispatcher takes over.
+3. **Dispatch and execution.** The dispatcher atomically claims a `ready` card whose `assignee` matches an available profile and spawns that profile → `running`. (Workers never self-claim.)
+4. **Completion and agent check.** The worker finishes → `done`, writing a `summary` and `metadata`. If the card produced a checkable artifact, an agent attaches a recommendation in `metadata.agent_verdict` — Verifier on drafts, Linter on structural checks.
+5. **Human review.** The human reads the work and sets `review_status` → `approved` (then `archived`) or `rejected`. The agent's verdict feeds this decision but never replaces it.
+
+```text
+Trigger ──► Specialist executes ──► Verifier / Linter recommendation ──► Human reviews
+                                                                              │
+                                                              ├─ approved ──► archived
+                                                              │
+                                                              └─ rejected ──► archived (superseded or discarded)
+                                                                                  │
+                                                                                  └─ (optional) new triage card with provenance
+```
+
+### Post-rejection paths
+
+A `rejected` card is **not** "back to the worker" — the human has judged the work wrong, and what happens next is a fresh human decision:
 
 | Path | What happens | Archive marker |
 | --- | --- | --- |
-| **Supersede** | Human spawns a new card on the same lane with revised specification — addressing the issues that caused rejection. The new card carries a `metadata.supersedes: <original-card-id>` provenance field; the original card is archived. This is the standard "revise and retry" pattern. | Original card → `archived` with `metadata.archive_reason: superseded`. New card starts in `triage`. |
-| **Discard** | Human decides the work shouldn't exist. The card is archived without a successor. The rejection itself is the answer. | Card → `archived` with `metadata.archive_reason: discarded`. |
+| **Supersede** | The human spawns a new card on the same lane with a revised spec. The new card carries `metadata.supersedes: <original-id>`; the original is archived. The standard "revise and retry." | Original → `archived`, `archive_reason: superseded`. New card starts in `triage`. |
+| **Discard** | The work shouldn't exist. Archived with no successor; the rejection is the answer. | `archived`, `archive_reason: discarded`. |
 
-Both paths are explicit human actions. There is no implicit "return to lane queue" — every rework starts as a new card with new specs, which is more honest about how revisions actually work (the original prompt was usually wrong, not just the work product).
+There is no implicit "return to lane queue" — every rework is a **new card with new specs**, which is more honest about revision (usually the original prompt was wrong, not just the output). This is distinct from a **retry**, which is automatic re-dispatch of the *same* card after a transient failure (see [Retry pattern](#retry-pattern)).
 
-This is *not* the same as a retry. A retry is automatic re-dispatch after a transient failure on the same card with the same `metadata` payload. Rejection is human judgment that the task itself needs to be re-specified, which is what a new card is for.
+## Cards and notes
 
-## Persistence pattern
+A natural question: does a card "start as a note type and output a note type"? Partly — but cards and notes are different kinds of thing:
 
-The board is where work memory lives across sessions and across worker handoffs.
+- A **card is work** — transient, lives on the board, and **dies** (archived) when done.
+- A **note is knowledge** — durable, lives in the vault, and persists.
 
-- **Same card, same identity.** A retry does not create a new card.
-- **Session-safe memory.** Closing the chat does not lose the work; the card persists in `kanban.db`.
-- **No chat-history dependence.** The next worker reads the card, not the transcript.
-- **Visible until archived.** A card in any non-terminal state is on the board.
-- **Shared memory across roles.** The handoff summary (and the `metadata` payload) is the API between profiles.
+A card typically **reads notes** (input paths in its handoff `allowed_paths`) and **writes notes** (its `metadata.promote_target` points at the output note — e.g. a `distill` card turns a paper-note into a claim-note). But it isn't universal: a lint card emits a report, a `scope` card emits a corpus-map, a verify card emits a callout. And a card has **no note type of its own** — card vocabulary (`status`, `review_status`) and note vocabulary (`lifecycle`, `maturity`, `type`) are deliberately **disjoint** (see [frontmatter-schema.md](../vault/frontmatter-schema.md)). A card references notes by path; it never *is* one.
 
-## Retry pattern
+## Why no Reviewer and no Orchestrator
 
-Failed work returns to `ready` for re-dispatch instead of disappearing. The next attempt happens on the same card.
+Memoria deliberately omits two roles that comparable multi-agent systems include:
 
-The retry comment should capture:
+- **No Reviewer profile.** Approval is a human action on `review_status`, gated by the policy MCP. Agents (Verifier, Linter) only *recommend* via `agent_verdict`; `metadata.review_owner` records who owes the next decision. The trade-off: the human is the bottleneck and review doesn't auto-scale — but no agent can self-approve or rubber-stamp work into canonical, which is the design's core guarantee (*bookkeeping, not intelligence*). The agent recommendation front-loads the judgment, and the review-queue WIP cap (below) is back-pressure that keeps the bottleneck from silently overflowing.
+- **No Orchestrator profile.** Routing is static — encoded in lane-overrides and Kanban dispatch rules, not decided by a reasoning agent. See [profiles/README.md](../profiles/README.md#routing-without-an-orchestrator).
 
-- **Failure reason.** What broke (tool error, API timeout, unclear input).
-- **What was attempted.** Which approaches the previous worker tried.
-- **Next action.** The exact thing the next claim should try.
-
-Hermes increments the retry count in run history. The same or a different profile can reclaim.
-
-### Escalation threshold
-
-**Default: after `max_retries` (default 3) recoverable failures, the dispatcher moves the card to `blocked` with `reason: "retry_threshold_exceeded"`.** Three attempts is the operating point — enough that transient failures (a rate-limited API, a flaky external lookup) resolve themselves on retry, few enough that a structurally broken task doesn't burn the lane on the same failure mode all night. `max_retries` is configurable per lane in the lane-override file for lanes where the cost profile justifies a different number — the library lane may tolerate `5` because each retry is cheap, the Writer lane may want `2` because each retry is a model call. The Kanban dispatcher reads the threshold from the task/lane config; no profile is "responsible" for enforcing it.
-
-The card stays in `blocked` until the human either revises the handoff payload (`metadata`) and re-dispatches (which resets the retry count), promotes the issue out of band (rewriting the prompt, fixing a tool), or archives the card with `reason: "infeasible"`. The retry counter never auto-decrements; only a human decision resets it.
-
-This avoids three problems: duplicate cards for the same work, lost history about why a task is hard, and the temptation to give up silently. The escalation threshold adds a fourth guard: a brittle prompt or a broken tool can't quietly burn through API budget overnight.
-
-## Cross-role flow
-
-A typical card moves through:
-
-```text
-Trigger creates card ──► Specialist executes ──► Verifier / Linter recommendation ──► Human reviews
-                                                                                          │
-                                                                                          ├─ review_status: approved ──► archived
-                                                                                          │
-                                                                                          └─ review_status: rejected ──► archived (archive_reason: superseded or discarded)
-                                                                                                                           │
-                                                                                                                           └─ (optional) new triage card with provenance
-```
-
-Triggers (human action, cron, git hook, file watcher) create cards according to the lane-override rules. Specialists act within their lane. Verifier produces a verification verdict (in `metadata.agent_verdict`) on `verify` cards; Linter produces structural reports. The human approves or blocks.
-
-## Board implementation: Hermes built-in Kanban
-
-Memoria uses the **Hermes built-in Kanban board**. Once a board is adopted, this is the mandated choice — not one option among several. (The [minimum-viable system](../roadmap/README.md#minimum-viable-system) can run Hermes terminal-only and defer the board until task volume justifies it; what's mandated is *which* board to adopt, not that one is adopted from the start.)
-
-- [Hermes Kanban feature](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban)
-- [Kanban tutorial](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban-tutorial)
-- [Worker lanes](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban-worker-lanes)
-
-Why Hermes native:
-
-- The whole architecture assumes Hermes profiles; the native board gives profiles first-class lane semantics (a lane *is* a card's `assignee`) without bridging.
-- Worker-lane contracts are built in — `delegate_task` (the `delegation` toolset) for one-off isolated children, profile binding via `assignee` for persistent lanes.
-- Cross-session persistence and retry semantics are native — card state lives in `kanban.db` and survives restarts, and `max_retries` drives re-dispatch.
-- The one thing Hermes lacks — a human review gate — layers cleanly onto the native `metadata` field, so Memoria adds it without forking the fixed card schema. See [card-schema.md](card-schema.md).
-
-### Dispatch interval
-
-The Hermes Kanban dispatcher polls the queue every **60 seconds** (`dispatch_in_gateway: true`, `dispatch_interval_seconds: 60`). This is the mandated Memoria setting, not a default to be retuned per deployment.
-
-- **Faster (e.g., 10s)** wastes resources — most cards aren't dispatchable on most loops; the polling overhead grows linearly with no corresponding throughput gain.
-- **Slower (e.g., 5 min)** makes the system feel laggy — the human triggers a workflow from the command palette and waits visibly long enough to wonder if it landed.
-
-The 60-second cadence is also what makes the async / Kanban surface feel ambient: dropped PDFs get picked up within a minute (fast enough that the human forgets they triggered it); cron-created cards reach their lanes promptly without consuming idle cycles. Don't change it without a specific reason; if a specific lane needs faster response, push the priority of its cards rather than tightening the global interval.
-
-### Alternatives considered, not adopted
-
-| Alternative | Why not |
-| --- | --- |
-| Obsidian Kanban plugin (via [hermes-kanban](https://github.com/GumbyEnder/hermes-kanban) bridge) | Vault-native and markdown-portable, but requires bridging Hermes worker semantics to the plugin's data model. The bridge works but adds a translation layer between two state machines. |
-| GitHub Projects | Strong for code workflows but lives outside the vault and outside Hermes; would require the board state to be in a third place. |
-| Linear | Cross-team strength is irrelevant for a single-user system. |
-| Plain markdown + Dataview | Minimal, but reimplements Kanban semantics the native board already provides. |
-
-For implementation patterns and a working example of Hermes-managed boards, see also the [KHAOSS-STACK](https://github.com/heimdallthegatekeeper1/KHAOSS-STACK) repo.
-
-## What the board does not do
-
-- **Not a knowledge store.** Cards die; knowledge lives in the vault.
-- **Not a chat log.** Conversation context goes into handoff summaries, not card history.
-- **Not a place for canonical claims.** Claims live in `30-synthesis/01-claims/`. The board references them; it doesn't hold them.
-- **Not a substitute for review.** A card with `review_status: approved` is meaningful; a card with no review state set is not.
+Because review is a human action and the dispatcher only spawns *profiles*, **review is not a lane** — there is no human "worker" for a review card to be assigned to, so the human gate rides on the card's `metadata` overlay instead of on a separate card. (Agent *checks*, by contrast, **are** cards: a Writer's commit fires a hook that creates a `verify` card for the Verifier.)
 
 ## Anti-patterns
 
-- **Reaching canonical on worker say-so.** Always wait for the review state to change.
-- **Creating a new card for a retry.** Reuse the existing card; Hermes re-dispatches it and tracks the retry in run history.
-- **Burying review status in comments.** If `review_status` is the source of truth, queries must use it; if comments are the source of truth, review is implicit and unenforceable.
-- **Unbounded lanes.** Without WIP limits, the synthesis or review queue fills up and the human becomes the bottleneck silently.
+- **Reaching canonical on worker say-so.** Always wait for `review_status` to change.
+- **Creating a new card for a retry.** Reuse the card; Hermes re-dispatches it and tracks the retry in run history. (A *rejection*, by contrast, does start a new card — see [Post-rejection paths](#post-rejection-paths).)
+- **Burying review status in comments.** If `review_status` is the source of truth, queries must use it; a comment saying "reviewed" is not review.
+- **Unbounded lanes.** Without WIP limits the synthesis or review queue fills up and the human becomes the bottleneck without noticing.
+
+## Operational notes
+
+Reference detail for running the board; the conceptual model above doesn't depend on it.
+
+### Persistence pattern
+
+The board is where work memory lives across sessions and handoffs:
+
+- **Same card, same identity** — a retry never creates a new card.
+- **Session-safe** — closing the chat doesn't lose work; the card persists in `kanban.db`.
+- **No chat-history dependence** — the next worker reads the card, not the transcript.
+- **Visible until archived** — any non-terminal card is on the board.
+- **Shared memory across roles** — the handoff `summary` + `metadata` is the API between profiles.
+
+### Retry pattern
+
+Failed work returns to `ready` for re-dispatch on the **same card**. The retry comment captures the **failure reason**, **what was tried**, and the **next action**. Hermes increments the retry count in run history; the same or a different profile can reclaim.
+
+**Escalation threshold.** After `max_retries` (default `3`) recoverable failures, the dispatcher moves the card to `blocked` with `reason: "retry_threshold_exceeded"`. Three is the operating point — enough that transient failures (a rate-limited API, a flaky lookup) self-resolve, few enough that a structurally broken task doesn't tie up the lane all night. `max_retries` is per-lane configurable (the Librarian lane may tolerate `5` because retries are cheap; the Writer lane may want `2` because each retry is a model call); the dispatcher reads it from the task/lane config — no profile enforces it. A `blocked` card stays blocked until the human revises the handoff `metadata` and re-dispatches (resetting the count), fixes the cause out of band, or archives it with `reason: "infeasible"`. The counter never auto-decrements.
+
+This guards against four failure modes: **duplicate cards** for the same work, **lost history** about why a task is hard, **silent give-up** (work vanishing without a trace), and — via the threshold — **budget burn** (a brittle prompt quietly consuming API budget overnight).
+
+### Board implementation: Hermes built-in Kanban
+
+Memoria uses the **Hermes built-in Kanban board** — once a board is adopted, this is mandated, not one option among several. (The [minimum-viable system](../roadmap/README.md#minimum-viable-system) can run Hermes terminal-only and defer the board until volume justifies it; what's mandated is *which* board, not that one exists from day one.) Refs: [Kanban feature](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban) · [tutorial](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban-tutorial) · [worker lanes](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban-worker-lanes).
+
+Why native: the architecture already assumes Hermes profiles, so a lane *is* a card's `assignee` with no bridging; worker-lane contracts, cross-session persistence (`kanban.db`), and retry semantics (`max_retries`) are built in; and the one thing Hermes lacks — a human review gate — layers cleanly onto `metadata` without forking the fixed schema.
+
+#### Dispatch interval
+
+The dispatcher polls every **60 seconds** (`dispatch_in_gateway: true`, `dispatch_interval_seconds: 60`) — the mandated Memoria setting, not a per-deployment default. Faster (e.g. 10s) wastes cycles polling mostly-empty queues; slower (e.g. 5 min) makes command-palette actions feel laggy. The cadence is what makes the board feel ambient — a dropped PDF is picked up within a minute. If one lane needs faster response, raise its cards' priority rather than tightening the global interval.
+
+#### Per-task skill pinning (available, unused)
+
+Hermes can attach extra skills to a single card — `kanban_create(..., skills=[…])` or `--skill` on the CLI — added to the spawned worker for that task only (additive to its profile's defaults). Memoria currently grants skills **per lane** (lane-overrides), not per task, so this lever is unused; it's the clean way to give a one-off card a capability outside its lane's default set. A pinned skill still runs under the lane's policy-MCP gate — it adds a capability, not write scope.
+
+#### Alternatives considered, not adopted
+
+| Alternative | Why not |
+| --- | --- |
+| Obsidian Kanban plugin (via [hermes-kanban](https://github.com/GumbyEnder/hermes-kanban) bridge) | Vault-native and markdown-portable, but bridges Hermes worker semantics to the plugin's data model — a translation layer between two state machines. |
+| GitHub Projects | Strong for code workflows, but lives outside the vault and outside Hermes; board state would sit in a third place. |
+| Linear | Cross-team strength is irrelevant for a single-user system. |
+| Plain markdown + Dataview | Reimplements Kanban semantics the native board already provides. |
+
+### What the board does not do
+
+- **Not a knowledge store** — cards die; knowledge lives in the vault.
+- **Not a chat log** — context goes into handoff summaries, not card history.
+- **Not a home for canonical claims** — claims live in `30-synthesis/01-claims/`; the board references them.
+- **Not a substitute for review** — `review_status: approved` is meaningful; an unset review state is not.

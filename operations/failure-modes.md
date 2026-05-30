@@ -120,7 +120,7 @@ hermes lane status <lane>      # is the lane's queue backing up behind one card?
 **Fix.** Depends on where it's wedged:
 
 - **`running` (worker crashed or hung).** The claim is stale — no `done`, no return to `ready`. The dispatcher reclaims stale claims automatically on its next tick and returns the card to `ready` (recorded as `outcome: reclaimed`) — there is no manual `retry` verb. If it re-wedges at once on the re-dispatch, the tool or prompt is broken rather than transient — treat it as the `blocked` case.
-- **`blocked` (a human decision is owed — e.g. escalated past `max_retries`).** It needs a fix, not a re-run. Address the cause (revise the handoff `metadata`, fix the tool, rewrite the prompt), then `kanban_unblock` → `ready`; re-dispatch resets the retry count. If it can't be made to work, `hermes kanban archive` it with `reason: "infeasible"`. See the [retry pattern](../kanban-board/README.md#retry-pattern).
+- **`blocked` (a human decision is owed — e.g. escalated past `max_retries`).** It needs a fix, not a re-run. Address the cause (revise the handoff `metadata`, fix the tool, rewrite the prompt), then `hermes kanban unblock` → `ready`; re-dispatch resets the retry count. If it can't be made to work, `hermes kanban archive` it with `reason: "infeasible"`. See the [retry pattern](../kanban-board/README.md#retry-pattern).
 - **`ready` but never dispatched.** Usually an unresolved `assignee` — the dispatcher emits `skipped_nonspawnable` and leaves the card in `ready`. Check the `assignee` names a real lane (see [worker lanes](../kanban-board/states.md#worker-lanes)).
 
 **Verify.**
@@ -144,7 +144,7 @@ Sorted by severity (most urgent first), then by topic. The **Severity** column u
 | `qmd` search index stale — `draft` finds no notes | HIGH | Index not rebuilt after notes changed (silent — search returns nothing, looks like no matches) | See the **Stale `qmd` index** recipe (#4) above. |
 | `audit.jsonl` growing without bound | HIGH | memoria-linter log rotation not running (silent until disk fills) | Check [memoria-linter log rotation](../profiles/linter.md#log-rotation); it rotates weekly. |
 | Obsidian-agent-client can't connect | MEDIUM | ACP server not running or tunnel down | `systemctl --user status hermes-acp` and `hermes-tunnel` |
-| `_proposed_classification` not appearing | MEDIUM | `classify` skill not installed or not in lane's allow list | `hermes skills install classify`; check `.memoria/lane-overrides/library.yaml` |
+| `_proposed_classification` not appearing | MEDIUM | `classify` skill not installed or not in lane's allow list | `hermes skills install classify`; check `.memoria/lane-overrides/librarian.yaml` |
 | Syncthing + `.bib` race condition | MEDIUM | VPS reads `.bib` while Syncthing is mid-transfer | Use Git pull for `.bib` distribution on the `always-on` option, not Syncthing — see [sync-and-coordination.md](../roadmap/sync-and-coordination.md#bib-watcher-always-on-only). |
 | VPS tunnel drops on WSL2 restart | MEDIUM | systemd user service not auto-starting | `systemctl --user enable hermes-tunnel`. |
 | Schema version mismatch in Dataview | MEDIUM | Notes on old schema version | `hermes -p memoria-linter run schema-migrate --dry-run` → review proposed field additions → run without `--dry-run` on a single folder first. |

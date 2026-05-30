@@ -31,7 +31,7 @@ Human owns the decision to ship; the Coder profile runs the Pandoc pipeline mech
 ## Command
 
 ```bash
-pandoc 40-workbench/01-projects/<project>/drafts/{chapter}.md --citeproc \
+pandoc 40-workbench/<project>/04-drafts/{chapter}.md --citeproc \
   --bibliography .memoria/library.bib \
   --csl .memoria/csl/apa.csl \
   -o 50-deliverables/01-manuscripts/{chapter}.docx
@@ -50,4 +50,4 @@ Export is mechanical, separately triggered (Pandoc, Coder-run), and gated on the
 - **Previous workflow:** [Revise](revise.md)
 - **Umbrella workflow:** [Write](write.md)
 - **Profile:** [profiles/coder.md](../../profiles/coder.md) — runs the Pandoc pipeline
-- **Output:** the `deliverable` note type — see [vault/templates.md](../../vault/templates.md)
+- **Output:** the `deliverable` note type — see [vault/note-types.md](../../vault/note-types.md)
