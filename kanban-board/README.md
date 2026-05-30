@@ -8,7 +8,7 @@ topic: board
 
 The Kanban board is Memoria's **control plane** — the shared state machine across profiles and sessions. Every long-lived piece of work lives on the board until a human approves it into the vault.
 
-This document is the conceptual narrative: the dimensions a card carries, the life of a card end to end, how a card relates to a vault note, and why the human (not an agent) owns approval. For the operational reference see [states.md](states.md) (the full state machine, lanes, review-gate rules, WIP limits) and [card-schema.md](card-schema.md) (the Hermes fields, the `metadata` overlay, the handoff payload). When a word here carries more than one sense — `review`, `verdict`, `promote`, `lane`, `canonical` — the [glossary](../glossary.md) pins which is meant.
+This document is the conceptual narrative: the dimensions a card carries, the life of a card end to end, how a card relates to a vault note, and why the human (not an agent) owns approval. For the operational reference see [states.md](states.md) (the full state machine, lanes, review-gate rules, WIP limits), [card-schema.md](card-schema.md) (the Hermes fields, the `metadata` overlay, the handoff payload), and [board-export.md](board-export.md) (*deferred, Phase 4* — how the board projects to `00-meta/board/` markdown, the `board-state.jsonl` snapshot, and the metrics aggregator the dashboards read). When a word here carries more than one sense — `review`, `verdict`, `promote`, `lane`, `canonical` — the [glossary](../glossary.md) pins which is meant.
 
 ## The two lifecycles, and the agent layer between them
 
