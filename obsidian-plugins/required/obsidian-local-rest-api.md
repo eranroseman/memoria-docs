@@ -6,7 +6,7 @@ topic: plugins
 
 # obsidian-local-rest-api
 
-Exposes the vault over HTTP for Hermes. The default port is 27124 (HTTP) and 27125 (HTTPS).
+Exposes the vault over HTTP for Hermes. The default secure port is **27124 (HTTPS)**; an optional insecure HTTP server listens on **27123** but is **off by default** (`enableInsecureServer: false`). Confirmed by the shipped `data.json.example` (`"port": 27124`, `"insecurePort": 27123`).
 
 **Security caveat (load-bearing).** This plugin's `data.json` contains generated secrets — an `apiKey` token, a TLS certificate, and an RSA private key — written into the file the first time the plugin starts. **These must not be committed to git.** Memoria's general "ship `data.json` files in the vault" pattern (see [the data.json convention](../README.md#the-datajson-convention)) does **not** apply to this plugin; the file is per-machine secret material.
 

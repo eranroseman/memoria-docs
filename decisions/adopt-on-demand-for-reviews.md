@@ -29,7 +29,7 @@ The reasoning is identical across all four:
 
 ## Relationship to ADR-21
 
-[ADR-21 (shared candidate frontmatter)](21-shared-candidate-frontmatter.md) is adjacent but **not** part of this deferred cluster: it is adopted now, because the shared `type: candidate-note` schema pays off for everyday `find` on its own. ADR-19's screening pipeline consumes that schema when it activates.
+[ADR-21 (shared candidate frontmatter)](21-shared-candidate-frontmatter.md) is adjacent but **not** part of this deferred cluster. It is slated for **baseline** adoption (independent of any formal review), because the shared `type: candidate-note` schema pays off for everyday `find` on its own — but it has **not landed yet**: ADR-21's own status is `proposed`, and the `candidate-note` template is not in the starter vault (see [implementation-status.md](../implementation-status.md)). ADR-19's screening pipeline consumes that schema once both activate.
 
 ## See also
 

@@ -13,13 +13,13 @@ topic: workflows
 
 1. Human identifies a research code need.
 2. The Coder creates or scaffolds a code-note in `40-workbench/<project>/06-code/`.
-3. Coder or human develops the code.
+3. The **external coding agent** (delegated per [ADR-6](../../decisions/06-code-agent-attachment.md)) implements the code; the Coder only scaffolds and links.
 4. Output is linked back to the motivating literature.
 5. The artifact page records purpose, architecture, and usage.
 
 ## Owners
 
-Human owns intent and review. Coder owns implementation. Hermes scaffolds and bookkeeps.
+Human owns intent and review. The **Coder** scaffolds the code-note and links provenance; an **external coding agent** (Claude Code, Aider, Codex, Kilocode — [ADR-6](../../decisions/06-code-agent-attachment.md)) writes the implementation. Hermes bookkeeps.
 
 ## Example
 

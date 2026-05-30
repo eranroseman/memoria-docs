@@ -1,3 +1,9 @@
+---
+mode: explanation
+audience: implementer
+topic: roadmap
+---
+
 # non-LLM tools
 
 The principle worth holding throughout: **use the simplest tool that produces a reliable answer.** Scripts beat NLP beats ML beats LLMs on cost, speed, determinism, and auditability — but each gives up some flexibility. The art is matching the tool to the job's actual complexity, not the job's surface complexity.
@@ -8,7 +14,7 @@ The principle worth holding throughout: **use the simplest tool that produces a 
 
 These are jobs where the right answer is *defined,* not inferred. No model needed.
 
-**Linter's structural detectors (M1-M5).** Profile build drift, vault hash drift, skeleton drift, dashboard field drift, command vocabulary drift. Memoria's docs already specify these as "deterministic, zero-LLM" — and they should stay that way. These are diff operations on known structures. A 50-line Python script catches all of them.
+**Linter's structural detectors (M1-M8).** Profile-install drift, vault-hash drift, skeleton drift, dashboard-field drift, command-vocab drift, plugin-config drift, orphan working files, broken extract paths. Memoria's docs already specify these as "deterministic, zero-LLM" — and they should stay that way. These are diff operations on known structures. A 50-line Python script catches all of them.
 
 **Tag normalization.** `#JITAI` ↔ `#jitai` ↔ `#just-in-time-adaptive-intervention`. Build a canonical map; apply it. No LLM should ever touch this — it's a `str.lower()` plus an alias dictionary.
 
@@ -45,7 +51,7 @@ Jobs where you need linguistic processing but not "understanding." These are dec
 
 spaCy isn't LLM-accurate but it's 100x faster and good enough for metadata extraction. The LLM is overkill.
 
-**Keyword extraction.** YAKE, RAKE, or TextRank for "what are this paper's key concepts?" Useful for auto-tagging during ingest. Memoria's Curator could run YAKE on a source's abstract, propose 5-10 candidate tags, and let you confirm. No LLM needed.
+**Keyword extraction.** YAKE, RAKE, or TextRank for "what are this paper's key concepts?" Useful for auto-tagging during ingest. Memoria's Librarian could run YAKE on a source's abstract, propose 5-10 candidate tags, and let you confirm. No LLM needed.
 
 **Sentence segmentation.** Breaking a paragraph into discrete claims for claim-tracing. NLTK or spaCy. Hard to beat with an LLM, and LLMs sometimes get sentence boundaries wrong in academic prose because of citation interrupters.
 
@@ -59,7 +65,7 @@ spaCy isn't LLM-accurate but it's 100x faster and good enough for metadata extra
 
 **Language detection.** Confirming a note is in English (or in the right language). FastText's language ID. Microseconds.
 
-The Curator profile, in particular, could do most of its ingest work with classical NLP and only fall back to an LLM for things that genuinely require it.
+The Librarian profile, in particular, could do most of its ingest work with classical NLP and only fall back to an LLM for things that genuinely require it.
 
 ---
 
@@ -67,9 +73,9 @@ The Curator profile, in particular, could do most of its ingest work with classi
 
 This is where things blur, because embeddings are technically neural — but they're *not* LLMs in the inference sense. A pre-trained embedding model runs cheaply, locally, and produces deterministic outputs from a given input. They're the right tool for similarity work.
 
-**Link suggestions.** "Which existing notes are similar to this new one?" Embedding similarity beats keyword matching for semantic relatedness. Smart Connections does this; you can also use sentence-transformers (`all-MiniLM-L6-v2` runs on CPU, fast, free). Output: top-N candidates. Curator surfaces them; you approve.
+**Link suggestions.** "Which existing notes are similar to this new one?" Embedding similarity beats keyword matching for semantic relatedness. Smart Connections does this; you can also use sentence-transformers (`all-MiniLM-L6-v2` runs on CPU, fast, free). Output: top-N candidates. Librarian surfaces them; you approve.
 
-**Cluster detection for cartography.** Embed all permanent notes; cluster with HDBSCAN or k-means. Surface emergent clusters that haven't been named yet. No LLM needed for cluster *detection*; you only need an LLM (or your own judgment) to *interpret* what a cluster is about.
+**Cluster detection for cartography.** Embed all claim notes; cluster with HDBSCAN or k-means. Surface emergent clusters that haven't been named yet. No LLM needed for cluster *detection*; you only need an LLM (or your own judgment) to *interpret* what a cluster is about.
 
 **Deduplication.** Are these two notes saying the same thing? Embedding similarity above threshold → flag for review. Pure vector math.
 
@@ -89,7 +95,7 @@ Jobs where you have or can produce a labeled dataset and want fast, calibrated p
 
 **Source triage classification.** "Is this paper relevant to my scoping review?" Train a logistic regression or gradient-boosted tree on your historical accept/reject decisions over abstracts. Features: TF-IDF vectors, embedding vectors, author network features, journal venue. Once trained, classification is microseconds and you can inspect feature importance. Much better than asking an LLM "is this relevant to my work" because it's *learned from your actual decisions.*
 
-**Note type classification.** Given a fleeting note's content, predict whether it's destined to become a source-note, claim-note, or reference-note. Lightweight classifier. Output: probabilities → Curator routes accordingly.
+**Note type classification.** Given a fleeting note's content, predict whether it's destined to become a source-note, claim-note, or reference-note. Lightweight classifier. Output: probabilities → Librarian routes accordingly.
 
 **Maturity prediction.** Given a claim-note, predict its maturity state (seedling/budding/evergreen). Trained on hand-labeled examples. Features: link count, age, edit frequency, reference count. Classical ML excels here because the features are tabular.
 
@@ -97,7 +103,7 @@ Jobs where you have or can produce a labeled dataset and want fast, calibrated p
 
 **Reading time / complexity estimation.** Predict whether a source will be a quick read or a deep one. Helps prioritize the reading queue. Trained on your own historical patterns.
 
-**Spam / quality filtering on auto-discovered sources.** If Researcher actively discovers papers from arXiv or Google Scholar, a classifier filters out low-quality results before they reach the Kanban. Trained on your historical "this was junk" signal.
+**Spam / quality filtering on auto-discovered sources.** If the Librarian's discovery loop actively discovers papers from arXiv or Google Scholar, a classifier filters out low-quality results before they reach the Kanban. Trained on your historical "this was junk" signal.
 
 The pattern: **anywhere you make a repeated binary or categorical decision with consistent criteria, you can train a classifier on your own decision history.** Costs nothing once trained, runs instantly, can be inspected for fairness and feature importance. LLM use here is wasteful — it ignores the fact that *you've labeled hundreds of examples already* by virtue of how you've used the system.
 
@@ -111,7 +117,7 @@ Worth flagging a few specific tools that solve specific problems better than any
 
 **AnyStyle** for parsing reference strings. Given a raw bibliography line, returns structured data. Trained on millions of references.
 
-**PubMed / OpenAlex APIs.** When Curator needs metadata for a paper, the right move is API call, not LLM inference. Faster, free, authoritative.
+**PubMed / OpenAlex APIs.** When Librarian needs metadata for a paper, the right move is API call, not LLM inference. Faster, free, authoritative.
 
 **Better BibTeX hooks.** Citekey generation, duplicate detection, library management. Zero LLM needed.
 
@@ -141,9 +147,9 @@ A useful test: if I gave you 200 examples of the input-output pairs for a task, 
 
 ---
 
-## A redesign of Curator with this in mind
+## A redesign of Librarian with this in mind
 
-To make this concrete, here's what Curator actually does, decomposed by tool:
+To make this concrete, here's what Librarian actually does, decomposed by tool:
 
 | Operation | Tool | Why |
 |---|---|---|
@@ -160,7 +166,7 @@ To make this concrete, here's what Curator actually does, decomposed by tool:
 | Update link graph | Script | Pure file op |
 | Write to audit log | Script + policy MCP | Required |
 
-Look at that — **one LLM call** in the entire ingest pipeline. The rest is scripts, APIs, NLP, and embeddings. Curator becomes 100x faster, 50x cheaper, and far more debuggable than a "use the LLM for everything" design.
+Look at that — **one LLM call** in the entire ingest pipeline. The rest is scripts, APIs, NLP, and embeddings. Librarian becomes 100x faster, 50x cheaper, and far more debuggable than a "use the LLM for everything" design.
 
 ---
 
@@ -168,7 +174,7 @@ Look at that — **one LLM call** in the entire ingest pipeline. The rest is scr
 
 Two architectural implications worth naming:
 
-**1. Profiles shouldn't be defined by "they use an LLM." They should be defined by what they accomplish.** Curator might use an LLM 10% of the time and scripts 90%. That doesn't make it less of a profile — it makes it a *better* profile. The Hermes profile abstraction handles tool dispatching; the LLM is one tool among many.
+**1. Profiles shouldn't be defined by "they use an LLM." They should be defined by what they accomplish.** Librarian might use an LLM 10% of the time and scripts 90%. That doesn't make it less of a profile — it makes it a *better* profile. The Hermes profile abstraction handles tool dispatching; the LLM is one tool among many.
 
 **2. The skill libraries should explicitly mix tool types.** A `link-suggester` skill might be 90% embedding code and 10% LLM polish. A `claim-tracer` skill might be 80% script-based traversal and 20% LLM judgment for ambiguous traces. Don't write skills that are "prompt an LLM"; write skills that orchestrate the right tool for each step.
 
@@ -180,11 +186,11 @@ The deeper point: **the LLM is a co-processor, not the CPU.** It's expensive, sl
 
 If you're already designing Memoria, the highest-leverage moves are:
 
-1. **Build the structural detectors (M1-M5) as pure scripts first.** Don't let "the Linter is an agent" trick you into using an LLM for what's actually diff logic.
+1. **Build the structural detectors (M1-M8) as pure scripts first.** Don't let "the Linter is an agent" trick you into using an LLM for what's actually diff logic.
 
 2. **Use embedding-based retrieval for all "similar to X" queries.** Smart Connections does this; sentence-transformers locally does it; either way, no LLM call needed.
 
-3. **Train one classifier early — source relevance.** It's the highest-volume decision Curator will make, and you'll generate labels for it just by using the system. After 100 decisions, you'll have a calibrated classifier that runs in microseconds.
+3. **Train one classifier early — source relevance.** It's the highest-volume decision Librarian will make, and you'll generate labels for it just by using the system. After 100 decisions, you'll have a calibrated classifier that runs in microseconds.
 
 4. **Reserve LLM calls for the seven things in the "where LLMs belong" list.** Track LLM usage per profile in your dashboards. If a profile is making more LLM calls than its bullet-point list of legitimate uses justifies, that's a sign to decompose the work into cheaper layers.
 

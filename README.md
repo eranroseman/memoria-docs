@@ -12,6 +12,8 @@ This folder is the authoritative design document set. It is organized **by topic
 
 [diataxis]: https://diataxis.fr/
 
+> **Designed vs. built.** These docs describe the intended system; the starter vault is an early v0.1 scaffold that implements part of it. [implementation-status.md](implementation-status.md) is the source of truth for what ships today versus what is *accepted-pending* or *deferred*. A documented artifact that is missing from the vault is a known status, not necessarily an error — check the ledger.
+
 **Three complementary ways in:** read **by topic, in order** (below) if you're new; jump **by mode** if you want a particular *kind* of doc; or scan **the map** for where a given topic lives. They're lenses on the same set, not competing tables of contents.
 
 ## Reading by topic — if you're new, read these in order
@@ -49,14 +51,15 @@ The Diátaxis modes ([explanation, reference, how-to, tutorial][diataxis]) descr
 | [vault/](vault/) | `README.md` (folder taxonomy, promotion map, pitfalls) + `note-types.md` (15 note types + lifecycles) + `frontmatter-schema.md` (frontmatter, controlled vocab) + `linking-patterns.md`. |
 | [workflows/](workflows/) | `README.md` (the two pipelines, role matrix) + `upstream/`, `downstream/`, `maintenance/` (one how-to per workflow, 18 total). |
 | [obsidian-ui/](obsidian-ui/) | `README.md` (the Obsidian UI components) + per-component detail (`dashboards.md`, `workspaces.md`, `callouts.md`, `status-line.md`, `home.md`, `plugin-ui.md`) + `design-system.md` (visual-style template) + `command-palette.md` + `ui-discipline.md` (visual-style discipline). |
-| [dashboards/](dashboards/) | `README.md` (folder index) + 12 per-dashboard design summaries (`daily-health.md` is the entry point). Runtime Dataview queries live at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault). |
+| [dashboards/](dashboards/) | `README.md` (folder index) + one design summary per dashboard (Daily Health is the entry point; `skill-lifecycle.md` documents a *deferred* dashboard). Runtime Dataview queries live at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault), where the entry-point file is `index.md`. |
 | [operations/](operations/) | `README.md` + [failure-modes.md](operations/failure-modes.md) (Detect / Fix / Verify recipes). |
 | [obsidian-plugins/](obsidian-plugins/) | `README.md` (priority-ordered overview) + per-plugin configuration split by lifecycle into `required/` (8, system breaks without them), `recommended/` (11, quality-of-life installs), `reference/` (4, held-knowledge / not in the install set), plus top-level `plugin-configs-lifecycle.md` (config governance). |
 | [decisions/](decisions/) | 25 architecture decision records (ADRs) — 22 with their own file, 3 (ADR-1, 8, 11) index-only — + `_template.md` + `by-topic.md` (secondary index grouping ADRs by topic folder) + `adopt-on-demand-for-reviews.md` (shared rationale for the four deferred systematic-review ADRs 12 / 18 / 19 / 20). Cross-cuts all topics, so it sits at the top level. |
 | [roadmap/](roadmap/) | `README.md` (phased plan) + per-section detail (`timeline`, `deployment-options`, `autonomy-progression`, `success-metrics`, `design-tensions`, `future-directions`, `profile-compilation` (deferred), etc.) + `pilots/`. |
 | *(cross-cutting reference is distributed)* | Each cross-cutting reference doc lives next to what it explains: [obsidian-ui/command-palette.md](obsidian-ui/command-palette.md), [architecture/policy-mcp.md](architecture/policy-mcp.md), [architecture/computational-toolbox.md](architecture/computational-toolbox.md), [roadmap/profile-compilation.md](roadmap/profile-compilation.md) (**deferred**), [kanban-board/card-schema.md](kanban-board/card-schema.md), [vault/frontmatter-schema.md](vault/frontmatter-schema.md), [vault/linking-patterns.md](vault/linking-patterns.md), [profiles/profile-commands.md](profiles/profile-commands.md). |
 | [tutorials/](tutorials/) | Step-by-step walkthroughs. Currently: [`01-set-up-from-zero.md`](tutorials/01-set-up-from-zero.md). |
-| **(runtime, in [memoria-vault](https://github.com/eranroseman/memoria-vault))** | 12 dashboards at `00-meta/01-dashboards/`; 15 note templates at `00-meta/03-templates/`; 10 human-facing reference notes at `00-meta/04-reference/`; SOUL.md prompts at `.memoria/profiles/memoria-<name>/SOUL.md`; Linter detectors at `.memoria/profiles/memoria-linter/M-detectors.md`. |
+| [implementation-status.md](implementation-status.md) | The shipped / accepted-pending / deferred ledger reconciling these docs with the starter vault. Cross-cutting; lives at root. |
+| **(runtime, in [memoria-vault](https://github.com/eranroseman/memoria-vault))** | Dashboards at `00-meta/01-dashboards/` (10 + `index.md` entry point); 15 note templates at `00-meta/03-templates/`; human-facing reference notes at `00-meta/04-reference/`; SOUL.md prompts at `.memoria/profiles/memoria-<name>/SOUL.md`; Linter detectors at `.memoria/profiles/memoria-linter/M-detectors.md`. See [implementation-status.md](implementation-status.md) for what is built vs deferred. |
 
 ## Core idea, in one paragraph
 

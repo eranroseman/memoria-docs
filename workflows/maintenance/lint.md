@@ -11,7 +11,7 @@ topic: workflows
 
 ## Steps
 
-1. The Linter runs lint checks on a schedule or post-ingest.
+1. The Linter runs lint checks on two triggers: the **weekly cron task** (see [standard-cron-tasks.md](../../roadmap/standard-cron-tasks.md)) on a schedule, and a **post-ingest hook** per ingest batch.
 2. Reports orphans, stale enrichment, partial classification, broken links, schema issues.
 3. Human reviews the report.
 4. Decides whether to auto-fix or manually correct.

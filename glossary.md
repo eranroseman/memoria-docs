@@ -105,6 +105,7 @@ Terms used across the Memoria design docs. Pulled from the README to keep the do
 - **Source** (umbrella term, *not* a note type) — anything under `20-sources/`. Two ontological kinds: **items** (*things*, described by their properties — includes papers and other `item-note`s) and **entities** (*actors*, described by their relationships — people, organizations, venues). "Source" is never a `type:` value; the concrete types are `paper-note`, `item-note`, `person-note`, `organization-note`, `venue-note`.
 - **Paper note** (`paper-note`) — one note per citable paper (journal article, conference paper, preprint, **report**, thesis); lives in `20-sources/01-papers/`. A paper is a *specialized kind of item* with extra properties (citekey, DOI, authors, venue, `pub_status`); it earns its own folder and type for volume and workflow reasons. **Datasets and software are `item-note`s, not paper notes.**
 - **Claim note** (`claim-note`) — a single durable idea, in the human's own words; lives in `30-synthesis/01-claims/`.
+- **Maturity** (claim-note refinement) — the within-`current` ladder `seedling` (one source, newly drafted) → `budding` (multi-source, linked from another note) → `evergreen` (stable, promotable to a `reference-note`). A refinement *within* the `lifecycle: current` phase, not a `lifecycle` value.
 - **Reference note** (`reference-note`) — a stable reference page promoted from the claim layer; lives in `30-synthesis/02-reference/`.
 - **MOC** — Map of Content, a navigational hub; lives in `30-synthesis/03-moc/`.
 - **Fleeting note** — raw capture awaiting promotion or discard; lives in `10-inbox/01-fleeting/`.
@@ -122,6 +123,27 @@ Terms used in more than one sense across the docs. The domain sections above car
 - **Review** — five senses the docs keep apart. The **review gate** is the `review_status` overlay (see Board and cards) that blocks promotion until a human approves. The Linter's **REVIEW** verdict band is a structural-findings tier (see Observability and verdicts). The **Reviewer profile** is deliberately absent — review *judgment* is the human's; the mechanical parts (claim tracing, similarity, retraction) are the Verifier's. The **weekly review** is the recurring maintenance ritual surfaced by the [weekly-review dashboard](dashboards/weekly-review.md) — the human's triage of inbox drafts, discovery candidates, and promotion decisions. A **systematic review** (and the related **scoping review**) is the research *methodology* with formal PRISMA-style reporting requirements; its schema and workflow support is deferred and adopt-on-demand (see [decisions: adopt-on-demand](decisions/adopt-on-demand-for-reviews.md)).
 - **Promote** — three senses the docs keep distinct: *lifecycle promotion* advances a note to a more durable type (`fleeting-note` → `answer-note` → `claim-note` → `reference-note`); *field promotion* copies a reviewed value from `_proposed_classification` or `_enrichment` into the main YAML; *canonical promotion* is the human-approved transition that moves work into a review-gated zone. All three are human-gated.
 - **Lifecycle** — three senses the docs keep apart: the board's two **lifecycle tracks** (*execution* = the `status` enum, *review* = the `review_status` overlay; see [kanban-board/states.md](kanban-board/states.md)); a **note's** durability phase — the `lifecycle` frontmatter field (`proposed` / `current` / `dormant` / `archived`); and the vault's **lifecycle stages**, the numbered top-level folders (see **Vault** above). A card carries `status` / `review_status` and never `lifecycle`; a note carries `lifecycle` and never `status` — the field name alone disambiguates the two. See [vault/frontmatter-schema.md](vault/frontmatter-schema.md).
+
+## Evaluation metrics
+
+- **MVS** (Minimum Viable System) — the first shippable Memoria configuration: the smallest setup that delivers most of the long-term value. "Post-MVS" features are designed but deferred past initial release. See [roadmap/README.md](roadmap/README.md#minimum-viable-system) and [implementation-status.md](implementation-status.md).
+- **NLI** (natural-language inference) — a model that labels a sentence pair as entailment / contradiction / neutral. Memoria's candidate engine for *proposing* `contradicts` relations (the human confirms). See [roadmap/future-directions.md](roadmap/future-directions.md#nli-based-contradiction-detection).
+- **FAMA** — a memory-quality metric (from the Memora line of work) penalizing reliance on obsolete or invalidated memory. Memoria's analogue keys on `superseded_by`: a draft citing a superseded claim is FAMA exposure.
+- **coverage@k** — fraction of qualifying items retrieved within the top *k* results; a recall measure for the discovery/retrieval loop.
+- **pass^k** — consistency of success across *k* repeated trials of one task (τ-bench); distinct from pass@k (success on *any* of k).
+- **CRS** — ClawArena Completion-Robustness Score; a robustness measure for multi-step agent task completion.
+
+## External tools and standards
+
+- **Better BibTeX (BBT)** — a Zotero add-on that generates stable, pinned citekeys and auto-exports `library.bib`; the citekey source of truth for ingest.
+- **citekey** — the BibTeX entry key (e.g. `mamykina2010sense`) anchoring a paper-note's filename and its `[@citekey]` references; pinned via Better BibTeX.
+- **Marker** — a PDF-to-Markdown extraction tool; produces the searchable in-vault text a paper-note's `extract_path` points at.
+- **GROBID** — an ML service that extracts structured metadata (authors, affiliations, references, sections) from academic PDFs.
+- **Pandoc** — a deterministic document converter (Markdown → DOCX / PDF / HTML); the export engine, never an LLM task.
+- **PRISMA** — the systematic-review reporting standard; its fields/flags are adopt-on-demand (see [decisions/adopt-on-demand-for-reviews.md](decisions/adopt-on-demand-for-reviews.md)).
+- **ASReview** — an active-learning tool for screening large candidate sets (200–5000) during a formal scoping/systematic review (ADR-19).
+- **Cohen's kappa** — an inter-rater agreement statistic; reported in the dual-rater workflow (ADR-20).
+- **Tirith** — Hermes's native per-profile tool-call gate (`tirith_enabled` / `tirith_fail_open`), operating at tool-invocation scope; complementary to Memoria's vault-write Policy MCP. A Hermes component, not a Memoria coinage.
 
 ## Future-direction terms
 

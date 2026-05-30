@@ -20,7 +20,7 @@ Inline `data.json`:
 {
   "templates_folder": "00-meta/03-templates",
   "auto_jump_to_cursor": true,
-  "use_system_commands": false,
+  "enable_system_commands": false,
   "trigger_on_file_creation": false,
   "enable_folder_templates": false,
   "syntax_highlighting": true,

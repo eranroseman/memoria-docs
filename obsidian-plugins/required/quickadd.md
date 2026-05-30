@@ -11,7 +11,7 @@ QuickAdd is the plugin that registers Memoria's [command palette catalog](../../
 Setup pattern: a QuickAdd "Macro" per Memoria command. The macro composes:
 
 1. A Templater template (for capture / note creation), OR
-2. An HTTP POST to the Hermes API on port 8642 (for Kanban interactions), OR
+2. A QuickAdd **User Script** (or a Templater `tp.user` script step) that issues an HTTP POST to the Hermes API on port 8642 (for Kanban interactions) — a bare macro action cannot POST on its own, OR
 3. An [`agent-client`](agent-client.md) plugin command invocation (for ACP profile switches), OR
 4. Combinations of the above.
 

@@ -31,7 +31,7 @@ The narrative spine (minimum viable system, graduated start, expansion-threshold
 | [profile-compilation.md](profile-compilation.md) | **(deferred)** Kustomize-style profile compiler — `memoria-base` + per-profile overrides, build-time validation, drift detection (forward-looking; not the current direct-managed model) |
 | [decisions/](../decisions/) | 23 architecture decision records (ADRs); see [decisions/README.md](../decisions/README.md) for the index |
 | [pilots/](pilots/) | Active pilots with explicit rollback criteria. Currently: [E1 — Open Notebook as comparative-brief back-end](pilots/01-open-notebook.md) |
-| [non-LLM-tools.md](non-LLM-tools.md) | The non-LLM tools that Memoria uses to do its job, and the jobs they do |
+| [non-llm-tools.md](non-llm-tools.md) | The non-LLM tools that Memoria uses to do its job, and the jobs they do |
 
 ## Minimum viable system
 

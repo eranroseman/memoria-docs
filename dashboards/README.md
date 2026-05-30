@@ -8,15 +8,15 @@ topic: dashboards
 
 Dashboards are Dataview queries rendered as notes — the **dashboard** component from [obsidian-ui/README.md](../obsidian-ui/README.md). Each one answers a single recurring question (what's blocked, what's drifting, what's ready to read) and is meant to be opened, glanced at, and closed. This folder holds one design summary per dashboard — each following the shared [design-summary page template](../design-summary-template.md) — while the runtime Dataview queries ship at `00-meta/01-dashboards/` in the [starter vault](https://github.com/eranroseman/memoria-vault).
 
-[`daily-health`](daily-health.md) is the entry point — opened every morning, it summarizes the red signals from the deeper dashboards and is the page you click through from. For the design rules every dashboard follows (one decision per query, filter the boring cases, sort oldest-first) and the Dataview performance discipline, see [obsidian-ui/dashboards.md](../obsidian-ui/dashboards.md).
+[`daily-health`](daily-health.md) is the entry point — opened every morning, it summarizes the red signals from the deeper dashboards and is the page you click through from. (It ships as `00-meta/01-dashboards/index.md` in the starter vault.) For the design rules every dashboard follows (one decision per query, filter the boring cases, sort oldest-first) and the Dataview performance discipline, see [obsidian-ui/dashboards.md](../obsidian-ui/dashboards.md).
 
 ## All dashboards at a glance
 
-The twelve dashboards fall into an entry glance (Daily Health), operational and structural health (audit-log, board-state, drift-watch, fleet-health), knowledge and reading (open-questions, contradictions, discuss-queue, reading-pipeline), maintenance (loose-ends, skill-lifecycle), and the weekly ritual that orchestrates them. The order below follows that grouping; each row's last column is the one comparison worth keeping straight.
+The dashboards fall into an entry glance (Daily Health), operational and structural health (audit-log, board-state, drift-watch, fleet-health), knowledge and reading (open-questions, contradictions, discuss-queue, reading-pipeline), maintenance (loose-ends, and the *deferred* skill-lifecycle), and the weekly ritual that orchestrates them. Ten dashboards plus the `index.md` entry point ship in the starter vault; `skill-lifecycle` is deferred (see [implementation-status.md](../implementation-status.md)). The order below follows that grouping; each row's last column is the one comparison worth keeping straight.
 
 | Dashboard | Role | When to open | Reads from | Closest sibling |
 |---|---|---|---|---|
-| [`daily-health`](daily-health.md) | system-health glance | every morning, 30s | red signals from the four deeper dashboards, plus cron | entry point for all below |
+| [`daily-health`](daily-health.md) | system-health glance | every morning, 30s | red signals from the three deeper health dashboards (drift-watch, fleet-health, board-state), plus cron | entry point for all below |
 | [`audit-log`](audit-log.md) | per-write forensics | a write looks wrong; after an overnight run | `audit.jsonl` | [`drift-watch`](drift-watch.md) — per lint pass, not per write |
 | [`board-state`](board-state.md) | workflow execution | reviewing cards from inside Obsidian | `00-meta/board/` markdown cards | [`discuss-queue`](discuss-queue.md) — cards, not content |
 | [`drift-watch`](drift-watch.md) | structural drift | the system feels wrong; after profile/plugin changes | `lint-findings.jsonl` | [`audit-log`](audit-log.md); [`fleet-health`](fleet-health.md) |

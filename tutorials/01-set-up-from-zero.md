@@ -15,6 +15,8 @@ By the end of this tutorial you will have:
 
 This is the **minimum viable system** ([roadmap/README.md](../roadmap/README.md#minimum-viable-system)) path. You can grow from here. Don't worry about the full seven-profile setup yet; it earns its place once your review queue is a bottleneck.
 
+> **Status — read this first (v0.1 scaffold).** Steps 1–3 work against the starter vault today. **Steps 4–7 — installing the profiles, connecting the policy MCP, and running the agent-driven ingest — require the v0.2 profile wiring (`config.yaml`, `mcp.json`, `policy_mcp.py`, lane-override YAMLs) that the current scaffold does not ship yet.** `install.ps1` detects the missing files and skips the profiles, so the ingest and audit-log steps won't run until that wiring lands. Read Steps 4–7 as the intended flow, and see [implementation-status.md](../implementation-status.md) for exactly what is built today.
+
 New to terms like *lane*, *card*, *profile*, or *comparative-brief*? Keep the [glossary](../glossary.md) open in a second tab — this tutorial uses a few of them before the architecture docs define them in full.
 
 Expect to spend 60–90 minutes if you're new to all the pieces. Commands are shown in **Windows PowerShell** (the installer is `install.ps1`); blocks labelled `bash` are plain `git`/`hermes` CLI calls that run identically in any shell, so on macOS/Linux you only need to swap PowerShell cmdlets like `Copy-Item` and `notepad` for their local equivalents.
@@ -44,7 +46,7 @@ git clone https://github.com/<your-handle>/memoria-vault.git my-research-vault
 cd my-research-vault
 ```
 
-You should see the vault skeleton (`00-meta/`, `10-inbox/`, `20-sources/`, `30-synthesis/`, …) plus `.obsidian/` (plugin configs + snippets) and `.memoria/` (the seven profile directories, the MCP server code, lane-overrides) at the root. The starter vault ships pre-populated — no skeleton-creation step needed.
+You should see the vault skeleton (`00-meta/`, `10-inbox/`, `20-sources/`, `30-synthesis/`, …) plus `.obsidian/` (plugin configs + snippets) and `.memoria/` at the root. Inside `.memoria/` the seven profile directories each currently ship their `SOUL.md` prompt (plus `cron/` and `skills/`); the `mcp/` and `lane-overrides/` directories are placeholders (`.keep` only) until the v0.2 wiring lands (see [implementation-status.md](../implementation-status.md)). The starter vault ships pre-populated — no skeleton-creation step needed.
 
 ## Step 2 — Open the vault in Obsidian
 
@@ -63,7 +65,7 @@ Copy-Item .obsidian/plugins/obsidian-local-rest-api/data.json.example `
           .obsidian/plugins/obsidian-local-rest-api/data.json
 ```
 
-Open `data.json` and replace the placeholder `apiKey` with a 32+ character random token of your choice (save it — you'll feed it to Hermes next). The defaults (loopback-only, HTTPS) are correct as shipped.
+Then **launch Obsidian once**: on first start the plugin regenerates the real `apiKey` (a 64-char hex token) and its TLS material in place — you don't author the key by hand. Open Settings → Local REST API (or read `data.json`) and copy the generated `apiKey`; you'll feed it to Hermes next. The defaults are correct as shipped: HTTPS on **port 27124**, loopback-only, with the insecure HTTP server (port 27123) **off**.
 
 Restart Obsidian. You should see "Local REST API: started" in the bottom-right status bar.
 
@@ -78,13 +80,13 @@ Drag one PDF you've been meaning to read into Zotero. Better BibTeX assigns it a
 
 ## Step 4 — Install the seven profiles
 
-The seven Memoria profile directories are already in the vault at `.memoria/profiles/memoria-<name>/`, hand-authored as `SOUL.md` + `config.yaml` + `mcp.json` + (optionally) `cron/` + `skills/`. The installer copies them into `~/.hermes/profiles/` and registers each one with Hermes:
+The seven Memoria profile directories are already in the vault at `.memoria/profiles/memoria-<name>/`. **In the current v0.1 scaffold each ships only its `SOUL.md` prompt** (plus `cron/` and `skills/`); the `config.yaml`, `mcp.json`, and `distribution.yaml` that `hermes profile install` requires are the v0.2 wiring and are not authored yet. Running the installer is safe and idempotent, but it will **detect the missing files and skip each profile** with an explanatory message — no profile registers until its wiring exists (see [implementation-status.md](../implementation-status.md)):
 
 ```powershell
 ./install.ps1
 ```
 
-This installs every profile in one pass. For each profile the script:
+Once the wiring lands, this installs every profile in one pass. For each profile the script:
 
 1. Stages the profile files.
 2. Substitutes `{{VAULT_PATH}}` in `mcp.json` with this vault's absolute path.
@@ -115,6 +117,8 @@ hermes profile list
 You should see all seven `memoria-*` profiles in the output. This tutorial drives `memoria-librarian` directly and `memoria-linter` at the end; the rest stay idle until later steps. One wrinkle worth knowing now: the `[!brief]` callout the Librarian writes during ingest is produced by the *comparative-brief* skill, which belongs to the **Mapper** profile's contract — so Step 7 credits it to Mapper even though you never invoke Mapper by hand here.
 
 ## Step 5 — Confirm the policy MCP is connected
+
+> **Requires v0.2 wiring.** The policy MCP (`.memoria/mcp/policy_mcp.py`) and the lane-override YAMLs do not ship in the v0.1 scaffold, so this step and Steps 6–7 cannot run yet — they describe the intended flow once the wiring lands. Track status in [implementation-status.md](../implementation-status.md).
 
 The policy MCP reads lane-override YAML files at startup. Under direct profile management those files live at `.memoria/lane-overrides/` in the vault, and the installer pointed each profile's `mcp.json` at the policy MCP code (`.memoria/mcp/policy_mcp.py`) plus the lane-overrides directory via the `{{VAULT_PATH}}` substitution. No copy step needed.
 
@@ -194,7 +198,7 @@ The most common first-time failures are:
 - **`install.ps1` errors** — check that `.memoria/profiles/memoria-librarian/` exists in the cloned vault and contains `SOUL.md`, `config.yaml`, `mcp.json`. If any are missing the vault checkout is incomplete; re-clone or `git pull`.
 - **`hermes profile install` fails** — confirm `hermes profile list` works at all (Hermes is installed) and that `~/.hermes/profiles/` is writable.
 - **Obsidian REST API connection refused** — confirm Obsidian is running and the plugin is enabled. The plugin binds to `127.0.0.1` by default; if Hermes is on a different machine, you'll hit this.
-- **`[!brief]` callout doesn't render** — install the **Callout Manager** plugin and import the Memoria callout set ([obsidian-plugins/required/callout-manager.md](../obsidian-plugins/required/callout-manager.md)).
+- **`[!brief]` callout looks unstyled** — it still renders with Obsidian's default callout styling; install the **Callout Manager** plugin and import the Memoria callout set for the proper icons and colors ([obsidian-plugins/required/callout-manager.md](../obsidian-plugins/required/callout-manager.md)). It does not silently fail without it.
 - **Anything else** — check [operations/failure-modes.md](../operations/failure-modes.md) for known Detect/Fix/Verify recipes.
 
 ## Where to go from here

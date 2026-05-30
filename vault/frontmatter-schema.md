@@ -10,6 +10,8 @@ Frontmatter discipline has two concerns: **field shape** (what fields exist, wha
 
 The vault ships a human-facing companion at `00-meta/04-reference/schema-reference.md` (see [README.md vault skeleton](README.md#vault-skeleton-human-facing-notes)). That note is the in-vault version templates and the Linter point at; this document is the design source it's generated from.
 
+**Precedence.** When a runtime template (`00-meta/03-templates/*.md`) and this schema disagree, **this schema governs** — the template is the thing that must change. A template that carries a field or value not sanctioned here is the bug, not the reference. (Implementation status of individual fields is tracked in [implementation-status.md](../implementation-status.md).)
+
 ## Frontmatter
 
 Every note has a `type` field (one of the 15 type names) and a universal `lifecycle` field (`proposed` / `current` / `dormant` / `archived`). Some types add a refinement within a phase (`maturity` for claim-notes; `project_phase`, `draft_stage`). `status` is reserved for board cards, not notes — the two value sets are disjoint.

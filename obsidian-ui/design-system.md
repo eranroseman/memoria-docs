@@ -47,9 +47,9 @@ projects: []
 
 ## Callout colors
 
-- `--brief`: <color>            # [!brief] (Mapper's comparative read)
-- `--suggestions`: <color>      # [!suggestions] (Librarian's link candidates)
-- `--verification`: <color>     # [!verification] (Verifier's claim trace)
+All three agent callouts share **one accent** and are differentiated by **icon, not color** — the rule is set in [ui-discipline.md](ui-discipline.md) ("rainbow callouts train the eye to ignore them all"; it also keeps the cues legible for color-blind readers). Define the single accent here; per-type colors are intentionally omitted.
+
+- `--callout-accent`: <color>   # shared border/accent for [!brief], [!suggestions], [!verification]
 
 ## Theme
 
@@ -109,9 +109,11 @@ projects: []
 
 ## Inline callouts
 
-- `[!brief]`: bordered, expanded by default, accent-bordered
-- `[!suggestions]`: bordered, collapsed by default
-- `[!verification]`: bordered, expanded by default, traceback-styled
+All three share the single `--callout-accent` (no per-type color — see [ui-discipline.md](ui-discipline.md)); they are distinguished by **icon** and by default density, not hue:
+
+- `[!brief]`: accent-bordered, expanded by default
+- `[!suggestions]`: accent-bordered, collapsed by default
+- `[!verification]`: accent-bordered, expanded by default, traceback-styled
 
 ## Wikilinks
 
