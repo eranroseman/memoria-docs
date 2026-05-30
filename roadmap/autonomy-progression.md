@@ -136,7 +136,7 @@ Patterns whose value is dominated by *vault size*, not by *nightly volume*. They
 - 4.1 needs enough drafts that a pre-review pass catches more structural issues than it falsely flags. Below ~20 drafts per project, the human's own review is fast and the LLM pre-review is noise.
 - 4.2 needs ~500 claim notes before the cost of materializing a dependents queue exceeds the cost of an Obsidian backlink walk.
 - 4.3 needs ≥ 2 projects with ≥ 8 weeks of activity each. Single-project vaults give cross-project reading nothing to surface.
-- 4.4 needs ~500 claim notes (the same floor as 4.2) before enough claims exist for cross-project, cross-MOC contradictions to hide unread — plus the `contradictory` relation (ADR-9) and contradictions dashboard (ADR-16) adopted as the confirm-surface. It is deterministic (NLI, not an LLM) and proposes only; the human confirms each `contradictory` link.
+- 4.4 needs ~500 claim notes (the same floor as 4.2) before enough claims exist for cross-project, cross-MOC contradictions to hide unread. The `contradicts` relation ([ADR-9](../decisions/09-typed-relations-frontmatter.md)) and contradictions dashboard ([ADR-16](../decisions/16-contradictions-dashboard.md)) are **already adopted** as the confirm-surface, so 4.4 adds only the NLI candidate-proposer on top — deterministic (NLI, not an LLM), proposing only; the human confirms each `contradicts` link.
 
 These three are also relatively independent — none requires another within the layer. They can ship in any order as their preconditions land.
 

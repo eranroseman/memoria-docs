@@ -20,7 +20,7 @@ The on-disk folders are three — `required/`, `recommended/`, `reference/`:
 - **`recommended/`** — quality-of-life installs the human adds when the friction is felt. The finer labels below (core, deployment-conditional, niche) are editorial groupings *within* this folder, not separate directories.
 - **`reference/`** — plugins documented for the record but **not** part of the install set (evaluated alternatives, future-migration targets).
 
-### Required (8) — Memoria breaks without these
+### Required (7) — Memoria breaks without these
 
 | Plugin | Purpose |
 | --- | --- |
@@ -30,12 +30,11 @@ The on-disk folders are three — `required/`, `recommended/`, `reference/`:
 | [templater-obsidian](required/templater.md) | Runs the safe-and-unambiguous frontmatter scripts the Memoria Linter relies on (see [linter.md](../profiles/linter.md#implementing-safe-and-unambiguous-fixes-via-templater)). |
 | [quickadd](required/quickadd.md) | Registers Memoria's command palette entries (see [command-palette.md](../obsidian-ui/command-palette.md)). |
 | [obsidian-citation-plugin](required/obsidian-citation-plugin.md) | Inserts citations from the BibTeX/BibLaTeX file Better BibTeX exports, and creates paper notes from a configured template. Memoria's primary Zotero-to-vault path for note creation today. |
-| [pdf-plus (PDF++)](required/pdf-plus.md) | Deep-linking from notes to specific PDF passages. Foundational for claim-level citation. |
-| [callout-manager](required/callout-manager.md) | Defines the `[!brief]`, `[!suggestions]`, and `[!verification]` callout types used by the [inline agent callouts](../obsidian-ui/inline.md). |
+| [callout-manager](required/callout-manager.md) | Defines the `[!brief]`, `[!suggestions]`, and `[!verification]` callout types used by the [inline agent callouts](../obsidian-ui/inline.md) (a first-class Obsidian-UI component). |
 
-### Recommended (10) — install when the friction is felt
+### Recommended (11) — install when the friction is felt
 
-The **core five** — most humans want these early:
+The **core six** — most humans want these early:
 
 | Plugin | Purpose |
 | --- | --- |
@@ -44,6 +43,7 @@ The **core five** — most humans want these early:
 | [supercharged-links + obsidian-style-settings](recommended/supercharged-links.md) | Color-code internal links by note `type` so a link to a paper-note looks different from a link to a claim-note. |
 | [hover-editor](recommended/hover-editor.md) | Preview wikilinked notes in a popup without leaving the current note. |
 | [tag-wrangler](recommended/tag-wrangler.md) | Bulk-rename, merge, and inspect tags across the vault. Useful given Memoria's controlled-vocabulary discipline. |
+| [pdf-plus (PDF++)](recommended/pdf-plus.md) | Deep-linking from notes to specific PDF passages — passage-level precision for claim-level citation. Citekey-level citation works without it, so it's a high-value add, not a hard dependency. |
 
 The **narrower five** — also `recommended/`, but install only when the specific use case lands (one is deployment-conditional):
 
@@ -55,23 +55,24 @@ The **narrower five** — also `recommended/`, but install only when the specifi
 | [obsidian-outliner](recommended/obsidian-outliner.md) | Outline-aware editing for nested lists. |
 | [obsidian-excalidraw](recommended/obsidian-excalidraw.md) | Hand-drawn diagrams stored as `.excalidraw` files. |
 
-### Reference (1) — held knowledge, not in the install set
+### Reference (3) — held knowledge, not in the install set
 
 Plugins Memoria documents but does **not** install or recommend for daily use — evaluated alternatives and future-migration targets kept on record so the reasoning isn't lost.
 
 | Plugin | Purpose |
 | --- | --- |
 | [zotlit](reference/zotlit.md) | Reads Zotero's SQLite database directly — faster for bulk imports. **Held as a future migration target, not currently used.** |
+| [zotero-integration](reference/zotero-integration.md) | Imports Zotero items and annotations via Zotero's local HTTP API (color-coded highlights, Nunjucks templates). **Not in use** — Memoria annotates in Obsidian, not Zotero; held as the alternative if that flips. |
+| [omnisearch](reference/omnisearch.md) | Fast fuzzy full-text search across the vault. Useful for humans, but **Memoria doesn't depend on it** — agent search goes through Hermes tools, not this plugin. Settings are workflow-personal. |
 
-Plus [visual style discipline](ui-discipline.md) — restraint about how the vault *looks*, independent of any specific plugin.
+Visual-style discipline — restraint about how the vault *looks*, independent of any specific plugin — lives in [obsidian-ui/ui-discipline.md](../obsidian-ui/ui-discipline.md).
 
 ## The `data.json` convention
 
-Each plugin stores its settings as a JSON file at `.obsidian/plugins/<plugin-id>/data.json`. The format is plugin-specific — there's no shared schema. Memoria ships canonical `data.json` files (or `.example` / `.TODO` variants for plugins that need per-human setup) directly in the starter vault's `.obsidian/plugins/` tree — they ship to the human as part of the vault, no separate template-copy step. **What the `.example` and `.TODO` suffixes mean, and how drift is audited, is owned by [`plugin-configs-lifecycle.md`](plugin-configs-lifecycle.md#the-three-suffix-conventions)** — read it before editing any shipped config. The quick discipline:
+Each plugin's settings live in `.obsidian/plugins/<plugin-id>/data.json`, shipped ready-to-use in the starter vault (or as a `.example` / `.TODO` variant where per-human setup is needed). **The full story — what each suffix means, what ships, and how drift is audited — is owned by [`plugin-configs-lifecycle.md`](plugin-configs-lifecycle.md).** The index-level rules:
 
-- **Ship a reviewed `data.json` per plugin** in the vault. The human clones the vault, opens it, and the plugin settings are already correct.
-- **Commit `data.json` files to Git by default** — they are configuration, not state, and belong in version control. **Exception: any plugin whose `data.json` contains secrets must be gitignored.** Today that's exactly one plugin — [obsidian-local-rest-api](required/obsidian-local-rest-api.md), which ships a `.example` instead and documents the specific secrets and how they regenerate. Before committing any plugin's `data.json` for the first time, open it and confirm there are no keys, tokens, certificates, or other credentials inside; if there are, gitignore the file and ship a sanitized `data.json.example` instead.
-- **Never edit `data.json` while Obsidian is running.** Obsidian writes the file on settings change, so external edits race. Quit Obsidian, edit, restart.
+- **Commit `data.json` by default** (configuration, not state) — **except any file containing secrets, which must be gitignored.** Today that's exactly one plugin, [obsidian-local-rest-api](required/obsidian-local-rest-api.md) (it ships a `.example`); audit a new plugin's `data.json` for `apiKey` / `token` / `crypto` / `privateKey` fields before its first commit and gitignore it if any appear.
+- **Never edit `data.json` while Obsidian is running** — Obsidian rewrites it on settings change, so external edits race. Quit, edit, restart.
 
 ### `.gitignore` snippet for known-secret plugins
 
@@ -79,8 +80,6 @@ Each plugin stores its settings as a JSON file at `.obsidian/plugins/<plugin-id>
 # Plugins whose data.json contains secrets — regenerated on first launch
 vault/.obsidian/plugins/obsidian-local-rest-api/data.json
 ```
-
-Add new entries here whenever a plugin update introduces secret storage. The first sign is usually a `crypto:`, `apiKey:`, `token:`, `secret:`, or `privateKey:` field appearing in `data.json` after a plugin upgrade.
 
 ## Operational notes
 

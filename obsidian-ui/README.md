@@ -6,7 +6,7 @@ topic: obsidian-ui
 
 # The Obsidian UI
 
-Obsidian is Memoria's **primary UI** — the focused desktop surface where nearly all daily work happens. (Reaching Memoria from *outside* Obsidian is a separate question — the **CLI** and **Telegram** channels, plus the non-human **API**; see [architecture/channels-overview.md](../architecture/channels-overview.md).) This document covers what lives *inside* Obsidian: the UI components, what each is for, and the render discipline that decides which component an agent output belongs in.
+Obsidian is Memoria's **primary UI** — the focused desktop surface where nearly all daily work happens. (Reaching Memoria from *outside* Obsidian is a separate question — the **CLI** and **Telegram** channels, plus the non-human **API**; see [architecture/human-channels.md](../architecture/human-channels.md).) This document covers what lives *inside* Obsidian: the UI components, what each is for, and the render discipline that decides which component an agent output belongs in.
 
 There is no separate abstract "surface taxonomy" stacked on top of these. A component *is* its concrete thing — a dashboard, a callout — not a category. Earlier docs gave each one two names ("Persistent (dashboards)", "Modal (workspaces)", "Inline (callouts)", "Ambient (status line)"); that dual naming is retired. This file uses the concrete name and treats the *behavior* — how often a component opens, whether it interrupts — as a property, not a label.
 
@@ -53,4 +53,4 @@ Each component has its own file with the rules, catalogs, and layouts specific t
 - **[Command palette — command-palette.md](command-palette.md):** the standard command catalog, the `Memoria:` naming convention, and the session-persistent-vs-transient invocation discipline.
 - **[Agent Client — agent-client.md](../obsidian-plugins/required/agent-client.md):** the ACP pane configuration, the four profiles in the picker, mode-switching hotkeys, and the persistent-vs-transient session distinction.
 
-The [design system](design-system.md) file is the exception: it isn't a component, but the visual-style source every component renders against.
+Two files here aren't components: [design-system.md](design-system.md) is the visual-style source every component renders against, and [ui-discipline.md](ui-discipline.md) is the restraint about how the vault *looks* overall (one accent color, hidden chrome, enforced heading hierarchy).

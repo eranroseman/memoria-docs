@@ -12,7 +12,7 @@ Dashboards are Dataview queries rendered as notes — the **dashboard** componen
 
 ## All dashboards at a glance
 
-The eleven dashboards fall into an entry glance (Daily Health), operational and structural health (audit-log, board-state, drift-watch, fleet-health), knowledge and reading (open-questions, discuss-queue, reading-pipeline), maintenance (loose-ends, skill-lifecycle), and the weekly ritual that orchestrates them. The order below follows that grouping; each row's last column is the one comparison worth keeping straight.
+The twelve dashboards fall into an entry glance (Daily Health), operational and structural health (audit-log, board-state, drift-watch, fleet-health), knowledge and reading (open-questions, contradictions, discuss-queue, reading-pipeline), maintenance (loose-ends, skill-lifecycle), and the weekly ritual that orchestrates them. The order below follows that grouping; each row's last column is the one comparison worth keeping straight.
 
 | Dashboard | Role | When to open | Reads from | Closest sibling |
 |---|---|---|---|---|
@@ -22,6 +22,7 @@ The eleven dashboards fall into an entry glance (Daily Health), operational and 
 | [`drift-watch`](drift-watch.md) | structural drift | the system feels wrong; after profile/plugin changes | `lint-findings.jsonl` | [`audit-log`](audit-log.md); [`fleet-health`](fleet-health.md) |
 | [`fleet-health`](fleet-health.md) | operational health | the fleet runs real weekly volume (Phase 6+) | `lane-metric` / `skill-metric` notes | [`drift-watch`](drift-watch.md) — structural counterpart |
 | [`open-questions`](open-questions.md) | research agenda | planning the next research direction | claim + paper notes with `# Open questions` | — (works day one) |
+| [`contradictions`](contradictions.md) | claim-tension surfacing | building an argument; weekly synthesis | claim notes with `relations.contradicts` | [`open-questions`](open-questions.md) — agenda from tensions, not questions |
 | [`discuss-queue`](discuss-queue.md) | upstream discipline | sitting down to read | paper notes `lifecycle: current`, no `processed:` | [`reading-pipeline`](reading-pipeline.md) — broader |
 | [`reading-pipeline`](reading-pipeline.md) | upstream flow | the inbox feels full | paper notes `lifecycle: proposed` + claim maturity | [`discuss-queue`](discuss-queue.md) — narrower |
 | [`loose-ends`](loose-ends.md) | naming hygiene | after ingest batches | filename keywords, whole vault | Linter `orphan-working-files` — automation, not human |

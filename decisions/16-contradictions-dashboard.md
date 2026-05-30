@@ -4,9 +4,9 @@ audience: system-designer
 topic: decisions
 id: 16
 title: Contradictions / tensions dashboard
-status: proposed
+status: accepted
 date_proposed: 2026-05-15
-date_resolved:
+date_resolved: 2026-05-29
 supersedes: []
 superseded_by: []
 ---
@@ -15,23 +15,27 @@ superseded_by: []
 
 ## Context
 
-Surfacing contradictions in the claim graph would be high-value for argument construction — the human could see "claims I've filed that disagree with each other" as a starting point for synthesis. The dashboard depends on typed relations (`relations: { contradicts }`) being populated, which is currently [ADR-9](09-typed-relations-frontmatter.md)'s deferred decision.
+At low claim-note density the human holds conflicts in their head; as claims accumulate across projects and MOCs, contradictions hide in the long tail — two papers years apart, in different MOCs, never read side by side. A dashboard that surfaces "claims I've filed that disagree with each other" is a high-value synthesis starting point. With [ADR-9](09-typed-relations-frontmatter.md) now adopting the `relations:` namespace (including `contradicts`), the data the dashboard needs exists.
 
 ## Decision
 
-**Defer.** Adopt only if [ADR-9 (typed relations)](09-typed-relations-frontmatter.md) is adopted. Without typed relations, this dashboard has no data to query.
+Adopt a **`contradictions` dashboard** (ships at `00-meta/01-dashboards/contradictions.md`, Dataview over the vault). v1 reads **human-set** `relations.contradicts` links and lists the conflicting claim pairs for review — **no LLM judgment in the rollup**, consistent with the deterministic discipline of the other dashboards. The dashboard frames pairs as "worth resolving," never as defects (a paper refuting an earlier one is a wanted finding, not an error). An **NLI-based candidate proposer** — which would *suggest* contradictions for the human to confirm — is explicitly **out of v1 scope**; it remains future work ([future-directions §NLI-based contradiction detection](../roadmap/future-directions.md#nli-based-contradiction-detection)), to be added when claim density makes manual noticing insufficient.
 
 ## Consequences
 
-- Contradictions stay invisible at scale — the human must remember which claims conflict.
-- Adoption is gated on ADR-9, which is itself gated on felt need.
-- The dependency chain (ADR-16 needs ADR-9, ADR-9 needs corpus density) gives a clear adoption path when the time comes.
+- Contradictions become queryable instead of held in memory — the synthesis value the dashboard exists for.
+- v1 is only as complete as the human's `contradicts` links; until those are filed the dashboard is sparse. That day-one emptiness is the signal that tells you whether the NLI proposer is worth building — expansion-threshold discipline.
+- Adds one dashboard design summary plus a runtime Dataview page; consumes ADR-9's `relations.contradicts`. No new judgment surface and no LLM in the rollup.
 
 ## Alternatives considered
 
-**LLM-judged contradictions** (no typed relations needed; let an LLM read the corpus and flag tensions): rejected because LLM-as-similarity-judge has the same calibration problem named in [computational-methods anti-patterns](../architecture/why-computational-methods.md#anti-patterns) — different runs would surface different tensions, with no stable ground truth.
+**LLM-judged contradictions** (let an LLM read the corpus and flag tensions): rejected — LLM-as-similarity-judge has the calibration problem named in [computational-methods anti-patterns](../architecture/why-computational-methods.md#anti-patterns); different runs surface different tensions with no stable ground truth. The memory-benchmark review ([roadmap/evaluation.md](../roadmap/evaluation.md)) independently confirms LLM memory/similarity judgments are unreliable.
+
+**Ship the NLI proposer in v1**: deferred, not rejected — NLI is deterministic and the right eventual proposer ([why-computational-methods §candidate displacements](../architecture/why-computational-methods.md#candidate-displacements-where-the-llm-can-still-recede)), but building it before the manual dashboard proves demand inverts the expansion-threshold rule. v1 ships the surface; the proposer graduates later.
 
 ## Related
 
-- **Depends on:** [ADR-9 typed relations](09-typed-relations-frontmatter.md)
-- **Files affected:** [`dashboards/`](../dashboards/) (would add a new dashboard)
+- **Depends on:** [ADR-9 typed relations](09-typed-relations-frontmatter.md) (supplies `relations.contradicts`) — now adopted.
+- **Files affected:** [dashboards/contradictions.md](../dashboards/contradictions.md) (new), [dashboards/README.md](../dashboards/README.md) (index).
+- **Future proposer:** [future-directions §NLI-based contradiction detection](../roadmap/future-directions.md#nli-based-contradiction-detection) — the deterministic NLI candidate-generation engine that populates v2.
+- **Related decisions:** [ADR-22 claim supersession](22-claim-supersession.md) (supersession is the temporal complement to contradiction).

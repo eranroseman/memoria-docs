@@ -84,7 +84,7 @@ Cost: per-call API budget. Determinism: depends on the API (most are stable, som
 
 For: detecting whether two claims contradict, entail, or are neutral to each other — surfacing candidate contradictions (and agreements) for the human to confirm. The classical replacement for "ask the LLM whether these claims conflict."
 
-Used in (proposed): contradiction surfacing for the [`contradictory` typed link](../roadmap/future-directions.md#scenario-typed-retrieval) and the [contradictions dashboard (ADR-16)](../decisions/16-contradictions-dashboard.md). Rationale in [why-computational-methods.md §"Candidate displacements"](why-computational-methods.md#candidate-displacements-where-the-llm-can-still-recede).
+Used in (proposed): a candidate-proposer for the now-adopted `contradicts` relation ([ADR-9](../decisions/09-typed-relations-frontmatter.md)) and [contradictions dashboard (ADR-16)](../decisions/16-contradictions-dashboard.md) — the relation and surface ship human-set; NLI is the deferred engine that *proposes* pairs to confirm. Rationale in [why-computational-methods.md §"Candidate displacements"](why-computational-methods.md#candidate-displacements-where-the-llm-can-still-recede).
 
 Implementation: a sentence-pair NLI model (`roberta-large-mnli`, `microsoft/deberta-v3-large-mnli`, or a domain-tuned variant) over claim-note pairs. Pre-filter to topically-near pairs using the embeddings already computed (cosine above a threshold) so NLI runs on O(k) candidate pairs, not O(n²). Output: per-pair label + score; a contradiction above the confidence threshold becomes a *proposed* link the human confirms — never auto-written.
 

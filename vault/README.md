@@ -21,7 +21,7 @@ Folders encode **lifecycle stage**, not subject area. The top-level number indic
 ```text
 <vault-root>/                  ← starter vault; human picks the folder name
 ├── 00-meta/
-│   ├── 01-dashboards/         # 11 Dataview dashboards (Daily Health + 10)
+│   ├── 01-dashboards/         # 12 Dataview dashboards (Daily Health + 11)
 │   ├── 02-logs/               # audit.jsonl, board-state.jsonl, lint-findings.jsonl, cron-history.jsonl
 │   ├── 03-templates/          # 15 note templates
 │   ├── 04-reference/          # human-facing reference notes

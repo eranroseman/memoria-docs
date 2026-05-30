@@ -134,7 +134,7 @@ Memoria's primary UI is **Obsidian** (focused desktop work). Beyond it are two s
 
 Inside Obsidian, the UI breaks into components (dashboards, workspaces, callouts, the status line, the command palette, the Agent Client pane, and other plugin UI). See [obsidian-ui/README.md](../obsidian-ui/README.md) for what each is for and the render discipline behind them.
 
-**For per-path detail** — when to use CLI vs dashboards, the two distinct uses of Telegram (notifications vs mobile capture), the deliberately-narrowed Telegram toolset, what the API is and isn't for, and the access-path failure modes — see [channels-overview.md](channels-overview.md).
+**For per-path detail** — when to use CLI vs dashboards, the two distinct uses of Telegram (notifications vs mobile capture), the deliberately-narrowed Telegram toolset, what the API is and isn't for, and the access-path failure modes — see [human-channels.md](human-channels.md).
 
 ## On-disk layout
 

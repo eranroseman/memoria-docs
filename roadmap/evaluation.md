@@ -63,7 +63,7 @@ The strongest single result of the review. Each is external evidence that an exi
 
 **The evidence.** Reusing a superseded fact is exactly the failure mode **Memora's FAMA** metric was built to catch, and **ClawArena**'s "revise, don't accumulate" names it. These also show supersession is the *least reliably automatable* memory capability — which means it must be carried by **structure** (human-set, agent-maintained), not inference. That is precisely Memoria's founding thesis: *bookkeeping, not intelligence*.
 
-**The move.** Extend the `supersedes` / `superseded_by` pattern **already used for ADRs** to claim-notes, plus a queryable validity flag distinct from `maturity`. This lets `query`/`write` filter superseded claims by structure and enables a FAMA-style Linter check. Captured as [**ADR-22: claim supersession relation**](../decisions/22-claim-supersession.md); it also re-weights the priority of [ADR-9](../decisions/09-typed-relations-frontmatter.md) / [ADR-16](../decisions/16-contradictions-dashboard.md) from "gated on felt need" — supersession is the differentiator, not a nice-to-have.
+**The move.** Extend the `supersedes` / `superseded_by` pattern **already used for ADRs** to claim-notes, plus a queryable validity flag distinct from `maturity`. This lets `query`/`write` filter superseded claims by structure and enables a FAMA-style Linter check. Captured as [**ADR-22: claim supersession relation**](../decisions/22-claim-supersession.md); it also re-weighted the priority of [ADR-9](../decisions/09-typed-relations-frontmatter.md) / [ADR-16](../decisions/16-contradictions-dashboard.md), both now **accepted** (the `relations:` namespace and the contradictions dashboard) — supersession was the correctness-critical carve-out, with the NLI contradiction-proposer left as future work.
 
 ### Refinement 2 — an entailment check in `verify`
 
@@ -88,7 +88,7 @@ The benchmark corpus is autonomous-agent-centric, so the signals that most deter
 
 - **Suggestion disposition (human-loop friction).** Record each proposal's `review_status` outcome — accepted / edited / rejected — per profile. The accept : edit : reject trend is the clearest signal of whether the human-AI loop is paying off; no benchmark measures it, and [success-metrics.md](success-metrics.md) tracks review *backlog*, not disposition.
 - **Cost per run.** Tokens / $ per card-run, rolled up to cost-per-promoted-claim and the nightly discovery-loop trend. ScienceAgentBench shows capability gains can cost 10×, and unattended loops compound.
-- **Claim-staleness / FAMA exposure** (with [ADR-22](../decisions/22-claim-supersession.md)). Count current claims carrying `superseded_by`, and — the real signal — drafts or answers that cite a superseded claim. This has no home today: [drift-watch](../dashboards/drift-watch.md) is *structural* drift and [ADR-16](../decisions/16-contradictions-dashboard.md) is deferred. Grounded in Memora (FAMA) and ClawArena.
+- **Claim-staleness / FAMA exposure** (with [ADR-22](../decisions/22-claim-supersession.md)). Count current claims carrying `superseded_by`, and — the real signal — drafts or answers that cite a superseded claim. This has no dashboard home: [drift-watch](../dashboards/drift-watch.md) is *structural* drift and the [contradictions dashboard](../dashboards/contradictions.md) (ADR-16) tracks *disagreement between current claims*, not *staleness*. Grounded in Memora (FAMA) and ClawArena.
 
 **Refine existing dashboards:**
 
@@ -102,7 +102,7 @@ The benchmark corpus is autonomous-agent-centric, so the signals that most deter
 ## Related
 
 - [success-metrics.md](success-metrics.md) — the diagnostic metrics this program feeds.
-- [ADR-9 typed relations](../decisions/09-typed-relations-frontmatter.md), [ADR-16 contradictions dashboard](../decisions/16-contradictions-dashboard.md) — the deferred decisions Change 1 re-weights.
+- [ADR-9 typed relations](../decisions/09-typed-relations-frontmatter.md), [ADR-16 contradictions dashboard](../decisions/16-contradictions-dashboard.md) — now accepted; Change 1 re-weighted them ahead of adoption.
 - [ADR-23 vault-eval as a maintenance capability](../decisions/23-vault-eval-integration.md) — how the harness lives in the runtime (Linter-owned, non-gating).
 - [vault/frontmatter-schema.md](../vault/frontmatter-schema.md) — where the supersession relation + validity flag would live.
 - [workflows/downstream/verify.md](../workflows/downstream/verify.md), [workflows/upstream/find.md](../workflows/upstream/find.md) — targets of the two refinements.

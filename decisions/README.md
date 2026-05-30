@@ -31,14 +31,14 @@ The **Resolution / location** column records the one-line outcome for every deci
 | 6 | [Code agent attachment](06-code-agent-attachment.md) | `accepted` (2026-05) | Delegate to external coding agent (Claude Code, Aider, Codex, Kilocode); Coder profile scaffolds + documents. |
 | 7 | [Session log granularity](07-session-log-granularity.md) | `retired` (2026-05) | Per-session log files in `00-meta/02-logs/`; convention already settled by deployment options. |
 | 8 | Automation tier | `accepted` (2026-05) | Index-only. Three tiers — `strict` (default; propose-only), `standard` (safe auto-fixes + low-stakes triage), `minimal` (scheduled answer drafting). Named for security posture, not opaque integers. See [glossary: Automation tier](../glossary.md). |
-| 9 | [Typed `relations:` frontmatter](09-typed-relations-frontmatter.md) | `proposed` | Defer. Plain wikilinks until corpus density justifies the maintenance. |
+| 9 | [Typed `relations:` frontmatter](09-typed-relations-frontmatter.md) | `accepted` (2026-05) | Nested `relations:` block on claim-notes for associative links — v1 `supports` / `contradicts`, human-set and opt-in; untyped wikilinks coexist. `supersedes`/`superseded_by` stay top-level (ADR-22). Vocabulary extends on felt need; NLI proposer deferred. |
 | 10 | [Code-artifact autopilot](10-code-artifact-autopilot.md) | `proposed` | Defer. Manual triggers until a specific recurring analysis makes the case. |
 | 11 | Confidence scoring on `_proposed_classification` | `accepted` (2026-05) | Index-only. Multi-label classifier trained on human's past decisions; LLM fallback below 0.85 confidence. Resolved via [computational-methods classifier-with-LLM-fallback](../architecture/why-computational-methods.md). |
 | 12 | [Systematic-review mode](12-systematic-review-mode.md) | `proposed` | Adopt only when actively running a systematic review. |
 | 13 | [Method-unit vocabulary](13-method-unit-vocabulary.md) | `retired` (2026-05) | Premature ontology; no triggering pattern emerged. |
 | 14 | [Cross-run skill-insights memory](14-cross-run-skill-insights.md) | `proposed` | Defer. Significant architecture for a single-user vault. |
 | 15 | [Dedicated review-note type](15-dedicated-review-note-type.md) | `proposed` | Defer. Card's review_status / handoff summary carries enough provenance. |
-| 16 | [Contradictions / tensions dashboard](16-contradictions-dashboard.md) | `proposed` | Depends on ADR-9 being adopted. |
+| 16 | [Contradictions / tensions dashboard](16-contradictions-dashboard.md) | `accepted` (2026-05) | `contradictions` dashboard reads human-set `relations.contradicts` (ADR-9); lists conflicting claim pairs — diagnostic, no LLM in the rollup. NLI candidate-proposer deferred to future-directions. |
 | 17 | [Retriever / Scout as a separate profile](17-retriever-scout-profile.md) | `proposed` | Keep Librarian unified until discovery volume overwhelms it. |
 | 18 | [Evidence quality fields layer](18-evidence-quality-fields.md) | `proposed` | Per-project activation when a protocol or journal requires it. |
 | 19 | [Pre-ingest screening layer (PRISMA + ASReview)](19-pre-ingest-screening.md) | `proposed` | Adopt when starting a formal scoping or systematic review. |

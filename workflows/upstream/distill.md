@@ -45,7 +45,7 @@ Claim note titles state the **claim**, not the **topic**. `jitai-timing-accuracy
 
 - New claim that changes how an existing concept is understood → extend the existing claim note.
 - New claim with no existing note → create a new claim note.
-- Claim that contradicts an existing claim → create a new claim note documenting the tension.
+- Claim that contradicts an existing claim → create a new claim note and type the tension as `relations: { contradicts: [[other-claim]] }` (symmetric, opt-in, human-set) so it surfaces on the [contradictions dashboard](../../dashboards/contradictions.md). A claim that *supports* another can likewise carry `relations: { supports: [[other-claim]] }`. See [ADR-9](../../decisions/09-typed-relations-frontmatter.md).
 - Claim that *overturns* an existing one (replaces it as the current belief, not merely disagrees) → create the new claim and propose `superseded_by: [[new-claim]]` on the old note for the human to confirm. Supersession is human-set, not agent-written, and is directional replacement over time — distinct from a `contradicts` tension. See [ADR-22](../../decisions/22-claim-supersession.md).
 
 ## Pre-filing similarity check

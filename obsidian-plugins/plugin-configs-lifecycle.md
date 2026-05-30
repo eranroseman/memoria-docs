@@ -54,7 +54,7 @@ The filename suffix is the contract. Each one signals a different relationship t
 | `obsidian-git` | Settings vary by [deployment option](../roadmap/deployment-options.md). Shipping one config would force the human to remember which one matches their setup. |
 | `obsidian-kanban` | No Memoria-specific configuration; default settings work. |
 | `smart-connections` | Treated as a parallel peer to Memoria, not a wired component. [Mapper](../profiles/mapper.md) does rule-based, reviewable corpus work; Smart Connections does statistical, opaque similarity. Complementary but Memoria's design depends on neither. |
-| `omnisearch` | Indexing depth and excluded folders are workflow-personal, not design-standard. [Librarian](../profiles/librarian.md) doesn't depend on it (search calls go through Hermes tools, not the Obsidian plugin). |
+| [`omnisearch`](reference/omnisearch.md) | Indexing depth and excluded folders are workflow-personal, not design-standard. [Librarian](../profiles/librarian.md) doesn't depend on it (search calls go through Hermes tools, not the Obsidian plugin). |
 | `pdf-plus` | Settings are human-preference (highlight colors, link format). |
 | `supercharged-links` | Style snippet ships at `.obsidian/snippets/memoria-link-colors.css`; the plugin's own `data.json` just points at the snippet. |
 | `commander` | Pure human preference (which commands to expose). |

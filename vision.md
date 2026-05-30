@@ -59,7 +59,7 @@ A survey of 37 contemporary agent-driven research systems and benchmarks — spa
 
 - **Inspiration retrieval before drafting** (SciMON) — fetch related claims as drafting context. Memoria borrows the retrieval; refuses novelty score as a stopping criterion (human stops).
 - **Tournament ranking for triage** (AI co-scientist) — parked as a future-direction for the candidate-triage stage if scalar relevance ordering proves insufficient at high inbox volume.
-- **Scenario-typed retrieval** (PARNESS) — typing wikilinks as `similar` / `contradictory` (and possibly `cross-domain`, `counter-intuitive`) for richer graph queries. Future-direction with a minimal two-value taxonomy first.
+- **Scenario-typed retrieval** (PARNESS) — typing wikilinks for richer graph queries. The base relations (`supports` / `contradicts`) are now adopted (ADR-9); a wider vocabulary (`similar`, possibly `cross-domain` / `counter-intuitive`) remains the future expansion.
 
 **Position in the field.** The 2025–2026 wave converges on Memoria's core architectural commitments without weakening them. Chen 2026 names persistent knowledge accumulation, reliable self-evaluation, and principled agent scaling as the **#1 barriers to L5 autonomy** — not raw capability. Memoria has the persistent-knowledge piece, accepts that self-evaluation cannot be fully reliable (hence the blocking human gate), and treats agent scaling as a profile-narrowing problem rather than a generalist-strengthening problem. PARNESS (Wang & Luan 2026) is the architecturally nearest twin in the entire corpus — the architectures are near-identical, with one defining difference: Memoria has a structurally blocking human gate, PARNESS is fully autonomous.
 
