@@ -47,8 +47,8 @@ Authoritative runtime signal: `install.ps1` ships only `SOUL.md` per profile and
 | `superseded_by:` on `claim-note` | shipped | ADR-22; added top-level to the template (human-set; currency derives from it). |
 | `Home.md` (vault-root front door) | accepted-pending | ADR-25 accepted; no `Home.md` exists yet. |
 | `.obsidian/workspaces.json` | deferred | Designed in `obsidian-ui/workspaces.md`; not shipped. |
-| Human-facing reference notes (`00-meta/04-reference/`) | shipped | All present: `schema-reference`, `dataview-cheatsheet`, `safe-mode`, `getting-started`, `system-map`, `agent-roles`, `profile-policies`, `performance-checklist`, `system-status`, `index`. These are vault-resident references (the Linter's `skeleton-drift` checks them against the design docs), not doc-tree files. |
-| `00-meta/04-reference/design-system.md` (filled instance) | deferred | The design-system *template* ships in `obsidian-ui/design-system.md`; the per-vault filled instance is not yet in `04-reference`. |
+| Human-facing reference notes (`00-meta/04-reference/`) | shipped | All present: `agent-roles`, `dataview-cheatsheet`, `design-system`, `getting-started`, `obsidian-config`, `performance-checklist`, `profile-policies`, `safe-mode`, `schema-reference`, `system-map`. Vault-resident references (the Linter's `skeleton-drift` checks them against the design docs), not doc-tree files. The filled `design-system.md` instance **does ship here** — the `obsidian-ui/design-system.md` *template* is the schema it follows. |
+| `00-meta/index.md`, `research-directions.md`, `system-status.md` | shipped | Present at `00-meta/` root (vault home / strategy / status notes), not under `04-reference`. |
 
 ## Dashboards
 
