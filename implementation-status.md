@@ -77,7 +77,7 @@ Authoritative runtime signal: `install.ps1` ships only `SOUL.md` per profile and
 | agent-client | shipped (installed) | |
 | callout-manager | shipped (installed) | Config ships as `data.json.TODO` (schema unverified). |
 | obsidian-citation-plugin | shipped (installed) | |
-| obsidian-linter | **drift — needs decision** | The vault ships it **installed and configured** (`.obsidian/plugins/obsidian-linter/`), but ADR-24 (*accepted*) says it is reference-only — **not installed, not recommended**. The design is the authority, so the intended state is *not installed*; the vault install is stale drift from when it lived in `recommended/`. **Open call:** remove it from the vault to conform to ADR-24, **or** reverse ADR-24. Until decided, treat *not installed* (ADR-24) as canonical. See `decisions/24-obsidian-linter-reference-only.md`. |
+| obsidian-linter | **not installed** (conforms to ADR-24) | Reference-only per ADR-24. The stale `data.json` was removed from the vault (`.obsidian/plugins/obsidian-linter/`) so the vault now matches the accepted decision. Safe-config knowledge is preserved in `obsidian-plugins/reference/obsidian-linter.md`. |
 | dataview | deferred (post-clone) | "Required" in docs but not in the starter vault's `.obsidian/plugins/`. Installed as a post-clone step. |
 | templater | deferred (post-clone) | As above. |
 | quickadd | deferred (post-clone) | As above. |

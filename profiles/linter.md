@@ -26,6 +26,23 @@ Linter is Memoria's deterministic conscience. It validates structure (frontmatte
 - **M-detectors are the silent-failure layer.** The eight M-detectors catch failure modes the human wouldn't notice by reading content: a Dataview query that references a field no template emits (`dashboard-field-drift`), a `data.json` that drifted from the committed version (`plugin-config-drift`), an `extract_path` pointing at a missing file (`extract-path-broken`). The defining property is "silent" — the failure mode looks like "nothing to do" when there's actually something to do. The full detector specs live in `M-detectors.md` alongside the runtime SOUL.md.
 - **Auto-fix is class-gated by the policy MCP.** When `profile = "memoria-linter"` and `action = "auto_fix"`, the MCP requires `flags.class ∈ {"safe-and-unambiguous", "authorized-targeted"}`. Schema/content changes and review-gated-zone edits are always `deny` regardless of who requests them. Class gating is the runtime enforcement of the auto-fix policy — not just a design rule, an enforced one.
 
+## The eight M-detectors
+
+The structural detectors, each a deterministic zero-LLM check identified by a descriptive slug. The full procedures (hashing, field-parsing, the four `plugin-config-drift` cases) live in `.memoria/profiles/memoria-linter/M-detectors.md` in the starter vault; this is the at-a-glance index.
+
+| ID | Severity | Catches |
+| --- | --- | --- |
+| `profile-install-drift` | LOW | The deployed copy under `~/.hermes/profiles/memoria-<name>/` differs from its vault source (usually a `git pull` without re-running `install.ps1`). |
+| `vault-hash-drift` | CRITICAL | A file was written outside the policy MCP, or tampered with after a write — the audit-log SHA-256 chain no longer matches. |
+| `skeleton-drift` | MEDIUM | The human-facing `00-meta/04-reference/` skeleton notes lag the design spec they mirror. |
+| `dashboard-field-drift` | HIGH | A Dataview query references a field no template emits → the query returns zero rows and the human sees "nothing to do" when there is. |
+| `command-vocab-drift` | MEDIUM | A command named in the design isn't declared in its owner profile's SOUL.md (or vice versa). |
+| `plugin-config-drift` | MEDIUM | A working `.obsidian/plugins/<plugin>/data.json` differs from the version committed at git HEAD (HIGH if `agent-client.autoAllowPermissions` flips to `true`). |
+| `orphan-working-files` | LOW | Editor backups / `.tmp.*` / `.bak` leftovers accumulated outside the transient zones. |
+| `extract-path-broken` | HIGH | A paper-note's `extract_path` points at a Marker extract file that doesn't exist. |
+
+The defining property is **silent**: each catches a failure that looks like "nothing to do" while something is actually wrong. They roll up into the verdict band (below).
+
 ## Auto-fix policy
 
 Linter classifies every proposed fix into one of four classes. The class determines whether the fix can apply automatically or requires explicit human action; the policy MCP enforces the class gate at the tool layer — Linter cannot bypass it.

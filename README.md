@@ -79,6 +79,18 @@ topic: workflows         # the topic folder this file belongs to
 
 Mode is what kind of writing this is. Audience is who it's for. Topic mirrors the folder (cross-cutting files at root use `general`). ADRs in [decisions/](decisions/) also carry `id`, `title`, `status`, `date_proposed` per the ADR template.
 
+## Naming conventions
+
+Files and folders are **kebab-case** (`frontmatter-schema.md`, `obsidian-ui/`). Frontmatter *field* names are **snake_case** (`schema_version`, `review_status`) — a deliberate split: kebab for things on disk, snake for things in YAML. A handful of names are intentional exceptions, not violations:
+
+| Name | Why it's an exception |
+| --- | --- |
+| `README.md` | Universal convention for a folder index. |
+| `SOUL.md`, `AGENTS.md` | Hermes runtime conventions reused verbatim (the installer reads `SOUL.md`). |
+| `M-detectors.md` | The leading `M` maps to the detector IDs `M1`–`M8`; it's a prefix, not a typo. |
+| `_template.md` | Leading underscore marks the ADR skeleton so it sorts away from numbered records. |
+| `Home.md` | Obsidian convention for a vault front-door note (ADR-25). |
+
 ## Glossary
 
 Unfamiliar term mid-document — *handoff payload, verdict band, trust score, method class, …*? It's in [glossary.md](glossary.md), with a [Disambiguations](glossary.md#disambiguations) section for the words used in more than one sense. The most-linked terms also carry inline references at their first-mention site in the topic READMEs.

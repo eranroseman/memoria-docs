@@ -149,11 +149,12 @@ Rule (both pipelines): **finding and filing** are Librarian work; **mapping the 
 
 Workflows are listed in execution order within each pipeline. Refer to a workflow by name (e.g., "Discuss workflow", "Verify workflow") — there are no numeric IDs.
 
-### Upstream (8)
+### Upstream (9)
 
 | Workflow | Goal | Main owner |
 | --- | --- | --- |
 | [Zotero Capture](upstream/zotero-capture.md) | Make Zotero the source of truth for references and PDFs. | Human |
+| [Fleeting Triage](upstream/fleeting-triage.md) | Promote or discard raw captures in `10-inbox/01-fleeting/`. | Human (Linter surfaces stale ones) |
 | [Find](upstream/find.md) | Find related papers, tools, people, venues worth adding. | Librarian surfaces; human confirms |
 | [Ingest](upstream/ingest.md) | Create the right note in the right folder with enrichment. | Librarian; human resolves ambiguity |
 | [Classify](upstream/classify.md) | Promote agent-proposed fields into canonical metadata. | Human |
@@ -175,12 +176,14 @@ Workflows are listed in execution order within each pipeline. Refer to a workflo
 | [Query](downstream/query.md) | Get a cited synthesis from the vault. | Writer / Librarian; human verifies |
 | [Code](downstream/code.md) | Treat code as a research output with provenance. | Human; Coder scaffolds (external agent implements) |
 
-### Maintenance (2)
+### Maintenance (4)
 
 | Workflow | Goal | Main owner |
 | --- | --- | --- |
 | [Lint](maintenance/lint.md) | Keep structure, links, queues healthy. | Linter; human decides on fixes |
 | [Refactor](maintenance/refactor.md) | Keep notes atomic and remove duplication. | Hermes identifies; human decides |
+| [Retraction Sweep](maintenance/retraction-sweep.md) | Stop retracted / superseded sources from influencing synthesis. | Verifier flags; human decides |
+| [Maintain MOCs](maintenance/moc.md) | Create and grow Maps of Content as clusters mature. | Human authors; agents propose |
 
 ### Workflow ↔ stage mapping
 
@@ -188,9 +191,9 @@ Most workflows share a name with the pipeline stage they implement — Find, Ing
 
 - **`link` and `corroborate`** are *maturity transitions*, not workflows — they advance a claim note's `maturity` (`seedling` → `budding` → `evergreen`) without a named operation.
 - **`arrange`, `outline`, and `draft`** have no standalone workflow; the **Write** umbrella owns them.
-- **Zotero Capture** feeds the pipeline (before `find` / `ingest`) but isn't itself a stage.
+- **Zotero Capture** and **Fleeting Triage** are inbox-processing — they feed the pipeline but aren't stages on the `find → archive` spine.
 - **Query** and **Code** are downstream *branch* workflows — off the main `assess → export` spine.
-- **Lint** and **Refactor** are *cross-cutting* maintenance, not pipeline stages.
+- **Lint**, **Refactor**, **Retraction Sweep**, and **Maintain MOCs** are *cross-cutting* maintenance, not pipeline stages.
 
 ## How the human triggers work: the Command Palette
 

@@ -12,6 +12,7 @@ Operational concerns: what to do when things go wrong, and how to keep the runni
 
 - [failure-modes.md](failure-modes.md) — Detect / Fix / Verify recipes for the common breakages: a stale `library.bib`, a missing `_proposed_classification`, broken frontmatter, a stale `qmd` search index, profile install drift, plus a dozen more in the catalog table. Open this when something looks wrong but the cause isn't clear.
 - [session-logging.md](session-logging.md) — how the per-session activity record is written and preserved. A system *mechanism*, not a workflow.
+- [profile-install.md](profile-install.md) — installing and redeploying the seven Hermes profiles with `install.ps1`; the procedure the failure-mode fixes assume.
 
 ## What lives elsewhere
 

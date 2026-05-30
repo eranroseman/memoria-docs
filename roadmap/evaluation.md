@@ -82,6 +82,8 @@ The strongest single result of the review. Each is external evidence that an exi
 
 ## Observability — what to log, measure, and surface
 
+> [success-metrics.md](success-metrics.md) is the canonical home for the metric *definitions*; this section specifies only the eval-specific **logging** (what to capture from day one, and why), not a second definition of each metric.
+
 The benchmark corpus is autonomous-agent-centric, so the signals that most determine Memoria's success are under-measured. The implication is mostly about **logging, not dashboards**: human-loop health and cost trends cannot be reconstructed retroactively, so capture them in the append-only event log (`00-meta/02-logs/audit.jsonl`; aggregates in `00-meta/08-metrics/`) from day one, and add dashboards over that log only when a question recurs (the [expansion-threshold rule](README.md#expansion-threshold-discipline)). All of it is diagnostic, not contract; any LLM-as-judge stays advisory.
 
 **Log from day one (cheap; cannot be backfilled):**
