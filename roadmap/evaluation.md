@@ -8,13 +8,13 @@ topic: roadmap
 
 ## Purpose
 
-A review of ~51 agent / research / memory benchmarks (full workspace, per-paper notes, and synthesis `findings.md` maintained separately in the **benchmark-review workspace**) produced two things: an **evaluation program** for Memoria, and a short list of **design implications**. This document is the roadmap-level synthesis — what to measure, how, and the design implications the literature actually warrants: one structural change, two refinements, and a set of observability additions. The headline is that the research **validates** most of the design; the changes are few and targeted.
+A review of ~51 agent / research / memory benchmarks (the full capability-mapped taxonomy is at [evaluation-benchmarks.md](evaluation-benchmarks.md)) produced two things: an **evaluation program** for Memoria, and a short list of **design implications**. This document is the roadmap-level synthesis — what to measure, how, and the design implications the literature actually warrants: one structural change, two refinements, and a set of observability additions. The headline is that the research **validates** most of the design; the changes are few and targeted.
 
 ## How Memoria is evaluated — two layers
 
-**Layer 1 — vault-native gold eval (primary).** Off-the-shelf benchmarks measure the *model* on someone else's corpus; they do not answer Memoria's real question — *does this vault compound?* The primary eval is a small, hand-curated gold set drawn from the actual vault (scaffold at `benchmarks/vault-eval/`): ~20 items per workflow (`find`, `verify`, `query`, `classify`, `distill`, drift), re-run quarterly. The **trend** is the signal, and the metrics feed the existing [success-metrics.md](success-metrics.md) diagnostics — they are diagnostic, not contract, and must not become optimization targets.
+**Layer 1 — vault-native gold eval (primary).** Off-the-shelf benchmarks measure the *model* on someone else's corpus; they do not answer Memoria's real question — *does this vault compound?* The primary eval is a small, hand-curated gold set drawn from the actual vault (the `vault-eval` harness; see [ADR-23](../decisions/23-vault-eval-integration.md)): ~20 items per workflow (`find`, `verify`, `query`, `classify`, `distill`, drift), re-run quarterly. The **trend** is the signal, and the metrics feed the existing [success-metrics.md](success-metrics.md) diagnostics — they are diagnostic, not contract, and must not become optimization targets.
 
-**Layer 2 — external benchmarks (reference).** The full capability-mapped taxonomy is maintained in the separate **benchmark-review workspace** (`benchmarks_for_memoria.md`); the condensed map below keeps this document self-contained. Each benchmark is tagged by **adoption mode**:
+**Layer 2 — external benchmarks (reference).** The full capability-mapped taxonomy is at [evaluation-benchmarks.md](evaluation-benchmarks.md); the condensed map below is the quick reference. Each benchmark is tagged by **adoption mode**:
 
 - **run** — run the harness as-is for a capability baseline (e.g., LongMemEval, CiteME, τ-bench, BRIGHT, AgentDojo).
 - **borrow** — adopt the *metric or task*, don't run the leaderboard (e.g., **FAMA** for drift, **pass^k** for lane reliability, **coverage@k** for loose-ends, Contradiction-Retrieval for the contradictions surface, MASSW's 5-aspect note schema).
@@ -39,7 +39,7 @@ Deliberately **out of scope** (and tracked as such in the workspace taxonomy): a
 
 ## Integrating vault-eval into the runtime
 
-`vault-eval` graduates from the `benchmarks/` workspace into the runtime rather than staying an external script, reusing existing machinery (decision recorded in [ADR-23](../decisions/23-vault-eval-integration.md)):
+`vault-eval` graduates into the runtime rather than staying an external script, reusing existing machinery (decision recorded in [ADR-23](../decisions/23-vault-eval-integration.md)):
 
 - **Vault:** gold tasks live in `00-meta/05-eval/`; results append to `00-meta/08-metrics/eval/`; the Linter's broken-link detector guards gold-item target paths.
 - **Workers:** the board dispatches a scheduled `eval` card (quarterly + on-demand, like the discovery loop); workflow profiles execute each gold task via their real commands (`verify`-eval reuses the Verifier's `cite-check`); eval-context writes are non-committing, Policy-MCP-scoped to a scratch path; the Linter scores and records the verdict.
@@ -109,4 +109,4 @@ The benchmark corpus is autonomous-agent-centric, so the signals that most deter
 - [architecture/why-no-autonomous-synthesis.md](../architecture/why-no-autonomous-synthesis.md), [vision.md](../vision.md) — the posture the research validates.
 - [dashboards/drift-watch.md](../dashboards/drift-watch.md), [dashboards/fleet-health.md](../dashboards/fleet-health.md), [dashboards/audit-log.md](../dashboards/audit-log.md), [dashboards/weekly-review.md](../dashboards/weekly-review.md) — the surfaces the observability additions touch.
 - [architecture/memory-tiers.md](../architecture/memory-tiers.md) — the append-only vault audit memory (`00-meta/02-logs/`, `00-meta/08-metrics/`) the new telemetry extends.
-- The **benchmark-review workspace** (maintained separately) — the full benchmark taxonomy (`benchmarks_for_memoria.md`), per-paper findings (`findings.md`), and the `vault-eval` harness scaffold this synthesizes.
+- [evaluation-benchmarks.md](evaluation-benchmarks.md) — the full benchmark taxonomy (scoping principles, per-capability tables, minimal suite) this synthesizes.

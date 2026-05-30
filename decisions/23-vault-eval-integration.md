@@ -15,7 +15,7 @@ superseded_by: []
 
 ## Context
 
-`vault-eval` (scaffold in `benchmarks/vault-eval/`) is Memoria's system-level evaluation — a small hand-curated gold set per workflow that measures whether the *deployed system* finds, verifies, answers, and remembers correctly *on this vault*, as opposed to off-the-shelf benchmarks that score a model on a foreign corpus (see [roadmap/evaluation.md](../roadmap/evaluation.md)). To be useful it must run against the live profiles and live with the vault, not persist as an external script. The question is how to host it without standing up a parallel subsystem; it splits into three sub-decisions — who owns it, whether it gates, and where the gold set lives.
+`vault-eval` (an eval-harness scaffold) is Memoria's system-level evaluation — a small hand-curated gold set per workflow that measures whether the *deployed system* finds, verifies, answers, and remembers correctly *on this vault*, as opposed to off-the-shelf benchmarks that score a model on a foreign corpus (see [roadmap/evaluation.md](../roadmap/evaluation.md)). To be useful it must run against the live profiles and live with the vault, not persist as an external script. The question is how to host it without standing up a parallel subsystem; it splits into three sub-decisions — who owns it, whether it gates, and where the gold set lives.
 
 ## Decision
 
@@ -36,7 +36,7 @@ Memoria runs `vault-eval` as a **diagnostic maintenance capability built from ex
 
 ## Alternatives considered
 
-**Keep `vault-eval` as an external script in `benchmarks/`** (don't integrate): rejected — it would drift from the deployed profiles, couldn't reuse the health/metrics machinery, and in practice wouldn't be run on a cadence.
+**Keep `vault-eval` as an external script outside the runtime** (don't integrate): rejected — it would drift from the deployed profiles, couldn't reuse the health/metrics machinery, and in practice wouldn't be run on a cadence.
 
 **Gate scheduled work on the eval verdict** (like `drift-watch`'s FAIL): rejected — capability scores are noisy and, per `success-metrics.md`, diagnostic not contract; gating on them invites Goodharting and false halts.
 
@@ -49,4 +49,4 @@ Memoria runs `vault-eval` as a **diagnostic maintenance capability built from ex
 - **Workflows affected:** [Verify](../workflows/downstream/verify.md) (the eval reuses `cite-check`); the maintenance/`lint` surface (the Linter scores + reports).
 - **Files affected:** [roadmap/evaluation.md](../roadmap/evaluation.md), [architecture/on-disk-layout.md](../architecture/on-disk-layout.md) (`00-meta/05-eval/`, `00-meta/08-metrics/eval/`), the Linter's `M-detectors.md` and a dashboard (in the starter vault).
 - **Related decisions / Depends on:** [ADR-22 claim supersession](22-claim-supersession.md) (the drift gold tasks exercise its FAMA check); [ADR-16 contradictions dashboard](16-contradictions-dashboard.md) and [ADR-9 typed relations](09-typed-relations-frontmatter.md) (shared observability lineage).
-- **Source discussion:** [roadmap/evaluation.md](../roadmap/evaluation.md) (Observability + Integration); the `benchmarks/vault-eval/` scaffold.
+- **Source discussion:** [roadmap/evaluation.md](../roadmap/evaluation.md) (Observability + Integration); the `vault-eval` scaffold.
