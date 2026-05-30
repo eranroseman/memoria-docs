@@ -33,6 +33,15 @@ Rules:
 - The agent must never overwrite human-set frontmatter fields, even if API data contradicts.
 - Zotero is the source of truth for bibliographic fields (citekey, DOI, title, authors). The paper note references these for navigation but does not duplicate them; Zotero wins on disagreement, the vault wins for synthesis and links.
 
+## Proposed and enrichment block schema
+
+The two agent namespaces are stored as HTML-comment blocks in the note body (so they never pollute the queryable frontmatter and are easy to strip on promotion). Their shapes:
+
+- **`_proposed_classification`** — the Librarian's classification proposal, awaiting human review. Sub-fields mirror the main-YAML domain fields the human will set: `topic`, `methods`, `study_design`, `projects` (each a proposed value or list). Lifecycle: agent **populates** at ingest → human **reviews** at [Classify](../workflows/upstream/classify.md) → selected fields are **promoted** into main YAML and the **entire block is deleted**. A note at `lifecycle: current` should carry no `_proposed_classification` block.
+- **`_enrichment`** — API-derived metadata the agent refreshes on a schedule: `citation_count`, `abstract`, `venue`, `oa_status`, and similar mutable values. Lifecycle: agent **refreshes** periodically; values are **mutable** and never overwrite human-set main-YAML fields. The `enriched_date` timestamp sits **top-level** (not inside the block) because the Linter's stale-enrichment check and the dashboards query it directly. Stable identifiers (DOI, OpenAlex ID, ORCID, ROR) graduate from `_enrichment` to main YAML once verified; derived metrics stay in the block because they drift.
+
+Both blocks are agent-owned (see the namespace table above): the agent writes them, the human promotes from them, and the agent never writes the main YAML directly. **No HTML-comment-stripping Linter rule may run** — it would silently delete these blocks (see [obsidian-plugins/reference/obsidian-linter.md](../obsidian-plugins/reference/obsidian-linter.md)).
+
 ## Frontmatter field categorization
 
 Frontmatter fields split into four categories by *what they're for*. The split keeps the core query surface small — every note carries the global and time fields, but only the notes that need them carry domain fields.
