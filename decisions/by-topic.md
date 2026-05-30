@@ -21,7 +21,7 @@ Note types, frontmatter, naming, and the controlled vocabularies that govern the
 - [15-dedicated-review-note-type.md](15-dedicated-review-note-type.md) — Dedicated review-note type · proposed
 - [18-evidence-quality-fields.md](18-evidence-quality-fields.md) — Evidence quality fields layer · proposed
 - [21-shared-candidate-frontmatter.md](21-shared-candidate-frontmatter.md) — Shared candidate frontmatter format · proposed
-- [22-claim-supersession.md](22-claim-supersession.md) — Claim supersession relation · proposed
+- [22-claim-supersession.md](22-claim-supersession.md) — Claim supersession relation · **accepted**
 
 ## Workflows
 
@@ -47,7 +47,7 @@ The seven Hermes workers — missions, attachment, cross-run memory.
 Persistent dashboards and how the human sees board / vault state.
 
 - [16-contradictions-dashboard.md](16-contradictions-dashboard.md) — Contradictions / tensions dashboard · proposed
-- [23-vault-eval-integration.md](23-vault-eval-integration.md) — vault-eval as a maintenance capability · proposed
+- [23-vault-eval-integration.md](23-vault-eval-integration.md) — vault-eval as a maintenance capability · **accepted**
 
 ## Retired
 
