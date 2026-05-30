@@ -31,7 +31,7 @@ Before any write, Hermes identifies the input type and routes to the correct pip
 
 1. The Librarian detects the input type using the dispatch table above.
 2. Routes to the correct folder and template.
-3. Creates the note from the template.
+3. Creates the note from the template. Source notes start at `lifecycle: proposed` (the template default); [Classify](classify.md) later promotes them to `current`.
 4. Enriches metadata via type-specific APIs (see per-type table below).
 5. Promotes stable identifiers (DOI, OpenAlex ID, ORCID, ROR) to main YAML.
 6. For articles / preprints: Marker extracts the PDF to markdown, written to `90-assets/extracts/<citekey>.md`. The paper-note's `extract_path` frontmatter is populated; `zotero_uri` and `pdf_uri` are populated from the Zotero item key. **The PDF itself is not copied into the vault** — it remains in Zotero's storage, reachable via `pdf_uri`.

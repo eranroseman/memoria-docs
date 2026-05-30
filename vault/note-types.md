@@ -95,7 +95,7 @@ Every note carries one universal field, **`lifecycle`** — its durability phase
 | `moc` | `current` / `dormant` / `archived` | — |
 | `project-note` | `proposed` → `current` → `dormant`/`archived` | `project_phase`: `planning` / `active` / `paused` / `complete` |
 | `code-note` | `proposed` → `current` (active) → `archived` (deprecated) | — |
-| `canvas` | `proposed` → `current` (frozen) | — |
+| `canvas` | `proposed` → `current` → `archived` (informally "frozen" once it has informed the draft — *frozen* is prose, not a `lifecycle` value) | — |
 | `draft` | `proposed` → `current` (submitted) | `draft_stage`: `outline` / `in-progress` / `submitted` |
 | `deliverable` | `current` (final) | — |
 

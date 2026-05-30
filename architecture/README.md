@@ -25,7 +25,7 @@ Memoria has three layers — a Kanban board that orchestrates work, seven Hermes
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
 │  Board layer (Kanban) — orchestration and memory of active work │
-│  status: triage → ready → running → done → archived             │
+│  status: triage → todo → ready → running → done → archived      │
 │  review overlay on done: requested → approved                   │
 │  (blocked is off-path; rejected → archived)                     │
 └────────────────────────────┬────────────────────────────────────┘

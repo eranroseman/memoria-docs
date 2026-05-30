@@ -207,7 +207,7 @@ fleeting-note ──┬──► answer-note ──► claim-note ──► refe
 claim-note ────► moc membership (via frontmatter moc:)
 claim-note ────► draft section (cited in body)
 draft ─────────► deliverable (on export)
-canvas ────────► draft (informs structure; canvas becomes `frozen`)
+canvas ────────► draft (informs structure; canvas is then archived — informally "frozen")
 code-note ─────► project-note (linked from project)
 ```
 
