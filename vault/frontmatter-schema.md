@@ -69,6 +69,11 @@ For controlled-vocabulary fields, the allowed values are:
 | `pub_status` | paper-note | `active`, `preprint`, `retracted`, `deprecated`, `expression-of-concern` |
 | `maintenance_status` | item-note | `active`, `deprecated`, `archived`, `unmaintained` |
 | `role_in_stack` | item-note | `primary-tool`, `dependency`, `alternative`, `reference-only` |
+| `item_category` | item-note | `repo`, `package`, `product`, `standard` |
+| `source_type` | paper-note | `paper` (fixed; marks the source kind alongside `type: paper-note`) |
+| `relationship_to_research` | person-note | `advisor-candidate`, `collaborator`, `author-to-follow`, `institutional`, `funder` |
+| `outreach_status` | person-note | `""`, `not-contacted`, `contacted`, `replied`, `meeting-scheduled` |
+| `scope` | moc | `topic`, `domain`, `project`, `child` |
 | `relations` keys | claim-note | `supports`, `contradicts` (v1; extends on felt need) |
 
 The Linter's `schema-check` (see [linter.md](../profiles/linter.md)) validates frontmatter against this reference. **New allowed values go through this reference first, not the other way around** — a template or query that uses a value not listed here is the bug, not the reference.

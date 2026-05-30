@@ -6,6 +6,8 @@ topic: plugins
 
 # pdf-plus (PDF++)
 
+> **Verify setting keys against your installed version.** The key names below describe the *intended behavior*; they have not been validated against an installed PDF++ build and the plugin's real keys differ (e.g. the color palette is indexed). Confirm the exact keys in the plugin's settings / `data.json` before relying on them.
+
 Load-bearing settings:
 
 - `enableHoverHighlight: true` — required for cite-on-hover behavior.

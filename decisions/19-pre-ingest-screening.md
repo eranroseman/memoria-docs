@@ -15,11 +15,11 @@ superseded_by: []
 
 ## Context
 
-Pre-ingest screening differs from `find` in scale (200–5000 candidates vs. 10–200), trigger (one-time vs. ongoing), and eligibility formality (explicit PRISMA criteria vs. implicit relevance). For formal scoping or systematic reviews, a structurally separate workflow is needed.
+Pre-ingest screening differs from `find` in scale (200–5000 candidates vs. 10–200), trigger (one-time vs. ongoing), and eligibility formality (explicit [PRISMA](../glossary.md#external-tools-and-standards) criteria vs. implicit relevance). For formal scoping or systematic reviews, a structurally separate workflow is needed.
 
 ## Decision
 
-**Adopt when starting a formal scoping or systematic review.** Use ASReview for ranking; export existing vault papers as priors via `hermes run export prior-labels`. Keep the two pipelines (find vs. pre-ingest screening) separate but share the candidate frontmatter format from [ADR-21](21-shared-candidate-frontmatter.md).
+**Adopt when starting a formal scoping or systematic review.** Use [ASReview](../glossary.md#external-tools-and-standards) for ranking; export existing vault papers as priors via `hermes run export prior-labels`. Keep the two pipelines (find vs. pre-ingest screening) separate but share the candidate frontmatter format from [ADR-21](21-shared-candidate-frontmatter.md).
 
 ## Consequences
 

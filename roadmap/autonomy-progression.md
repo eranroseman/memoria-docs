@@ -25,6 +25,8 @@ This document is the answer to "how do we let the agent do more between gates?" 
 
 Before the patterns, the full picture: everything the human does in Memoria today, re-sorted by whether an agent should take it. The [role × stage matrix](../workflows/README.md#role--stage-matrix) is the authoritative who-does-what; this is that surface sorted by *transferability*. The layers below are the mechanization of buckets A and B. Bucket C is the residue the [autonomy boundary](../architecture/why-no-autonomous-synthesis.md) protects — the patterns never touch it.
 
+> **Reading the tables.** Entries tagged `(shipped)` are **already implemented** — listed for context, not roadmap work. The roadmap value is the numbered patterns (`1.1`, `4.4`, …) that are *not* yet built; see [implementation-status.md](../implementation-status.md) for what ships today.
+
 **Bucket A — the agent should own it, and is genuinely *better*** (recall, consistency, tirelessness). The human's role shrinks to spot-checking.
 
 | Human task today | Pattern that relieves it |

@@ -56,7 +56,7 @@ Before any write, Hermes identifies the input type and routes to the correct pip
 
 ## Owners
 
-Hermes for type detection, routing, creation, enrichment, content extraction, candidate links. Human resolves ambiguity and reviews the resulting note.
+The **Librarian** handles type detection, routing, creation, enrichment, content extraction, and candidate links. The human resolves ambiguity and reviews the resulting note.
 
 ## Card lifecycle
 

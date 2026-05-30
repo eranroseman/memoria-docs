@@ -18,7 +18,7 @@ topic: workflows
 
 ## Owners
 
-Hermes for candidate generation. Human for the corpus boundary decision.
+The **Librarian** generates candidates. The human owns the corpus-boundary decision.
 
 ## Commands
 

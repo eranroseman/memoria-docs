@@ -34,7 +34,7 @@ The slip-box method enforces three disciplines that prevent a wiki from becoming
 
 1. **Atomicity** — each note captures one idea, not a topic dump.
 2. **Explicit linking** — notes earn their place by connecting to existing notes.
-3. **Type distinction** — Luhmann distinguished *fleeting notes* (raw capture), *literature notes* (what a source says), and *permanent notes* (the human's own durable claim). Each serves a different function and has a different lifespan. Memoria preserves this three-way distinction but renames the corresponding types (`paper-note`, `claim-note`) for clarity in a software context — see [vault/README.md](vault/README.md).
+3. **Type distinction** — Luhmann distinguished *fleeting notes* (raw capture), *literature notes* (what a source says), and *permanent notes* (the human's own durable claim). Each serves a different function and has a different lifespan. Memoria preserves this three-way distinction, renaming two of the three for a software context (literature notes → `paper-note`, permanent notes → `claim-note`); fleeting notes keep their name (`fleeting-note`) — see [vault/README.md](vault/README.md).
 
 Zettelkasten's weakness in modern workflows is that it is entirely human-maintained — the linking discipline breaks down under load. Memoria delegates the linking and filing work to the agent.
 
@@ -44,12 +44,12 @@ Bush's 1945 vision: a personal interconnected knowledge machine where *associati
 
 ### Contemporary AI-research systems
 
-A survey of 37 contemporary agent-driven research systems and benchmarks — spanning end-to-end autonomous research, multi-agent platforms, retrieval and citation benchmarks, hypothesis generation, domain-adapted models, Deep Research agents, and the surveys that organize the field (Chen 2026, Huang 2025, Xu & Peng 2025, Gridach 2025, Ren 2025) — grounds the design. The full roster and the borrow / adapt / ignore breakdown live in [architecture/why-pattern-provenance.md](architecture/why-pattern-provenance.md); this section names only the patterns Memoria takes from the corpus.
+A survey of 37 contemporary agent-driven research systems and benchmarks — spanning end-to-end autonomous research, multi-agent platforms, retrieval and citation benchmarks, hypothesis generation, domain-adapted models, Deep Research agents, and the surveys that organize the field (Chen 2026, Huang 2025, Xu & Peng 2025, Gridach 2025, Ren 2025) — grounds the design. **Every system named below is catalogued with its citation** in [architecture/why-pattern-provenance.md](architecture/why-pattern-provenance.md), which also holds the full roster and the borrow / adapt / ignore breakdown; this section names only the patterns Memoria takes from the corpus.
 
 **Adopted patterns:**
 
 - **Stage-gated pipelines** (LitSearch, ResearchArena, MLR-Copilot, Agent Laboratory) — distinct stages with distinct outputs and validation points. The dominant shape across every end-to-end system surveyed.
-- **Thin control over thick state** (Chen 2026, AgentRxiv 2025, PARNESS 2026) — the orchestrator and workers carry minimal context; durable knowledge lives in files. Three independent results corroborate it, and Memoria's three-layer split is its structural form. The ablation figures and the full borrow-mapping are in [architecture/README.md §"Thin control over thick state"](architecture/README.md#thin-control-over-thick-state).
+- **Thin control over thick state** (Chen 2026, AgentRxiv 2025, PARNESS 2026) — the control plane and workers carry minimal context; durable knowledge lives in files. Three independent results corroborate it, and Memoria's three-layer split is its structural form. The ablation figures and the full borrow-mapping are in [architecture/README.md §"Thin control over thick state"](architecture/README.md#thin-control-over-thick-state).
 - **Explicit agent roles** (AI co-scientist, MetaGPT, MOOSE, Agent Laboratory) — separate specialists (planner, executor, reviewer, Writer) over a generalist. Memoria's seven Hermes profiles.
 - **Structured outputs at handoffs** (MetaGPT, PARNESS) — agents produce typed structured outputs at inter-agent boundaries, not free text. Memoria's frontmatter schema + handoff payload.
 - **Persistent knowledge graphs** (AI co-scientist's Memory module, AI-Supervisor's Research World Model, PARNESS, OmegaWiki) — typed relationships as primary memory, not RAG-only. Memoria's vault folders + frontmatter + wikilinks + MOC.
@@ -116,7 +116,7 @@ Two 2026 papers name the same slot from the human-control side. Feng & Liu 2026 
 - Not a general-purpose chat assistant. It is a vault-centered system; conversations are inputs to filing, not the substrate.
 - Not a team tool in its current form. It assumes one human reviewer who owns judgment.
 - Not a single-agent system. The design explicitly avoids "one model does everything" — each Hermes profile has narrow permissions and a clear exit condition.
-- **Not a Deep Research agent.** "Deep Research" agents (OpenAI DR, Gemini DR, Perplexity DR, Grok DeepSearch) are query-driven and ephemeral — produce a comprehensive report per query, then end. Memoria is corpus-curating and durable — the human builds a vault over months, and each session compounds with prior sessions. The two categories serve different human needs; Memoria is the wrong tool for one-shot reports and the right tool for long-horizon research substrates. See [Huang et al. 2025](../papers/) and [Xu & Peng 2025](../papers/) for the DR-category taxonomy.
+- **Not a Deep Research agent.** "Deep Research" agents (OpenAI DR, Gemini DR, Perplexity DR, Grok DeepSearch) are query-driven and ephemeral — produce a comprehensive report per query, then end. Memoria is corpus-curating and durable — the human builds a vault over months, and each session compounds with prior sessions. The two categories serve different human needs; Memoria is the wrong tool for one-shot reports and the right tool for long-horizon research substrates. See Huang et al. 2025 and Xu & Peng 2025 for the DR-category taxonomy (both catalogued in [architecture/why-pattern-provenance.md §Reference](architecture/why-pattern-provenance.md#reference)).
 
 ## Patterns rejected
 

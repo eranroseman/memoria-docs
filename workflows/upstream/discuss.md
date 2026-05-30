@@ -18,7 +18,7 @@ Between [Classify](classify.md) and [Distill](distill.md).
 1. A `discuss` card opens automatically when a paper note's `lifecycle` becomes `current`. The card targets the human (no profile claims it).
 2. The human opens the paper note, reads (or re-reads) the relevant passages, and switches to the **Socratic profile** via ACP: `Cmd-P → Memoria: ask about this note`. The ACP pane on the right (see [obsidian-ui/workspaces.md](../../obsidian-ui/workspaces.md) — Reading & Processing workspace) opens the Socratic profile, whose lane policy is `policy.allow.write: []` (write-denied across the entire vault).
 3. The Socratic profile runs the `socratic-processing` command: "What's the strongest single claim? What does it connect to? What would falsify it? What's the smallest version of this idea that stands alone?" — the questions are the profile's whole product. The human answers in dialogue.
-4. The human either: (a) decides this source yields one or more claim notes → moves the card to `ready-for-distill` and runs [Distill](distill.md), or (b) decides the source doesn't yield a claim → closes the card with `outcome: no-claim` and notes the reason in the paper note's body.
+4. The human either: (a) decides this source yields one or more claim notes → proceeds to [Distill](distill.md); writing the claim note auto-closes this `discuss` card via the git hook (`outcome: claim-written` — there is no intermediate `ready-for-distill` state), or (b) decides the source doesn't yield a claim → closes the card with `outcome: no-claim` and notes the reason in the paper note's body.
 
 ## Owners
 

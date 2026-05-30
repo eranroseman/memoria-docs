@@ -12,7 +12,7 @@ Load-bearing settings (apply on every deployment):
 
 - `commitMessage` — keep a stable template like `"vault: {{date}} {{numFiles}} files"`. Random commit messages clutter the history, and `{{numFiles}}` is genuinely diagnostic — a 200-file auto-commit means something unusual happened, and the human should notice in the git log.
 - `autoBackupAfterFileChange: false` — don't auto-commit on every file change; that fights with Hermes writes and produces hundreds of commits per session. Use scheduled commits instead (`autoSaveInterval: 30` minutes is sensible).
-- `pullBeforeCommit: true` — fetch and merge before committing. Defensive against multi-machine divergence: catches the case where a different machine pushed changes since the last local pull, before the local commit creates a divergence.
+- `pullBeforeCommit: true` — fetch and merge before committing. Defensive against multi-machine divergence: catches the case where a different machine pushed changes since the last local pull, before the local commit creates a divergence. *(Verify this key exists in your installed obsidian-git — current builds expose `pullBeforePush` and `autoPullOnBoot` but may not have a pre-commit pull toggle; if absent, rely on `autoPullOnBoot` + `pullBeforePush`.)*
 - `pullBeforePush: true` — same defense at push time. The pair (`pullBeforeCommit` + `pullBeforePush`) is what makes multi-machine setups survive without merge conflicts becoming a daily ritual.
 - `autoPullOnBoot: true` — pull when Obsidian starts. Catches "I opened the vault on a different machine and started writing without thinking about sync" — the most common multi-machine failure mode.
 

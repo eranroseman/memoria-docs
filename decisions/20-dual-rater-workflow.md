@@ -15,11 +15,11 @@ superseded_by: []
 
 ## Context
 
-Formal scoping reviews and systematic reviews often require inter-rater reliability calculations (Cohen's kappa) on inclusion/exclusion decisions. Adding `rater_1`, `rater_2`, `rater_agreement` fields would support this.
+Formal scoping reviews and systematic reviews often require inter-rater reliability calculations ([Cohen's kappa](../glossary.md#external-tools-and-standards)) on inclusion/exclusion decisions. Adding `rater_1`, `rater_2`, `rater_agreement` fields would support this.
 
 ## Decision
 
-**Activate only when the chapter or paper requires it.** Resolve disagreements in a reconciliation session and set `rater_agreement: resolved`.
+**Activate only when the chapter or paper requires reported agreement *and* a second human rater exists.** Resolve disagreements in a reconciliation session and set `rater_agreement: resolved`. (The second-rater precondition matches the activation trigger in the [adopt-on-demand cluster](adopt-on-demand-for-reviews.md#the-members).)
 
 ## Consequences
 

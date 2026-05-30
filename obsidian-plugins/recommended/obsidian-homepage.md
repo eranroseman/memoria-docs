@@ -15,7 +15,7 @@ topic: plugins
 - Target → the vault-root `Home.md` note (the front door).
 - `openOnStartup: true` — the deterministic-landing behavior that is the point.
 - `view` / open mode → **reading** or live preview (Home is a Dataview note; reading mode renders the queries).
-- `revertView` / `openWhenEmpty` → keep Home from hijacking ordinary navigation; it opens on launch and on the "home" command/ribbon, not on every empty pane unless the human wants that.
+- `revertView` (and the "open on empty pane" behavior) → keep Home from hijacking ordinary navigation; it opens on launch and on the "home" command/ribbon, not on every empty pane unless the human wants that. *(Verify the exact key names against the installed plugin — `openWhenEmpty` is illustrative; the real keys are `revertView` / `openMode` / `manualOpenMode` / `alwaysApply`.)*
 - `commands` (optional) → run **"Dataview: Force refresh all views"** on open so the front door is current.
 - **Per-device:** use the separate-mobile setting if mobile should land somewhere lighter than the desktop Home.
 

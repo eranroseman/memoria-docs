@@ -20,7 +20,7 @@ topic: workflows
 
 ## Owners
 
-Hermes proposes classification. Human owns all promotion decisions.
+The **Librarian** proposes classification (writing `_proposed_classification` during ingest). The human owns all promotion decisions.
 
 ## Example
 
@@ -31,4 +31,4 @@ Hermes proposes classification. Human owns all promotion decisions.
 - **Previous workflow:** [Ingest](ingest.md)
 - **Next workflow:** [Discuss](discuss.md)
 - **Profile:** [profiles/librarian.md](../../profiles/librarian.md)
-- **Classifier confidence:** [ADR-11 confidence scoring on `_proposed_classification`](../../decisions/README.md)
+- **Classifier confidence:** ADR-11 (confidence scoring on `_proposed_classification`) — an *index-only* decision recorded in the [decisions README](../../decisions/README.md#index), not a standalone file.

@@ -22,6 +22,8 @@ The mode shifts are deliberate. Trying to do reading, drafting, and human classi
 
 - **One mode per workspace.** Don't bind a workspace to a topic ("the JITAI workspace") or a project ("the dissertation workspace"). Modes are durable; topics change.
 - **Three is the working set.** Adding a fourth means the human forgets which hotkey maps to which mode. If a fourth mode genuinely emerges, it earns its workspace by displacing one of the three, not by extending the set.
-- **Workspaces travel with the vault.** Memoria ships pre-configured `.obsidian/workspaces.json` definitions; if the human changes a layout, save it back to the workspace so the configuration survives `git pull` on another machine.
+- **Workspaces travel with the vault.** Memoria *will* ship pre-configured `.obsidian/workspaces.json` definitions (not yet in the starter vault — see [implementation-status.md](../implementation-status.md)); if the human changes a layout, save it back to the workspace so the configuration survives `git pull` on another machine.
 
 The three `Cmd-1/2/3` bindings are configured under Settings → Hotkeys (the Workspaces core plugin must be enabled first — see the prerequisite callout above).
+
+> **Not the same as profile switching.** These `Cmd-1/2/3` bindings switch *workspace layouts*. Switching the ACP *profile* (Socratic / Mapper / Writer / Verifier) uses a separate set — `Ctrl+Shift+1/2/3/4` — defined in [agent-client.md](../obsidian-plugins/required/agent-client.md#mode-switching-hotkeys). The two number-key sets are adjacent but do not collide (`Cmd` vs `Ctrl+Shift`); keep them distinct when configuring hotkeys.

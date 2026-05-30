@@ -156,7 +156,7 @@ The recommended interaction pattern is:
 2. **Specialist profile** (Librarian, Mapper, Writer, Verifier, Coder) claims a card from its lane and moves it to `running`. Socratic is invoked synchronously by the human and doesn't appear in queue-based handoffs.
 3. The worker executes the task, writes any provisional outputs (e.g., paper notes, answer drafts) into the lane's declared write scope, and completes the card to `done` with `review_status: requested`.
 4. The **human** examines the work, then sets `review_status` to `approved` or `rejected`. Some review decisions are partially automated — Verifier produces a `[!verification]` callout the human reads — but the approval is always human-driven.
-5. If `approved`, the worker (or the next workflow trigger) archives the card and the output remains in its current location (or is moved to a canonical layer if promotion is part of the task).
+5. If `approved`, the **dispatcher** archives the card (a state transition, not an approval decision — the human's approval is what licenses it) and the output remains in its current location; if promotion is part of the task, the next workflow trigger moves it to a canonical layer.
 6. If `rejected`, the human chooses between two follow-ups: spawn a revision card on the same lane (carrying a `metadata.supersedes` link back to the original; original archived with `metadata.archive_reason: superseded`) or archive the original entirely with `metadata.archive_reason: discarded`. See [kanban-board/README.md Post-rejection paths](../kanban-board/README.md#post-rejection-paths).
 7. **Linter** can act on any card structurally — usually before review — to flag schema, link, or orphan issues. It only ever produces reports, never silent fixes.
 
@@ -228,7 +228,7 @@ Memoria draws on a broad survey of contemporary AI-research systems (LitSearch, 
 
 ## Capability stack
 
-The minimum capability stack to operate Memoria is eight components: Hermes (seven profiles), the Hermes Kanban, Obsidian, Zotero + Better BibTeX, the external enrichment APIs (OpenAlex, Semantic Scholar, PubMed, Crossref, Unpaywall, ORCID, ROR), git, the Obsidian REST API or ACP for editor integration, and Pandoc for export.
+The minimum capability stack to operate Memoria is eight components: Hermes (seven profiles), the Hermes Kanban, Obsidian, Zotero + Better BibTeX, the external enrichment APIs (OpenAlex, Semantic Scholar, PubMed, Crossref, Unpaywall, ORCID, ROR), git, the Obsidian REST API for vault read/write (with ACP as the complementary editor agent pane), and Pandoc for export.
 
 On top of that base, **pre-built skills** (K-Dense `paper-lookup` / `pyzotero` / `citation-management`; Obsidian `obsidian-paper-note`; Hermes built-in `llm-wiki`) cover most enrichment and ingest work; the agent should use them rather than writing API clients from scratch. **Model routing** — Claude for synthesis, cheap models (via OpenRouter or similar) for bulk/mechanical tasks — keeps the discovery loop's `$1–3/day` budget achievable.
 

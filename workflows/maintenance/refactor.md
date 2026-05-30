@@ -18,7 +18,7 @@ topic: workflows
 
 ## Owners
 
-Hermes identifies. Human decides every change.
+The **Verifier** identifies duplicate or near-duplicate notes (via `find-duplicates`). The human decides every change.
 
 ## Command
 

@@ -19,7 +19,7 @@ topic: workflows
 
 ## Owners
 
-Hermes for retrieval and draft. Human for verification and filing.
+The **Librarian** runs retrieval-heavy lookups; the **Writer** drafts the synthesis (the dispatcher routes by card type — retrieval-only cards to Librarian, synthesis cards to Writer). The human verifies and files.
 
 ## Example
 

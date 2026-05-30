@@ -15,13 +15,13 @@ Session logging is a **system mechanism, not a workflow.** Every agent session p
 
 Don't conflate them — different writers, different lifecycles:
 
-- **Per-session logs** (`sessions/YYYY-MM-DD-HHMM.jsonl`) — one per Hermes session; the activity record this doc is about. Written by the [memoria-linter](../profiles/linter.md), which owns `00-meta/02-logs/`. **Not** rotated — each is small and they accumulate.
+- **Per-session log summaries** (`sessions/YYYY-MM-DD-HHMM.jsonl`) — one per Hermes session; the activity summary this doc is about. Hermes records the raw session activity; the [memoria-linter](../profiles/linter.md) (which owns `00-meta/02-logs/`) writes the summarized per-session log. **Not** rotated — each is small and they accumulate.
 - **Policy-MCP audit log** (`audit.jsonl`) — the append-only write-decision trail, written by the policy MCP and rotated weekly by the memoria-linter. This is what the [audit-log](../dashboards/audit-log.md) and [fleet-health](../dashboards/fleet-health.md) dashboards read — not the per-session logs.
 
 ## How it works
 
-1. Hermes runs a session and records the work done.
-2. The memoria-linter writes the per-session log under `00-meta/02-logs/sessions/`.
+1. Hermes runs a session and records the raw activity.
+2. The memoria-linter writes the per-session log *summary* under `00-meta/02-logs/sessions/`.
 3. Git captures the history; the human commits / pushes when needed.
 
 ## Related

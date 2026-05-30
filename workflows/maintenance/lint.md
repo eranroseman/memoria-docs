@@ -18,7 +18,7 @@ topic: workflows
 
 ## Owners
 
-Hermes for detection and reporting. Human for approval of fixes.
+The **Linter** detects and reports. The human approves fixes.
 
 ## Command
 

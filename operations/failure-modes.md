@@ -22,7 +22,7 @@ Full recipes for the failures most likely to block a core workflow. The [complet
 grep {citekey} .memoria/library.bib   # should return one entry
 ```
 
-**Fix.** Export manually from Zotero (File → Export Library → Keep Updated), then push:
+**Fix (human).** Export from Zotero (File → Export Library → Keep Updated), then push:
 
 ```bash
 git add .memoria/library.bib
@@ -61,7 +61,7 @@ hermes -p memoria-linter run lint --source {citekey} --dry-run
 # Reports YAML structure issues
 ```
 
-**Fix.** Open the raw file in an editor outside Obsidian (Obsidian masks the raw YAML). Common causes: unclosed string (`title: "Unterminated`), list indentation error, missing closing `---` delimiter. Fix manually, save.
+**Fix (human).** Open the raw file in an editor outside Obsidian (Obsidian masks the raw YAML). Common causes: unclosed string (`title: "Unterminated`), list indentation error, missing closing `---` delimiter. Fix manually, save.
 
 **Verify.**
 
